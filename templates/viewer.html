@@ -3,105 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newsletter Workflow</title>
+    <title>Paris Ciné — Newsletter Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .tab-btn.active { background-color: rgb(59, 130, 246); color: white; }
-        .cat-pill.active { background-color: rgb(31, 41, 55); color: white; border-color: rgb(31, 41, 55); }
-        .view-btn.active { background-color: rgb(59, 130, 246); color: white; }
-        .movie-card.selected {
-            border-color: rgb(34, 197, 94);
-            border-width: 2px;
-            background-color: rgb(240, 253, 244);
-        }
+        .tab-btn { color: rgb(71 85 105); }
+        .tab-btn:hover { background-color: rgb(241 245 249); }
+        .tab-btn.active { background-color: rgb(15 23 42); color: white; }
+        .tab-btn .step-num { background-color: rgb(226 232 240); color: rgb(71 85 105); }
+        .tab-btn.active .step-num { background-color: rgb(220 38 38); color: white; }
+        .cat-pill { background-color: white; color: rgb(51 65 85); border: 1px solid rgb(226 232 240); }
+        .cat-pill:hover { border-color: rgb(148 163 184); }
+        .cat-pill.active { background-color: rgb(15 23 42); color: white; border-color: rgb(15 23 42); }
+        .view-btn.active { background-color: rgb(15 23 42); color: white; }
+        .field { border: 1px solid rgb(226 232 240); border-radius: 0.75rem; padding: 0.45rem 0.75rem;
+                 font-size: 0.875rem; background: white; outline: none; }
+        .field:focus { border-color: rgb(220 38 38); box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1); }
+        .btn-primary { background-color: rgb(220 38 38); color: white; font-weight: 600;
+                       padding: 0.55rem 1.4rem; border-radius: 0.75rem; transition: background-color .15s; }
+        .btn-primary:hover { background-color: rgb(185 28 28); }
+        .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+        .btn-secondary { background-color: white; color: rgb(51 65 85); font-weight: 500; border: 1px solid rgb(226 232 240);
+                         padding: 0.55rem 1.4rem; border-radius: 0.75rem; transition: all .15s; }
+        .btn-secondary:hover { border-color: rgb(148 163 184); background-color: rgb(248 250 252); }
+        .btn-secondary:disabled { opacity: .45; cursor: not-allowed; }
+        .card { background: white; border-radius: 1rem; border: 1px solid rgb(226 232 240);
+                box-shadow: 0 1px 3px rgb(0 0 0 / 0.04); }
+        .movie-row { transition: box-shadow .15s, border-color .15s; }
+        .movie-row:hover { border-color: rgb(203 213 225); box-shadow: 0 4px 12px rgb(0 0 0 / 0.06); }
+        .movie-row.selected { border-color: rgb(16 185 129); background-color: rgb(236 253 245); }
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Header -->
-        <header class="mb-6 flex items-center justify-between bg-white rounded-lg shadow p-5">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Newsletter Workflow</h1>
-                <p class="text-gray-500 text-sm">Fetch &rarr; Select &rarr; Curate &rarr; Preview &rarr; Validate</p>
-            </div>
-            <div class="text-right">
-                <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-sm font-bold"></span>
-                <p class="text-sm text-gray-500 mt-1"><span id="selectedCount">0</span> movies in this issue</p>
-            </div>
-        </header>
+<body class="bg-slate-100 min-h-screen text-slate-800">
 
-        <!-- Workflow Tabs -->
-        <div class="flex flex-wrap gap-2 mb-6 bg-white p-3 rounded-lg shadow">
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700 active" data-tab="fetch">1. Fetch</button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="select">2. Select</button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="curate">3. Curate</button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="preview">4. Preview</button>
-            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="validate">5. Validate</button>
+    <!-- Top bar -->
+    <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 max-w-6xl py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <span class="text-2xl">🎬</span>
+                <div class="min-w-0">
+                    <h1 class="font-extrabold text-lg leading-tight truncate">Paris Ciné <span class="text-red-500">Newsletter Studio</span></h1>
+                    <p class="text-slate-400 text-xs hidden sm:block">Fetch → Select → Curate → Preview → Validate</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <span class="text-sm text-slate-300"><span id="selectedCount" class="font-bold text-white">0</span> movies picked</span>
+                <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
+            </div>
         </div>
+        <!-- Workflow stepper -->
+        <nav class="bg-white border-b border-slate-200">
+            <div class="container mx-auto px-4 max-w-6xl flex gap-1 py-2 overflow-x-auto">
+                <button class="tab-btn active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="fetch">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">1</span> Fetch
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="select">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">2</span> Select
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="curate">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">3</span> Curate
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="preview">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">4</span> Preview
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="validate">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">5</span> Validate
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
 
         <!-- ============ 1. FETCH ============ -->
         <div id="tab-fetch" class="tab-content active">
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">Fetch movies</h2>
-                <p class="text-gray-500 mb-6">Scrape the week's Paris program (cached per cinema week, Wed&ndash;Tue)</p>
+            <div class="card p-6 mb-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-1">Fetch this week's movies</h2>
+                <p class="text-slate-500 text-sm mb-5">The scrape is cached per cinema week (Wednesday to Tuesday), so repeated fetches are instant.</p>
 
                 <!-- Cache status -->
-                <div class="border-2 rounded-lg p-5 mb-6 {{ 'border-green-300 bg-green-50' if cache.fresh else 'border-yellow-300 bg-yellow-50' }}">
+                <div class="rounded-xl p-4 mb-5 flex items-center gap-3 {{ 'bg-emerald-50 border border-emerald-200' if cache.fresh else 'bg-amber-50 border border-amber-200' }}">
+                    <span class="text-xl">{{ '✅' if cache.fresh else '⚠️' }}</span>
+                    <div>
                     {% if cache.exists %}
-                    <p class="font-medium text-gray-800">
-                        {% if cache.fresh %}Cached data is current.{% else %}Cached data is from a past cinema week.{% endif %}
-                    </p>
-                    <p class="text-sm text-gray-600 mt-1">
-                        Scraped {{ cache.scraped_at or 'at an unknown time' }}
-                        {% if cache.week_start %}(cinema week of {{ cache.week_start }}){% endif %}
-                        {% if cache.movie_count %}&mdash; {{ cache.movie_count }} movies{% endif %}
-                    </p>
+                        <p class="font-semibold text-slate-800 text-sm">
+                            {% if cache.fresh %}Cached data is current.{% else %}Cached data is from a past cinema week.{% endif %}
+                        </p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Scraped {{ cache.scraped_at or 'at an unknown time' }}
+                            {% if cache.week_start %}· cinema week of {{ cache.week_start }}{% endif %}
+                            {% if cache.movie_count %}· {{ cache.movie_count }} movies{% endif %}
+                        </p>
                     {% else %}
-                    <p class="font-medium text-gray-800">No data yet — run a fetch to get started.</p>
+                        <p class="font-semibold text-slate-800 text-sm">No data yet — run a fetch to get started.</p>
                     {% endif %}
+                    </div>
                 </div>
 
-                <div class="flex gap-3 mb-6">
-                    <button onclick="startFetch(false)" id="fetchBtn"
-                            class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50">
-                        Fetch (use cache if current)
-                    </button>
-                    <button onclick="startFetch(true)" id="forceFetchBtn"
-                            class="bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50">
-                        Force re-scrape (~15 min)
-                    </button>
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button onclick="startFetch(false)" id="fetchBtn" class="btn-primary">Fetch movies</button>
+                    <button onclick="startFetch(true)" id="forceFetchBtn" class="btn-secondary">Force re-scrape (~15 min)</button>
                 </div>
 
                 <!-- Progress -->
-                <div id="progressSection" class="border-2 border-gray-200 rounded-lg p-5 mb-6 hidden">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-gray-800">Progress</h3>
-                        <span id="statusBadge" class="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700">Idle</span>
+                <div id="progressSection" class="rounded-xl border border-slate-200 p-4 mb-5 hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-slate-800 text-sm">Progress</h3>
+                        <span id="statusBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">Idle</span>
                     </div>
-                    <div class="mb-3">
-                        <div class="flex justify-between text-sm text-gray-600 mb-1">
-                            <span id="currentTask">Waiting...</span>
-                            <span><span id="progressCount">0</span> / <span id="totalCount">0</span></span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
-                        </div>
+                    <div class="flex justify-between text-xs text-slate-500 mb-1">
+                        <span id="currentTask">Waiting...</span>
+                        <span><span id="progressCount">0</span> / <span id="totalCount">0</span></span>
                     </div>
-                    <div id="errorDisplay" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg">
-                        <span class="font-medium">Error:</span> <span id="errorMessage"></span>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-red-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div id="errorDisplay" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl mt-3 text-sm">
+                        <span class="font-semibold">Error:</span> <span id="errorMessage"></span>
                     </div>
                 </div>
 
                 <!-- Logs -->
-                <div class="border-2 border-gray-200 rounded-lg p-5">
-                    <div class="flex items-center justify-between mb-3">
-                        <h3 class="font-bold text-gray-800">Logs</h3>
-                        <button onclick="resetPipeline()" class="text-sm text-gray-500 hover:text-gray-700">Clear / Reset</button>
+                <div class="rounded-xl border border-slate-200 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-slate-800 text-sm">Logs</h3>
+                        <button onclick="resetPipeline()" class="text-xs text-slate-400 hover:text-slate-600">Clear / Reset</button>
                     </div>
-                    <div id="logsContainer" class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-xs h-48 overflow-y-auto">
-                        <p class="text-gray-500">No logs yet.</p>
+                    <div id="logsContainer" class="bg-slate-900 text-slate-100 p-3 rounded-lg font-mono text-xs h-44 overflow-y-auto">
+                        <p class="text-slate-500">No logs yet.</p>
                     </div>
                 </div>
             </div>
@@ -109,32 +144,32 @@
 
         <!-- ============ 2. SELECT ============ -->
         <div id="tab-select" class="tab-content">
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex items-start justify-between mb-4">
+            <div class="card p-6 mb-6">
+                <div class="flex items-start justify-between gap-4 mb-5">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Select movies</h2>
-                        <p class="text-gray-500">Each movie appears once, tagged with its categories. Selecting pre-assigns the filtered (or first) category as section.</p>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Select movies</h2>
+                        <p class="text-slate-500 text-sm">Each movie appears once — badges show its categories. Click to pick; click again to remove.</p>
                     </div>
-                    <div class="flex rounded-lg border border-gray-300 overflow-hidden flex-shrink-0">
+                    <div class="flex rounded-xl border border-slate-200 overflow-hidden flex-shrink-0">
                         <button onclick="setView('list')" id="viewBtn-list" class="px-3 py-1.5 text-sm font-medium">☰ List</button>
-                        <button onclick="setView('mosaic')" id="viewBtn-mosaic" class="px-3 py-1.5 text-sm font-medium border-l border-gray-300">▦ Mosaic</button>
+                        <button onclick="setView('mosaic')" id="viewBtn-mosaic" class="px-3 py-1.5 text-sm font-medium border-l border-slate-200">▦ Mosaic</button>
                     </div>
                 </div>
 
                 {% if not select_movies %}
-                <div class="text-center py-12 text-gray-400">
+                <div class="text-center py-16 text-slate-400">
+                    <p class="text-3xl mb-2">🎞️</p>
                     <p>No movie data yet. Run a fetch first.</p>
                 </div>
                 {% else %}
                 <!-- Category pills -->
-                <div id="catPills" class="flex flex-wrap gap-2 mb-3"></div>
+                <div id="catPills" class="flex flex-wrap gap-2 mb-4"></div>
 
                 <!-- Filter bar -->
-                <div class="flex flex-wrap gap-3 mb-4 items-center">
-                    <input id="searchBox" type="search" placeholder="Search title, director, actor…"
-                           oninput="setFilter('search', this.value)"
-                           class="border rounded-lg px-3 py-1.5 text-sm w-64">
-                    <select id="sortSelect" onchange="setFilter('sort', this.value)" class="border rounded-lg px-2 py-1.5 text-sm">
+                <div class="flex flex-wrap gap-2.5 mb-5 items-center bg-slate-50 border border-slate-200 rounded-xl p-3">
+                    <input id="searchBox" type="search" placeholder="🔍 Search title, director, actor…"
+                           oninput="setFilter('search', this.value)" class="field w-64">
+                    <select id="sortSelect" onchange="setFilter('sort', this.value)" class="field">
                         <option value="score">Sort: score</option>
                         <option value="copies">Sort: most screened</option>
                         <option value="release">Sort: release date</option>
@@ -142,51 +177,47 @@
                         <option value="year_asc">Sort: year (oldest)</option>
                         <option value="title">Sort: title</option>
                     </select>
-                    <select id="minScoreSelect" onchange="setFilter('minScore', parseFloat(this.value))" class="border rounded-lg px-2 py-1.5 text-sm">
+                    <select id="minScoreSelect" onchange="setFilter('minScore', parseFloat(this.value))" class="field">
                         <option value="0">Any score</option>
                         <option value="6">Score ≥ 6</option>
                         <option value="7">Score ≥ 7</option>
                         <option value="7.5">Score ≥ 7.5</option>
                         <option value="8">Score ≥ 8</option>
                     </select>
-                    <select id="genreSelect" onchange="setFilter('genre', this.value)" class="border rounded-lg px-2 py-1.5 text-sm">
+                    <select id="genreSelect" onchange="setFilter('genre', this.value)" class="field">
                         <option value="">All genres</option>
                     </select>
-                    <label class="flex items-center gap-1.5 text-sm text-gray-600">
-                        <input type="checkbox" onchange="setFilter('hideSelected', this.checked)"> Hide selected
+                    <label class="flex items-center gap-1.5 text-sm text-slate-600 font-medium cursor-pointer">
+                        <input type="checkbox" onchange="setFilter('hideSelected', this.checked)" class="accent-red-600"> Hide selected
                     </label>
-                    <span id="resultCount" class="text-sm text-gray-500 ml-auto"></span>
+                    <span id="resultCount" class="text-sm text-slate-400 ml-auto font-medium"></span>
                 </div>
 
                 <div id="movieList"></div>
-                <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 mt-4"></div>
+                <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 mt-5"></div>
                 {% endif %}
             </div>
         </div>
 
         <!-- ============ 3. CURATE ============ -->
         <div id="tab-curate" class="tab-content">
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex items-start justify-between mb-4">
+            <div class="card p-6 mb-6">
+                <div class="flex items-start justify-between mb-5">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Curate</h2>
-                        <p class="text-gray-500">Assign each movie to a section and write your comment. Everything autosaves.</p>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Curate</h2>
+                        <p class="text-slate-500 text-sm">Assign each movie to a section and write your blurb. Everything autosaves.</p>
                     </div>
-                    <span id="saveIndicator" class="text-xs text-gray-400"></span>
+                    <span id="saveIndicator" class="text-xs text-slate-400"></span>
                 </div>
 
                 <!-- Section manager -->
-                <div class="border-2 border-gray-200 rounded-lg p-4 mb-6">
-                    <h3 class="font-bold text-gray-800 mb-2">Sections</h3>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 mb-6">
+                    <h3 class="font-semibold text-slate-800 text-sm mb-2">Sections</h3>
                     <div id="sectionChips" class="flex flex-wrap gap-2 mb-3"></div>
-                    <div class="flex gap-2">
-                        <input id="newSectionTitle" type="text" placeholder="New section title"
-                               class="border rounded-lg px-3 py-1.5 text-sm flex-1">
-                        <input id="newSectionDesc" type="text" placeholder="Description (optional)"
-                               class="border rounded-lg px-3 py-1.5 text-sm flex-1">
-                        <button onclick="addSection()" class="bg-gray-800 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-gray-700">
-                            + Add section
-                        </button>
+                    <div class="flex flex-wrap gap-2">
+                        <input id="newSectionTitle" type="text" placeholder="New section title" class="field flex-1 min-w-40">
+                        <input id="newSectionDesc" type="text" placeholder="Description (optional)" class="field flex-1 min-w-40">
+                        <button onclick="addSection()" class="btn-secondary !py-1.5 text-sm">+ Add section</button>
                     </div>
                     <p id="sectionError" class="text-red-600 text-sm mt-2 hidden"></p>
                 </div>
@@ -197,41 +228,50 @@
 
         <!-- ============ 4. PREVIEW ============ -->
         <div id="tab-preview" class="tab-content">
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
+            <div class="card p-6 mb-6">
+                <div class="flex items-center justify-between gap-4 mb-5">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Preview</h2>
-                        <p class="text-gray-500">Rendered with the real Node/EJS builder — this is exactly what gets sent.</p>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Preview</h2>
+                        <p class="text-slate-500 text-sm">Rendered by the real Node/EJS builder — exactly what gets sent.</p>
                     </div>
-                    <button onclick="renderPreview()" id="renderBtn"
-                            class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50">
-                        Render preview
-                    </button>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <a href="/preview" target="_blank" class="btn-secondary !py-1.5 text-sm">Open in tab ↗</a>
+                        <button onclick="renderPreview()" id="renderBtn" class="btn-primary !py-1.5 text-sm">Render preview</button>
+                    </div>
                 </div>
-                <div id="previewLog" class="hidden mb-4 p-3 rounded-lg text-sm font-mono"></div>
-                <div class="border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-                    <iframe id="previewFrame" class="w-full bg-white" style="height: 75vh" title="Newsletter preview"></iframe>
+                <div id="previewLog" class="hidden mb-4 p-3 rounded-xl text-sm font-mono"></div>
+                <div class="rounded-xl border border-slate-200 bg-slate-200/60 p-4">
+                    <div class="mx-auto bg-white shadow-lg rounded-lg overflow-hidden" style="max-width: 640px">
+                        <iframe id="previewFrame" class="w-full bg-white" style="height: 75vh" title="Newsletter preview"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- ============ 5. VALIDATE ============ -->
         <div id="tab-validate" class="tab-content">
-            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <div class="flex items-center justify-between mb-4">
+            <div class="card p-6 mb-6">
+                <div class="flex items-center justify-between gap-4 mb-5">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Validate</h2>
-                        <p class="text-gray-500">Re-renders the newsletter and checks it. All checks must pass before the issue is ready.</p>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Validate</h2>
+                        <p class="text-slate-500 text-sm">Re-renders the newsletter and checks it. All checks must pass before the issue is ready.</p>
                     </div>
-                    <button onclick="runValidation()" id="validateBtn"
-                            class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 font-medium disabled:opacity-50">
-                        Run validation
-                    </button>
+                    <button onclick="runValidation()" id="validateBtn" class="btn-primary !py-1.5 text-sm flex-shrink-0">Run validation</button>
                 </div>
                 <div id="validationResults" class="space-y-3">
-                    <p class="text-gray-400 text-sm">Not validated yet.</p>
+                    <p class="text-slate-400 text-sm">Not validated yet.</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Floating selection tray -->
+    <div id="selectionTray" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
+        <div class="flex items-center gap-1 bg-slate-900 text-white rounded-full shadow-2xl pl-5 pr-1.5 py-1.5 border border-slate-700">
+            <span id="trayCount" class="font-semibold text-sm whitespace-nowrap"></span>
+            <button onclick="showSelected()" class="text-sm text-slate-300 hover:text-white px-3 py-1.5 rounded-full hover:bg-slate-800 whitespace-nowrap">Show</button>
+            <button onclick="clearSelection()" class="text-sm text-slate-300 hover:text-red-400 px-3 py-1.5 rounded-full hover:bg-slate-800 whitespace-nowrap">Clear all</button>
+            <button onclick="goToTab('curate')" class="text-sm bg-red-600 hover:bg-red-500 rounded-full px-4 py-1.5 font-semibold whitespace-nowrap">Curate →</button>
         </div>
     </div>
 
@@ -257,29 +297,49 @@
             'Metacritic': 'MC', 'Rotten Tomatoes': 'RT'
         };
 
-        // ---- Header ----
+        // ---- Header + selection tray ----
         function updateHeader() {
             const badge = document.getElementById('issueStatusBadge');
             if (issueStatus === 'ready') {
-                badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white';
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-emerald-500 text-white';
                 badge.textContent = 'READY';
             } else {
-                badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800';
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-amber-400 text-amber-950';
                 badge.textContent = 'DRAFT';
             }
-            document.getElementById('selectedCount').textContent = Object.keys(issueMovies).length;
+            const count = Object.keys(issueMovies).length;
+            document.getElementById('selectedCount').textContent = count;
+            document.getElementById('selectionTray').classList.toggle('hidden', count === 0);
+            document.getElementById('trayCount').textContent = `✓ ${count} selected`;
+        }
+
+        function clearSelection() {
+            const count = Object.keys(issueMovies).length;
+            if (!count) return;
+            if (!confirm(`Remove all ${count} movies from this issue? Sections and comments will be lost.`)) return;
+            issueMovies = {};
+            scheduleSave();
+            updateHeader();
+            renderSelect();
+            renderCurate();
+        }
+
+        function showSelected() {
+            goToTab('select');
+            setCat('selected');
         }
 
         // ---- Tabs ----
+        function goToTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            if (name === 'curate') renderCurate();
+        }
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-                if (btn.dataset.tab === 'curate') renderCurate();
-            });
+            btn.addEventListener('click', () => goToTab(btn.dataset.tab));
         });
+
         // ---- Selection browser (filters, pagination, views) ----
         let selState = {
             search: '', cat: 'all', sort: 'score', minScore: 0, genre: '',
@@ -354,52 +414,52 @@
         }
 
         function scoreColor(score) {
-            return score >= 7.5 ? 'bg-green-500' : (score >= 6 ? 'bg-yellow-500' : 'bg-orange-500');
+            return score >= 7.5 ? 'bg-emerald-500' : (score >= 6 ? 'bg-amber-500' : 'bg-orange-500');
         }
 
         function catBadges(m) {
             return m.cats.map(c =>
-                `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-medium">${CATEGORY_SHORT[c] || c}</span>`
+                `<span class="bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] px-2 py-0.5 rounded-full font-medium">${CATEGORY_SHORT[c] || c}</span>`
             ).join('');
         }
 
         function posterHtml(m, classes) {
             if (m.poster_url) {
                 return `<img src="${m.poster_url}" alt="" class="${classes}" loading="lazy"
-                             onerror="this.outerHTML='<div class=\\'${classes} bg-gray-300 flex items-center justify-center text-gray-500 font-bold\\'>${escapeHtml(m.title[0] || '?')}</div>'">`;
+                             onerror="this.outerHTML='<div class=\\'${classes} bg-slate-300 flex items-center justify-center text-slate-500 font-bold\\'>${escapeHtml(m.title[0] || '?')}</div>'">`;
             }
-            return `<div class="${classes} bg-gray-300 flex items-center justify-center text-gray-500 font-bold">${escapeHtml(m.title[0] || '?')}</div>`;
+            return `<div class="${classes} bg-slate-300 flex items-center justify-center text-slate-500 font-bold">${escapeHtml(m.title[0] || '?')}</div>`;
         }
 
         function listCard(m) {
             const sel = !!issueMovies[m.id];
             const ratings = m.ratings.map(r =>
-                `<span class="whitespace-nowrap"><span class="font-bold">${RATING_SHORT[r.s] || r.s}</span> ${r.v}/${r.m}</span>`
-            ).join(' · ');
-            const flags = (m.new_release ? '<span class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">Sortie</span>' : '')
-                        + (m.premiere ? '<span class="bg-pink-100 text-pink-700 text-xs px-2 py-0.5 rounded-full font-medium">Avant-première</span>' : '');
+                `<span class="whitespace-nowrap"><span class="font-semibold text-slate-500">${RATING_SHORT[r.s] || r.s}</span> ${r.v}/${r.m}</span>`
+            ).join('<span class="text-slate-300"> · </span>');
+            const flags = (m.new_release ? '<span class="bg-red-50 text-red-700 border border-red-100 text-[11px] px-2 py-0.5 rounded-full font-medium">Sortie</span>' : '')
+                        + (m.premiere ? '<span class="bg-pink-50 text-pink-700 border border-pink-100 text-[11px] px-2 py-0.5 rounded-full font-medium">Avant-première</span>' : '');
             return `
-                <div class="movie-card ${sel ? 'selected' : ''} bg-gray-50 rounded-lg p-3 border border-gray-200 flex items-start gap-3">
-                    <button onclick="toggleSelect('${m.id}')"
-                            class="flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center
-                                   ${sel ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 text-gray-400 hover:border-green-500 hover:bg-green-50'}">
+                <div class="movie-row ${sel ? 'selected' : ''} bg-white rounded-xl p-3 border border-slate-200 flex items-start gap-3">
+                    <button onclick="toggleSelect('${m.id}')" title="${sel ? 'Remove from issue' : 'Add to issue'}"
+                            class="flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold transition-colors
+                                   ${sel ? 'bg-emerald-500 border-emerald-500 text-white hover:bg-red-500 hover:border-red-500' : 'border-slate-300 text-slate-400 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600'}">
                         ${sel ? '✓' : '+'}
                     </button>
-                    ${posterHtml(m, 'w-14 h-20 object-cover rounded shadow-sm flex-shrink-0')}
+                    ${posterHtml(m, 'w-14 h-20 object-cover rounded-lg shadow-sm flex-shrink-0')}
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <h3 class="font-bold text-gray-800">${escapeHtml(m.title)}</h3>
-                            ${m.original_title && m.original_title !== m.title ? `<span class="text-sm text-gray-400 italic">${escapeHtml(m.original_title)}</span>` : ''}
+                            <h3 class="font-bold text-slate-900">${escapeHtml(m.title)}</h3>
+                            ${m.original_title && m.original_title !== m.title ? `<span class="text-sm text-slate-400 italic">${escapeHtml(m.original_title)}</span>` : ''}
                             ${catBadges(m)}${flags}
                         </div>
-                        <p class="text-sm text-gray-500 mt-0.5">
+                        <p class="text-sm text-slate-500 mt-1">
                             ${escapeHtml(m.director)}${m.year ? ' · ' + m.year : ''}${m.duration ? ' · ' + m.duration + ' min' : ''}${m.genre ? ' · ' + escapeHtml(m.genre) : ''}
                         </p>
-                        <p class="text-xs text-gray-500 mt-1">${ratings || 'No ratings'}</p>
+                        <p class="text-xs text-slate-400 mt-1.5">${ratings || 'No ratings'}</p>
                     </div>
-                    <div class="flex flex-col items-end gap-1 flex-shrink-0">
-                        <span class="text-base font-bold px-2.5 py-0.5 rounded text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
-                        <span class="text-xs text-gray-400">${m.copies} copies · ${m.showtimes} séances</span>
+                    <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+                        <span class="text-sm font-bold px-2.5 py-1 rounded-lg text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
+                        <span class="text-[11px] text-slate-400 text-right">${m.copies} copies<br>${m.showtimes} séances</span>
                     </div>
                 </div>`;
         }
@@ -408,13 +468,13 @@
             const sel = !!issueMovies[m.id];
             return `
                 <div onclick="toggleSelect('${m.id}')" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
-                     class="relative rounded-lg overflow-hidden cursor-pointer group shadow-sm ${sel ? 'ring-4 ring-green-500' : 'hover:ring-2 hover:ring-blue-400'}">
+                     class="relative rounded-xl overflow-hidden cursor-pointer group shadow-sm transition-transform hover:-translate-y-0.5 ${sel ? 'ring-4 ring-emerald-500' : 'hover:ring-2 hover:ring-red-400'}">
                     ${posterHtml(m, 'w-full aspect-[2/3] object-cover')}
-                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
-                    ${sel ? '<span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</span>' : ''}
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent px-2 pt-6 pb-1.5">
-                        <p class="text-white text-xs font-bold leading-tight">${escapeHtml(m.title)}</p>
-                        <p class="text-gray-300 text-[10px]">${m.year || ''}</p>
+                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
+                    ${sel ? '<span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold shadow">✓</span>' : ''}
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent px-2 pt-7 pb-1.5">
+                        <p class="text-white text-xs font-semibold leading-tight">${escapeHtml(m.title)}</p>
+                        <p class="text-slate-300 text-[10px]">${m.year || ''}</p>
                     </div>
                 </div>`;
         }
@@ -426,8 +486,8 @@
             }
             const pill = (key, label) => `
                 <button onclick="setCat('${key}')"
-                        class="cat-pill px-3 py-1.5 rounded-full text-sm font-medium border border-gray-300 hover:bg-gray-100 ${selState.cat === key ? 'active' : ''}">
-                    ${label} (${counts[key]})
+                        class="cat-pill px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selState.cat === key ? 'active' : ''}">
+                    ${label} <span class="opacity-60">${counts[key]}</span>
                 </button>`;
             document.getElementById('catPills').innerHTML =
                 pill('all', 'All') +
@@ -446,21 +506,21 @@
                 else if (nums[nums.length - 1] !== '…') nums.push('…');
             }
             const numBtns = nums.map(n => n === '…'
-                ? '<span class="px-2 text-gray-400">…</span>'
-                : `<button onclick="setPage(${n})" class="px-3 py-1 rounded-lg text-sm ${n === p ? 'bg-blue-600 text-white' : 'hover:bg-gray-200 text-gray-700'}">${n}</button>`
+                ? '<span class="px-2 text-slate-400">…</span>'
+                : `<button onclick="setPage(${n})" class="px-3 py-1 rounded-lg text-sm font-medium ${n === p ? 'bg-slate-900 text-white' : 'hover:bg-slate-200 text-slate-600'}">${n}</button>`
             ).join('');
 
             document.getElementById('pagination').innerHTML = pages <= 1 && total <= selState.pageSize ? `
-                <span class="text-sm text-gray-500">${total} movies</span>
+                <span class="text-sm text-slate-400">${total} movies</span>
                 <span></span>` : `
                 <div class="flex items-center gap-1">
                     <button onclick="setPage(${Math.max(1, p - 1)})" ${p === 1 ? 'disabled' : ''}
-                            class="px-3 py-1 rounded-lg text-sm hover:bg-gray-200 text-gray-700 disabled:opacity-40">&larr; Prev</button>
+                            class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-slate-200 text-slate-600 disabled:opacity-40">&larr; Prev</button>
                     ${numBtns}
                     <button onclick="setPage(${Math.min(pages, p + 1)})" ${p === pages ? 'disabled' : ''}
-                            class="px-3 py-1 rounded-lg text-sm hover:bg-gray-200 text-gray-700 disabled:opacity-40">Next &rarr;</button>
+                            class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-slate-200 text-slate-600 disabled:opacity-40">Next &rarr;</button>
                 </div>
-                <select onchange="setFilter('pageSize', parseInt(this.value))" class="border rounded-lg px-2 py-1 text-sm">
+                <select onchange="setFilter('pageSize', parseInt(this.value))" class="field !py-1">
                     ${[12, 24, 48, 96].map(n => `<option value="${n}" ${selState.pageSize === n ? 'selected' : ''}>${n} / page</option>`).join('')}
                 </select>`;
         }
@@ -471,9 +531,9 @@
 
             renderCatPills();
             document.getElementById('viewBtn-list').className =
-                'view-btn px-3 py-1.5 text-sm font-medium ' + (selState.view === 'list' ? 'active' : 'text-gray-600 hover:bg-gray-100');
+                'view-btn px-3 py-1.5 text-sm font-medium ' + (selState.view === 'list' ? 'active' : 'text-slate-600 hover:bg-slate-100');
             document.getElementById('viewBtn-mosaic').className =
-                'view-btn px-3 py-1.5 text-sm font-medium border-l border-gray-300 ' + (selState.view === 'mosaic' ? 'active' : 'text-gray-600 hover:bg-gray-100');
+                'view-btn px-3 py-1.5 text-sm font-medium border-l border-slate-200 ' + (selState.view === 'mosaic' ? 'active' : 'text-slate-600 hover:bg-slate-100');
 
             const list = filteredMovies();
             renderPagination(list.length);
@@ -484,7 +544,7 @@
             const pageItems = list.slice(start, start + selState.pageSize);
 
             if (pageItems.length === 0) {
-                listEl.innerHTML = '<p class="text-gray-400 text-sm text-center py-12">No movies match these filters.</p>';
+                listEl.innerHTML = '<p class="text-slate-400 text-sm text-center py-12">No movies match these filters.</p>';
                 return;
             }
             if (selState.view === 'mosaic') {
@@ -522,7 +582,7 @@
                     body: JSON.stringify({ movies: issueMovies })
                 })
                 .then(r => r.json())
-                .then(() => { indicator.textContent = 'Saved'; })
+                .then(() => { indicator.textContent = 'Saved ✓'; })
                 .catch(() => { indicator.textContent = 'Save failed!'; });
             }, 700);
         }
@@ -536,11 +596,11 @@
         function renderSectionChips() {
             const container = document.getElementById('sectionChips');
             container.innerHTML = orderedSections().map(([key, s]) => `
-                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
-                             ${s.default ? 'bg-gray-200 text-gray-700' : 'bg-indigo-100 text-indigo-800'}">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
+                             ${s.default ? 'bg-slate-200 text-slate-700' : 'bg-indigo-100 text-indigo-800'}">
                     ${escapeHtml(s.title)}
                     ${s.default ? '' : `<button onclick="deleteSection('${key}')" title="Delete section"
-                        class="text-indigo-500 hover:text-red-600 font-bold leading-none">&times;</button>`}
+                        class="text-indigo-400 hover:text-red-600 font-bold leading-none">&times;</button>`}
                 </span>
             `).join('');
         }
@@ -599,7 +659,7 @@
             const container = document.getElementById('curateList');
             const ids = Object.keys(issueMovies);
             if (ids.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No movies selected yet — pick some in the Select tab.</p>';
+                container.innerHTML = '<p class="text-slate-400 text-sm text-center py-10">No movies selected yet — pick some in the Select tab.</p>';
                 return;
             }
 
@@ -611,10 +671,15 @@
 
             container.innerHTML = groups.map(([key, title, groupIds]) => {
                 if (groupIds.length === 0) return '';
-                const warn = key === '' ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200';
+                const warn = key === ''
+                    ? 'border-amber-300 bg-amber-50'
+                    : 'border-slate-200 bg-slate-50';
                 return `
-                    <div class="border-2 ${warn} rounded-lg p-4 mb-4">
-                        <h3 class="font-bold text-gray-800 mb-3">${escapeHtml(title)} (${groupIds.length})</h3>
+                    <div class="border ${warn} rounded-xl p-4 mb-4">
+                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+                            ${key === '' ? '⚠️' : '📂'} ${escapeHtml(title)}
+                            <span class="text-xs font-semibold bg-white border border-slate-200 rounded-full px-2 py-0.5 text-slate-500">${groupIds.length}</span>
+                        </h3>
                         <div class="space-y-3">${groupIds.map(curateRow).join('')}</div>
                     </div>`;
             }).join('');
@@ -625,24 +690,24 @@
             const entry = issueMovies[movieId];
             const score = (info.score || 0).toFixed(1);
             return `
-                <div class="flex gap-3 bg-white p-3 rounded-lg border">
-                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-18 object-cover rounded flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
+                <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-[4.5rem] object-cover rounded-lg flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2 mb-2">
-                            <p class="font-bold text-gray-800 truncate">${escapeHtml(info.title)}
-                                <span class="font-normal text-gray-400 text-sm">${info.year || ''} &middot; ${score}</span>
+                        <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                            <p class="font-bold text-slate-900 truncate">${escapeHtml(info.title)}
+                                <span class="font-normal text-slate-400 text-sm">${info.year || ''} · ${score}</span>
                             </p>
                             <div class="flex items-center gap-2 flex-shrink-0">
-                                <select onchange="setSection('${movieId}', this.value)" class="border rounded-lg px-2 py-1 text-sm">
+                                <select onchange="setSection('${movieId}', this.value)" class="field !py-1 text-sm">
                                     ${sectionOptions(entry.section)}
                                 </select>
                                 <button onclick="toggleSelect('${movieId}'); renderCurate();"
-                                        class="text-red-500 hover:text-red-700 text-sm" title="Remove from issue">&times; remove</button>
+                                        class="text-slate-400 hover:text-red-600 text-sm font-medium" title="Remove from issue">&times; remove</button>
                             </div>
                         </div>
                         <textarea oninput="setComment('${movieId}', this.value)" rows="2"
                                   placeholder="Your comment for the newsletter…"
-                                  class="w-full border rounded-lg px-3 py-2 text-sm ${entry.comment ? '' : 'border-yellow-400'}">${escapeHtml(entry.comment || '')}</textarea>
+                                  class="field w-full ${entry.comment ? '' : '!border-amber-400'}">${escapeHtml(entry.comment || '')}</textarea>
                     </div>
                 </div>`;
         }
@@ -669,14 +734,14 @@
                 .then(data => {
                     log.classList.remove('hidden');
                     if (data.ok) {
-                        log.className = 'mb-4 p-3 rounded-lg text-sm font-mono bg-green-50 text-green-800';
+                        log.className = 'mb-4 p-3 rounded-xl text-sm font-mono bg-emerald-50 text-emerald-800 border border-emerald-200';
                         const missing = data.export && data.export.missing_ids.length
                             ? ` ⚠ ${data.export.missing_ids.length} selected movie(s) missing from scraped data`
                             : '';
                         log.textContent = `${data.log} — ${data.export.movie_count} movies in ${data.export.sections_used.length} section(s)${missing}`;
                         document.getElementById('previewFrame').src = '/preview?ts=' + Date.now();
                     } else {
-                        log.className = 'mb-4 p-3 rounded-lg text-sm font-mono bg-red-50 text-red-800';
+                        log.className = 'mb-4 p-3 rounded-xl text-sm font-mono bg-red-50 text-red-800 border border-red-200';
                         log.textContent = data.log;
                     }
                 })
@@ -692,25 +757,25 @@
             const container = document.getElementById('validationResults');
             btn.disabled = true;
             btn.textContent = 'Validating…';
-            container.innerHTML = '<p class="text-gray-400 text-sm">Rendering and checking (image checks hit the network)…</p>';
+            container.innerHTML = '<p class="text-slate-400 text-sm">Rendering and checking (image checks hit the network)…</p>';
             fetch('/api/validate', { method: 'POST' })
                 .then(r => r.json())
                 .then(data => {
                     issueStatus = data.status;
                     updateHeader();
                     if (data.error) {
-                        container.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg font-mono text-sm">${escapeHtml(data.error)}</div>`;
+                        container.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl font-mono text-sm">${escapeHtml(data.error)}</div>`;
                         return;
                     }
                     const summary = data.passed
-                        ? '<div class="bg-green-500 text-white p-4 rounded-lg font-bold">All checks passed — this issue is READY.</div>'
-                        : '<div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg font-bold">Validation failed — fix the problems below and re-run.</div>';
+                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">🎉 All checks passed — this issue is READY.</div>'
+                        : '<div class="bg-amber-100 text-amber-900 border border-amber-200 p-4 rounded-xl font-bold">Validation failed — fix the problems below and re-run.</div>';
                     container.innerHTML = summary + data.checks.map(c => `
-                        <div class="border-2 ${c.passed ? 'border-green-200' : 'border-red-200'} rounded-lg p-4">
-                            <p class="font-bold ${c.passed ? 'text-green-700' : 'text-red-700'}">
+                        <div class="border ${c.passed ? 'border-emerald-200 bg-emerald-50/40' : 'border-red-200 bg-red-50/40'} rounded-xl p-4">
+                            <p class="font-bold ${c.passed ? 'text-emerald-700' : 'text-red-700'}">
                                 ${c.passed ? '✓' : '✗'} ${escapeHtml(c.label)}
                             </p>
-                            ${c.problems.length ? `<ul class="list-disc ml-6 mt-2 text-sm text-gray-700">${c.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
+                            ${c.problems.length ? `<ul class="list-disc ml-6 mt-2 text-sm text-slate-700">${c.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
                         </div>`).join('');
                 })
                 .finally(() => {
@@ -739,7 +804,7 @@
             fetch('/api/pipeline/reset', { method: 'POST' }).then(() => {
                 stopPolling();
                 document.getElementById('progressSection').classList.add('hidden');
-                document.getElementById('logsContainer').innerHTML = '<p class="text-gray-500">No logs yet.</p>';
+                document.getElementById('logsContainer').innerHTML = '<p class="text-slate-500">No logs yet.</p>';
             });
         }
 
@@ -780,13 +845,14 @@
 
             const badge = document.getElementById('statusBadge');
             const statusColors = {
-                'idle': 'bg-gray-200 text-gray-700',
+                'idle': 'bg-slate-200 text-slate-700',
+                'starting': 'bg-blue-100 text-blue-800',
                 'scraping': 'bg-blue-100 text-blue-800',
-                'analyzing': 'bg-green-100 text-green-800',
-                'complete': 'bg-green-500 text-white',
+                'analyzing': 'bg-emerald-100 text-emerald-800',
+                'complete': 'bg-emerald-500 text-white',
                 'error': 'bg-red-500 text-white'
             };
-            badge.className = `px-3 py-1 rounded-full text-sm font-medium ${statusColors[state.status] || statusColors.idle}`;
+            badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusColors[state.status] || statusColors.idle}`;
             badge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
 
             document.getElementById('currentTask').textContent = state.current_task || 'Waiting...';
