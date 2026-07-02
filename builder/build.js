@@ -139,9 +139,17 @@ function reorganizeBySourceTab(moviesData, sectionsConfig) {
 
 // --- MAIN EXECUTION ---
 
+// Optional CLI overrides: node build.js --movies <path> --text <path> --out <path>
+function argValue(flag, fallback) {
+    const i = process.argv.indexOf(flag);
+    return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
+}
+
 // Read from movies.json if it exists and has source_tab, otherwise fallback to parent newsletter_selection.json
 let moviesRaw;
-const moviesJsonPath = 'movies.json';
+const moviesJsonPath = argValue('--movies', 'movies.json');
+const textJsonPath = argValue('--text', 'text_content.json');
+const outputPath = argValue('--out', 'output/newsletter_output_v2.html');
 const selectionJsonPath = '../data/newsletter_selection.json';
 
 if (fs.existsSync(moviesJsonPath)) {
@@ -160,7 +168,7 @@ if (fs.existsSync(moviesJsonPath)) {
 } else {
     throw new Error('No movies data file found');
 }
-const textData = JSON.parse(fs.readFileSync('text_content.json', 'utf8'));
+const textData = JSON.parse(fs.readFileSync(textJsonPath, 'utf8'));
 
 // Get sections config from text_content.json
 const sectionsConfig = textData.sections || {};
@@ -185,5 +193,5 @@ const html = ejs.render(template, {
     text: textData 
 });
 
-fs.writeFileSync('output/newsletter_output_v2.html', html);
-console.log('Version 2 Generated: output/newsletter_output_v2.html');
+fs.writeFileSync(outputPath, html);
+console.log('Generated: ' + outputPath);

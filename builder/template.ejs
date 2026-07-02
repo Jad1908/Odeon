@@ -66,6 +66,13 @@
                                         <br>De <%= movie.director %>
                                     </div>
 
+                                    <!-- EDITOR'S COMMENT -->
+                                    <% if (movie.comment) { %>
+                                    <div style="margin: 0 0 12px 0; padding: 8px 12px; background-color: #fdf6ec; border-left: 3px solid #e50914; font-style: italic; font-size: 13px; color: #444;">
+                                        <%= movie.comment %>
+                                    </div>
+                                    <% } %>
+
                                     <!-- RATINGS -->
                                     <% if (movie.ui_ratings.length > 0) { %>
                                     <div style="margin-bottom: 12px;">
