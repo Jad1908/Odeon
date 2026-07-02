@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
+
+<head>
+	<title>Paris Ciné Info - Le programme cinéma complet et sur mesure</title>
+	<meta charset='utf-8' />
+	<meta name="description" content="Le programme complet des séances de cinéma à Paris : nouveautés, classiques, rétrospectives et évenements, filtre par jour, carte illimité, note IMDB / Allociné ou SensCritique." />
+    <meta property="og:description" content="Le programme complet des séances de cinéma à Paris : nouveautés, classiques, rétrospectives et évenements, filtre par jour, carte illimité, note IMDB / Allociné ou SensCritique.">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="viewport" content="width=800,shrink-to-fit=no, user-scalable=0">
+    
+   
+	<link rel="stylesheet" type="text/css" href="resources/css/datatables2.min.css?v5"/>
+    <script type="text/javascript" src="resources/js/sortable-min.js" defer></script>
+    <script type="text/javascript" src="resources/js/datatables2.min.js?v5"></script>
+	<link href="resources/css/chosen.min.css" rel="stylesheet"/>
+	<script src="resources/js/chosen.jquery.min.js"></script>
+    <script async type="text/javascript" src="resources/js/main_async-min.js?v186""></script>
+    <link rel="preload" href="resources/css/jquery.fancybox.min.css?v3" as="style" onload="this.onload=null;this.rel='stylesheet'"/>
+    <script type="text/javascript" src="resources/js/loadingoverlay.min.js" defer></script>
+	<script type="text/javascript" src="resources/js/fullcalendar6.min.js" defer></script>
+	<script type="text/javascript" src="resources/js/longpress.js" defer></script>
+    <script async src="resources/js/jquery.fancybox.min.js?v3" defer></script>
+	<script async src="resources/js/add-to-calendar-min.js" defer></script>
+    
+    <style id="addedCSS" type="text/css"></style>
+    <link rel="stylesheet" href="resources/css/main-min.css?v186"/>
+    <link rel="preload" href="resources/css/secondary-min.css?v186" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="apple-touch-icon" sizes="180x180" href="resources/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="resources/img/favicon-16x16.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="resources/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="resources/img/Favicon_64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="resources/img/Favicon_128.png">
+	<link rel="mask-icon" href="resources/img/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+    <link rel="manifest" href="pci.webmanifest">
+    <meta property="og:image" content="https://paris-cine.info/resources/img/logo_square_512_3.png" />
+	
+
+    <script type="text/javascript">
+        var _paq = window._paq = window._paq || [];
+        /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//piwi.paris-cine.info/";
+            _paq.push(['setTrackerUrl', u+'piwredir.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.src='resources/js/piw551.js'; s.parentNode.insertBefore(g,s);
+        })();
+
+        var mobilecheck = function() {
+        return window.matchMedia("only screen and (max-width: 800px)").matches;
+        }
+        var ismobile = mobilecheck();
+    </script>
+
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <div id="content">
+        <div id="top">
+            <div id="mySidebar" class="sidebar">
+                <span id="page_header" class="sideheader">Pages</span>
+                <div class="sidebar_pages">
+                    <a id="allmovieslink" title="Tous les films"  class="active" href="#" onclick="loadpage('allmovies');return false;">Tous les films</a>
+                    <a id="newmovieslink" title="Films sortis recemment, tri par nombre de copies" href="#newies" onclick="loadpage('newies');return false;">Nouveautés</a>
+                    <a id="oldmovieslink" title="Film sortis > 2 ans , tri par note" href="oldies" onclick="loadpage('oldies');return false;">Classiques</a>
+                    <a id="retrospectmovieslink" title="Rétrospectives cinéma, groupées par réalisateur" href="retro" onclick="loadpage('retro');return false;">Rétrospectives</a>
+                    <a id="eventmovieslink" title="Uniquement les séances évenements" href="events" onclick="loadpage('events');return false;">Évenements</a>
+                    <a id="calendarmovslink" title="Calendrier" href="#" onclick="loadpage('calendar');return false;">Calendrier</a>
+                </div>
+
+                <select id="pageselect" class="webkit-auto" style="display: none;">
+                    <option value="allmovies" title="Tous les films">Tous les films</option>
+                    <option value="newies"  title="Films sortis recemment, tri par nombre de copies">Nouveautés</option>
+                    <option value="oldies" title="Film sortis > 2 ans , tri par note">Classiques</option>
+                    <option value="retro" title="Rétrospectives cinéma, groupées par réalisateur">Rétrospectives</option>
+                    <option value="events" title="Uniquement les séances évenements">Évenements</option>
+                    <option value="calendar" title="Calendrier">Calendrier</option>
+                    <option value="favs" title="Uniquement vos Favoris">Favoris</option>
+                </select>
+
+                                <span class="sideheader">Filtres</span>
+                
+                <div id="searchdiv" class="search-container"><input type="search" size="20" id="mySearchText" placeholder="&#x1F50E;&#xFE0E; Recherche..." title="Chercher un titre de film, réalisateur, acteur.." ></div>
+
+                <select onchange="redrawcard()" id="selcard" class="filterselect" title="Avez-vous une carte cinéma ?">
+                                                <option value="all">Cartes : aucune</option>
+                                                <optgroup label="Illimités">
+                            <option value="ugc">UGC Illimité</option>
+                            <option value="pass">Pathé CinéPass</option>
+                            <option value="librepass">Cinémathèque LibrePass</option>
+                        </optgroup>
+                        <optgroup label="Multi-Places">
+                            <option value="cip">Ciné Carte CIP </option>
+                            <option value="cinecarte">Pathé CinéCarte</option>
+                            <option value="multicine">Le Club Multiciné</option>
+                            <option value="mk2">MK2 Carte 5</option>
+                            <option value="dulac">Maison Dulac Cinema</option>
+                            <option value="lacarte">UGC 'la carte'</option>
+                        </optgroup>
+                        <optgroup label="Illimités (sans supplément)">
+                            <option value="ugc!">UGC Illimité</option>
+                            <option value="pass!">Pathé CinéPass</option>
+                            <option value="librepass!">Cinémathèque LibrePass</option>
+                        </optgroup>
+                        <optgroup label="Combos Illimités">
+                            <option value="librepass|ugc">LibrePass + UGC</option>
+                            <option value="librepass|pass">LibrePass + Pathé</option>
+                            <option value="ugc|pass">Pathé + UGC</option>
+                            <option value="ugc,pass" title="Séances pour ceux qui ont la Carte UGC Illimité ET ceux qui ont la carte CinéPass">Pathé ET UGC</option>
+                        </optgroup>
+                        <option value="cinecheques">Cinéchèques</option>
+                </select>
+
+                <select onchange="redrawday()" id="selday" class="filterselect" title="Voir les séances pour quel jour ?">
+                                            <option value="week">Jours : cette semaine</option>
+                        <option value="today">Aujourd'hui</option>
+                    			
+                </select>
+                <select onchange="redrawtime()" id="seltime" class="filterselect" title="A quelle heure souhaitez-vous aller au cinéma ?">
+                                        <option value="all">Heures : toutes</option>
+                    <option value="matin">Matin (8h-12h)</option>
+                    <option value="après-midi">Après-midi (12h-18h)</option>
+                    <option value="soir">Soir (18h-00h)</option>
+                                    </select>
+
+
+			<select name="multiple[]" size="1" id="seladdr" multiple class="chosen-select" data-placeholder="Lieu : Paris" style="width:100%" title="Filtrez selon votre ville ou arrondissement">
+				<script type="text/javascript"> if (ismobile) { document.write('<option selected disabled style="display:none" class="filterselect">Lieu : Paris</option>'); } </script>
+				                <option value="75000">Paris</option>
+				<option value="*">Paris + Banlieue</option>
+
+				                <optgroup label='Arrondissements'>
+                    <option value="75001">1er</option>
+                    <option value="75002">2e</option>
+                    <option value="75003">3e</option>
+                    <option value="75004">4e</option>
+                    <option value="75005">5e</option>
+                    <option value="75006">6e</option>
+                    <option value="75007">7e</option>
+                    <option value="75008">8e</option>
+                    <option value="75009">9e</option>
+                    <option value="75010">10e</option>
+                    <option value="75011">11e</option>
+                    <option value="75012">12e</option>
+                    <option value="75013">13e</option>
+                    <option value="75014">14e</option>
+                    <option value="75015">15e</option>
+                    <option value="75016">16e</option>
+                    <option value="75017">17e</option>
+                    <option value="75018">18e</option>
+                    <option value="75019">19e</option>
+                    <option value="75020">20e</option>
+                </optgroup>
+                <optgroup label='Hauts-de-Seine'>
+    <               <option value="92600">Asnières-sur-Seine</option>
+                    <option value="92220">Bagneux</option>
+                    <option value="92270">Bois-Colombes</option>
+                    <option value="92100">Boulogne-Billancourt</option>
+                    <option value="92320">Châtillon</option>
+                    <option value="92140">Clamart</option>
+                    <option value="92110">Clichy</option>
+                    <option value="92700">Colombes</option>
+                    <option value="92400">Courbevoie</option>
+                    <option value="92260">Fontenay-aux-Roses</option>
+                    <option value="92230">Gennevilliers</option>
+                    <option value="92130">Issy-les-Moulineaux</option>
+                    <option value="92350">Le Plessis-Robinson</option>
+                    <option value="92300">Levallois-Perret</option>
+                    <option value="92240">Malakoff</option>
+                    <option value="92190">Meudon</option>
+                    <option value="92360">Meudon la foret</option>
+                    <option value="92120">Montrouge</option>
+                    <option value="92200">Neuilly-sur-Seine</option>
+                    <option value="92800">Puteaux</option>
+                    <option value="92500">Rueil-Malmaison</option>
+                    <option value="92210">Saint-Cloud</option>
+                    <option value="92330">Sceaux</option>
+                    <option value="92150">Suresnes</option>
+                    <option value="92310">Sèvres</option>
+                    <option value="92170">Vanves</option>
+                    <option value="92390">Villeneuve-la-Garenne</option>
+                </optgroup>
+                <optgroup label='Seine-Saint-Denis'>
+                    <option value="93300">Aubervilliers</option>
+                    <option value="93170">Bagnolet</option>
+                    <option value="93120">La Courneuve</option>
+                    <option value="93260">Les Lilas</option>
+                    <option value="93100">Montreuil</option>
+                    <option value="93500">Pantin</option>
+                    <option value="93230">Romainville</option>
+                    <option value="93110">Rosny-sous-Bois</option>
+                    <option value="93200">Saint-Denis</option>
+                    <option value="93400">Saint-Ouen</option>
+                </optgroup>
+                <optgroup label='Val-de-Marne'>
+                    <option value="94110">Arcueil</option>
+                    <option value="94230">Cachan</option>
+                    <option value="94550">Chevilly-Larue</option>
+                    <option value="94600">Choisy-le-Roi</option>
+                    <option value="94000">Créteil</option>
+                    <option value="94120">Fontenay-sous-Bois</option>
+                    <option value="94200">Ivry-sur-Seine</option>
+                    <option value="94340">Joinville-le-Pont</option>
+                    <option value="94240">L' Haÿ-les-Roses</option>
+                    <option value="94700">Maisons-Alfort</option>
+                    <option value="94320">Thiais</option>
+                    <option value="94800">Villejuif</option>
+                    <option value="94300">Vincennes</option>
+                    <option value="94400">Vitry-sur-Seine</option>
+                </optgroup>
+                <option value="77705">Chessy</option>
+			</select>
+			
+			<select id ="selcine" size="1" multiple data-placeholder="Salles : Toutes" style="width:100%;" class="chosen-select" title="Sélectionnez vos cinémas favoris">
+				
+				                <script type="text/javascript"> if (ismobile) { document.write('<option selected disabled style="display:none" >Salles : toutes</option>'); } </script>
+				<option value="all">Toutes les salles</option>
+								<optgroup label="Paris Centre">
+                <option value="106">Centre Georges-Pompidou</option>
+                <option value="101">Forum des images</option>
+                <option value="246">Jeu de Paume</option>
+                <option value="103">Le Grand Rex</option>
+                <option value="107">Luminor Hôtel de Ville</option>
+                <option value="105">MK2 Beaubourg</option>
+                <option value="104">Pathé BNP Paribas</option>
+                <option value="245">Pathé Palace</option>
+                <option value="102">UGC Ciné Cité Les Halles</option>
+                <optgroup label="Paris 05">
+                <option value="244">Ciné-Club de l'ENS</option>
+                <option value="108">Cinéma du Panthéon</option>
+                <option value="109">Ecoles Cinema Club</option>
+                <option value="111">Espace Saint-Michel</option>
+                <option value="112">Filmothèque du Quartier Latin</option>
+                <option value="110">L'Épée de Bois</option>
+                <option value="113">La Clef</option>
+                <option value="114">Le Champo</option>
+                <option value="115">Le Grand Action</option>
+                <option value="116">Reflet Medicis</option>
+                <option value="117">Studio des Ursulines</option>
+                <option value="118">Studio Galande</option>
+                </optgroup>
+                <optgroup label="Paris 06">
+                <option value="120">Christine Cinema Club</option>
+                <option value="122">L'Arlequin</option>
+                <option value="123">Les 3 Luxembourg</option>
+                <option value="124">Lucernaire</option>
+                <option value="125">MK2 Odéon (St Germain)</option>
+                <option value="126">MK2 Odéon (St Michel)</option>
+                <option value="127">MK2 Parnasse</option>
+                <option value="128">Nouvel Odéon </option>
+                <option value="129">Saint-André des Arts</option>
+                <option value="131">UGC Danton</option>
+                <option value="132">UGC Montparnasse</option>
+                <option value="133">UGC Odéon</option>
+                <option value="134">UGC Rotonde</option>
+                </optgroup>
+                <optgroup label="Paris 08">
+                <option value="135">Elysées Lincoln</option>
+                <option value="137">Le Balzac</option>
+                <option value="139">Publicis Cinémas</option>
+                </optgroup>
+                <optgroup label="Paris 09">
+                <option value="142">Les 5 Caumartin</option>
+                <option value="143">Max Linder Panorama</option>
+                <option value="144">UGC Opéra</option>
+                </optgroup>
+                <optgroup label="Paris 10">
+                <option value="145">L'Archipel</option>
+                <option value="146">Le Brady</option>
+                <option value="147">Le Louxor</option>
+                </optgroup>
+                <optgroup label="Paris 11">
+                <option value="148">Majestic Bastille</option>
+                <option value="149">MK2 Bastille (Beaumarchais)</option>
+                <option value="150">MK2 Bastille (Fg St Antoine)</option>
+                </optgroup>
+                <optgroup label="Paris 12">
+                <option value="151">La Cinémathèque française</option>
+                <option value="152">MK2 Nation</option>
+                <option value="153">UGC Ciné Cité Bercy</option>
+                <option value="154">UGC Lyon Bastille</option>
+                </optgroup>
+                <optgroup label="Paris 13">
+                <option value="155">Escurial</option>
+                <option value="156">Fondation Jerome Seydoux - Pathé</option>
+                <option value="157">MK2 Bibliothèque</option>
+                <option value="158">Pathé Les Fauvettes</option>
+                <option value="159">UGC Gobelins</option>
+                </optgroup>
+                <optgroup label="Paris 14">
+                <option value="160">Chaplin Denfert</option>
+                <option value="162">L'Entrepôt</option>
+                <option value="248">Le Miramar</option>
+                <option value="163">Les 7 Parnassiens</option>
+                <option value="164">Pathé Alésia</option>
+                <option value="161">Pathé Montparnos</option>
+                <option value="165">Pathé Parnasse</option>
+                </optgroup>
+                <optgroup label="Paris 15">
+                <option value="166">Chaplin Saint Lambert</option>
+                <option value="167">Pathé Aquaboulevard</option>
+                <option value="169">Pathé Beaugrenelle</option>
+                <option value="168">Pathé Convention</option>
+                </optgroup>
+                <optgroup label="Paris 16">
+                <option value="170">Le Ranelagh</option>
+                <option value="171">Majestic Passy</option>
+                </optgroup>
+                <optgroup label="Paris 17">
+                <option value="172">7 Batignolles</option>
+                <option value="173">Club de l'étoile</option>
+                <option value="174">Le Cinéma des Cinéastes</option>
+                <option value="175">Mac-Mahon</option>
+                <option value="176">UGC Maillot</option>
+                </optgroup>
+                <optgroup label="Paris 18">
+                <option value="178">Pathé Wepler</option>
+                <option value="177">Studio 28</option>
+                </optgroup>
+                <optgroup label="Paris 19">
+                <option value="249">La Géode</option>
+                <option value="179">MK2 Quai de Loire</option>
+                <option value="180">MK2 Quai de Seine</option>
+                <option value="181">Parc de la Villette</option>
+                <option value="182">Pathé La Villette</option>
+                <option value="183">UGC Ciné Cité Paris 19</option>
+                </optgroup>
+                <optgroup label="Paris 20">
+                <option value="184">CGR Paris Lilas</option>
+                <option value="185">MK2 Gambetta</option>
+                </optgroup>
+                <optgroup label="Arcueil">
+                <option value="230">Espace municipal Jean Vilar</option>
+                <option value="231">Mégarama Arcueil</option>
+                </optgroup>
+                <optgroup label="Asnières-sur-Seine">
+                <option value="213">L'Alcazar</option>
+                </optgroup>
+                <optgroup label="Aubervilliers">
+                <option value="225">Le Studio</option>
+                </optgroup>
+                <optgroup label="Bagneux">
+                <option value="199">Théâtre-Cinéma Victor Hugo</option>
+                </optgroup>
+                <optgroup label="Bagnolet">
+                <option value="220">Cin'Hoche</option>
+                </optgroup>
+                <optgroup label="Bois-Colombes">
+                <option value="203">Salle Jean-Renoir</option>
+                </optgroup>
+                <optgroup label="Boulogne-Billancourt">
+                <option value="187">Cinéma Landowski</option>
+                <option value="188">Pathé Boulogne</option>
+                </optgroup>
+                <optgroup label="Cachan">
+                <option value="235">La Pleiade</option>
+                </optgroup>
+                <optgroup label="Châtillon">
+                <option value="206">Cinéma de Châtillon</option>
+                </optgroup>
+                <optgroup label="Chessy">
+                <option value="186">Gaumont Disney Village</option>
+                </optgroup>
+                <optgroup label="Chevilly-Larue">
+                <option value="241">Théâtre André Malraux</option>
+                </optgroup>
+                <optgroup label="Choisy-le-Roi">
+                <option value="242">Théâtre-Cinéma Paul-Eluard</option>
+                </optgroup>
+                <optgroup label="Clamart">
+                <option value="193">Cinéma Jeanne Moreau</option>
+                </optgroup>
+                <optgroup label="Clichy">
+                <option value="189">Rutebeuf</option>
+                </optgroup>
+                <optgroup label="Colombes">
+                <option value="214">L'Hélios</option>
+                </optgroup>
+                <optgroup label="Courbevoie">
+                <option value="211">Abel Gance</option>
+                </optgroup>
+                <optgroup label="Créteil">
+                <option value="229">UGC Ciné Cité Créteil</option>
+                <option value="228">Cinémas du palais, Armand-Badéyan</option>
+                </optgroup>
+                <optgroup label="Fontenay-aux-Roses">
+                <option value="202">Le Scarron</option>
+                </optgroup>
+                <optgroup label="Fontenay-sous-Bois">
+                <option value="232">Le Kosmos</option>
+                </optgroup>
+                <optgroup label="Gennevilliers">
+                <option value="200">Jean-Vigo</option>
+                </optgroup>
+                <optgroup label="Issy-les-Moulineaux">
+                <option value="191">Ciné d'Issy</option>
+                <option value="192">UGC Issy-les-Moulineaux</option>
+                </optgroup>
+                <optgroup label="Ivry-sur-Seine">
+                <option value="233">Le Luxy</option>
+                <option value="234">Pathé Quai d'Ivry</option>
+                </optgroup>
+                <optgroup label="Joinville-le-Pont">
+                <option value="239">Cinéma Prévert</option>
+                </optgroup>
+                <optgroup label="L' Haÿ-les-Roses">
+                <option value="236">La Tournelle</option>
+                </optgroup>
+                <optgroup label="La Courneuve">
+                <option value="219">L'étoile</option>
+                </optgroup>
+                <optgroup label="Le Plessis-Robinson">
+                <option value="208">Ciné Gérard-Philipe</option>
+                </optgroup>
+                <optgroup label="Les Lilas">
+                <option value="224">Cinéma du Garde-Chasse</option>
+                </optgroup>
+                <optgroup label="Levallois-Perret">
+                <option value="204">Pathé Levallois</option>
+                </optgroup>
+                <optgroup label="Maisons-Alfort">
+                <option value="243">Théâtre Claude Debussy</option>
+                </optgroup>
+                <optgroup label="Malakoff">
+                <option value="201">Cinéma Marcel-Pagnol</option>
+                </optgroup>
+                <optgroup label="Meudon">
+                <option value="196">Centre d'art et de culture</option>
+                </optgroup>
+                <optgroup label="MEUDON LA FORET">
+                <option value="209">Espace Culturel Robert Doisneau</option>
+                </optgroup>
+                <optgroup label="Montreuil">
+                <option value="217">Georges Méliès</option>
+                </optgroup>
+                <optgroup label="Montrouge">
+                <option value="190">Ciné Montrouge</option>
+                </optgroup>
+                <optgroup label="Neuilly-sur-Seine">
+                <option value="197">Le Village</option>
+                </optgroup>
+                <optgroup label="Pantin">
+                <option value="227">Ciné 104</option>
+                </optgroup>
+                <optgroup label="Puteaux">
+                <option value="216">UGC Ciné Cité La Défense</option>
+                <option value="215">Le Central</option>
+                </optgroup>
+                <optgroup label="Romainville">
+                <option value="223">Le Trianon</option>
+                </optgroup>
+                <optgroup label="Rosny-sous-Bois">
+                <option value="218">UGC Ciné Cité Rosny</option>
+                </optgroup>
+                <optgroup label="Rueil-Malmaison">
+                <option value="212">Ariel - Hauts de Rueil</option>
+                </optgroup>
+                <optgroup label="Saint-Cloud">
+                <option value="198">Les 3 Pierrots</option>
+                </optgroup>
+                <optgroup label="Saint-Denis">
+                <option value="222">L'ecran</option>
+                <option value="221">Pathé Saint-Denis</option>
+                </optgroup>
+                <optgroup label="Saint-Ouen">
+                <option value="226">Espace 1789 </option>
+                </optgroup>
+                <optgroup label="Sceaux">
+                <option value="207">Trianon</option>
+                </optgroup>
+                <optgroup label="Sèvres">
+                <option value="205">Ciné-Sel</option>
+                </optgroup>
+                <optgroup label="Suresnes">
+                <option value="194">Cinéma Le Capitole</option>
+                </optgroup>
+                <optgroup label="Thiais">
+                <option value="238">Pathé Belle Epine</option>
+                </optgroup>
+                <optgroup label="Vanves">
+                <option value="195">Cinéma De Vanves</option>
+                </optgroup>
+                <optgroup label="Villejuif">
+                <option value="244">Cinéma d'Art Romain Rolland</option>
+                </optgroup>
+                <optgroup label="Villeneuve-la-Garenne">
+                <option value="210">Mégarama Villeneuve-la-Garenne</option>
+                </optgroup>
+                <optgroup label="Vincennes">
+                <option value="237">Le Vincennes</option>
+                </optgroup>
+                <optgroup label="Vitry-sur-Seine">
+                <option value="240">Les 3 Cinés - Robespierre</option>
+                </optgroup>
+			</select>
+
+                
+                <select id="sellang" class="filterselect" title="Filtrez les séances selon leur langues">
+                                    <option value="all">Langues : Toutes</option>
+                    <option value="VO" title="Toutes les séances non-doublées">VO uniquement</option>
+                    <option value="VF" title="Films Français ou doublés en français">VF uniquement</option>
+                    <option value="VFSTF" title="Films Français avec sous-titres malentendants">VFSTF</option>
+                    <option value="STF" title="Films avec sous-titres FR">ST Français (STF)</option>
+                    <option value="STA" title="Films avec sous-titres Anglais">ST Anglais (STA)</option>
+                                </select>
+
+
+                <select onchange="redrawgenre()" id="selgenre" class="filterselect">
+                                        <option value="all">Genres : Tous 🆕</option>
+                                    </select>
+
+                <select onchange="redrawformat()" id="selformat" class="filterselect">
+                                            <option value="all">Format : Tous</option>
+                                        <option value="35mm">35mm</option>
+                    <option value="3d">3D</option>
+                    <option value="imax">Imax</option>
+                    <option value="imax3d">Imax 3D</option>
+                    <optgroup label="--"></optgroup>
+                    <option value="dci">Dolby Cinema</option>
+                    <option value="dat">Dolby Atmos</option>
+                    <option value="ice">ICE</option>
+                    <option value="scx">ScreenX</option>
+                    <option value="onx">Onyx Led</option>
+                    <option value="4dx">4DX</option>
+                    <option value="4de">4D E-motion</option>
+                </select>
+
+                
+                <select onchange="redrawlist()" id="sellist" class="filterselect d-none">
+                                            <option value="all">Liste : Aucune</option>
+                                        <option value="sands">Sight and Sound</option>
+                    <option value="1001">1001 Movies You Must See Before You Die</option>
+                </select>
+
+                                <span class="sideheader">Affichage</span>
+                <select onchange="redrawtitles()" id="seldisptitle" class="filterselect">
+                    <option value="all">Titre FR & Original</option>
+                    <option value="fr">Titre FR</option>
+                    <option value="ori">Titre Original</option>
+                </select>
+                
+                <button id='ratepicker' class="filterselect" title="Priorité des notes"><span id='rateordericons'></span></button>
+
+                <button id="addapp" class="add-button">Ajouter l'application</button>
+
+
+                <div id="fb">
+                    <div class="footerbtn">
+                            <a href="https://www.facebook.com/ParisCineInfo"  target="_blank"  title="Page facebook"><img src="resources/img/fb_black.png" alt="page facebook"></a>
+                    </div>
+                    <div class="footerbtn">
+                        <a href="https://live.paris-cine.info"  target="_blank" alt="paris cine live" title="Paris Ciné Live : toutes les séances autour de vous, maintenant !"><img src="resources/img/Paris_Cine-Live.png"></a>
+                    </div>
+                    <div class="footerbtn">
+                        <a href="https://www.instagram.com/pariscineinfo/" target="_blank" title="Suivez-nous sur Instragram !"><svg id="iglogo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60" viewBox="0 0 130 130" height="40">
+                            <path d="M66.004 18c-13.036 0-14.672.057-19.792.29-5.11.234-8.598 1.043-11.65 2.23-3.157 1.226-5.835 2.866-8.503 5.535-2.67 2.668-4.31 5.346-5.54 8.502-1.19 3.053-2 6.542-2.23 11.65C18.06 51.327 18 52.964 18 66s.058 14.667.29 19.787c.235 5.11 1.044 8.598 2.23 11.65 1.227 3.157 2.867 5.835 5.536 8.503 2.667 2.67 5.345 4.314 8.5 5.54 3.054 1.187 6.543 1.996 11.652 2.23 5.12.233 6.755.29 19.79.29 13.037 0 14.668-.057 19.788-.29 5.11-.234 8.602-1.043 11.656-2.23 3.156-1.226 5.83-2.87 8.497-5.54 2.67-2.668 4.31-5.346 5.54-8.502 1.18-3.053 1.99-6.542 2.23-11.65.23-5.12.29-6.752.29-19.788 0-13.036-.06-14.672-.29-19.792-.24-5.11-1.05-8.598-2.23-11.65-1.23-3.157-2.87-5.835-5.54-8.503-2.67-2.67-5.34-4.31-8.5-5.535-3.06-1.187-6.55-1.996-11.66-2.23-5.12-.233-6.75-.29-19.79-.29zm-4.306 8.65c1.278-.002 2.704 0 4.306 0 12.816 0 14.335.046 19.396.276 4.68.214 7.22.996 8.912 1.653 2.24.87 3.837 1.91 5.516 3.59 1.68 1.68 2.72 3.28 3.592 5.52.657 1.69 1.44 4.23 1.653 8.91.23 5.06.28 6.58.28 19.39s-.05 14.33-.28 19.39c-.214 4.68-.996 7.22-1.653 8.91-.87 2.24-1.912 3.835-3.592 5.514-1.68 1.68-3.275 2.72-5.516 3.59-1.69.66-4.232 1.44-8.912 1.654-5.06.23-6.58.28-19.396.28-12.817 0-14.336-.05-19.396-.28-4.68-.216-7.22-.998-8.913-1.655-2.24-.87-3.84-1.91-5.52-3.59-1.68-1.68-2.72-3.276-3.592-5.517-.657-1.69-1.44-4.23-1.653-8.91-.23-5.06-.276-6.58-.276-19.398s.046-14.33.276-19.39c.214-4.68.996-7.22 1.653-8.912.87-2.24 1.912-3.84 3.592-5.52 1.68-1.68 3.28-2.72 5.52-3.592 1.692-.66 4.233-1.44 8.913-1.655 4.428-.2 6.144-.26 15.09-.27zm29.928 7.97c-3.18 0-5.76 2.577-5.76 5.758 0 3.18 2.58 5.76 5.76 5.76 3.18 0 5.76-2.58 5.76-5.76 0-3.18-2.58-5.76-5.76-5.76zm-25.622 6.73c-13.613 0-24.65 11.037-24.65 24.65 0 13.613 11.037 24.645 24.65 24.645C79.617 90.645 90.65 79.613 90.65 66S79.616 41.35 66.003 41.35zm0 8.65c8.836 0 16 7.163 16 16 0 8.836-7.164 16-16 16-8.837 0-16-7.164-16-16 0-8.837 7.163-16 16-16z" fill="#000">
+                            </path>
+                        </svg></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var datenow = new Date();
+            var page = "allmovies";
+            var seldayid = 0;
+            var seldayval = "week";
+            var selcard = "all";
+            var selformat = "all";
+            var cinefilter = [];
+            var card = loc = time = addr_presel = card_presel = movid = cineid = filtrhtml = ratecook = selevent = tokenparam = debug =  "";
+            var langfilter = sortorder = cols = mov_langs_saved = mov_genres_saved = calendars = colorder = [];
+            var dtable;
+            var rating = "imdb";
+            var first_load_date = new Date();
+            var feat_notified = account_notified = false;
+            var mov_langs = {};
+            var locfilter = { 'zip' : [] , 'cities' : [] }
+            var langs_fr = { "Aboriginal_Language" : "Aboriginal", "African_Dialect" : "Africain", "Afrikaans" : "Afrikaans", "Albanian" : "Albanien", "Algerian" : "Algérien", "Amharic" : "Amharic", "Arabic" : "Arabe", "Aramaic" : "Aramaic", "Armenian" : "Arménien", "Azeri" : "Azeri", "Bambara" : "Bambara", "Bengali" : "Bengali", "Bosnian" : "Bosnien", "Briton" : "Briton", "Bulgarian" : "Bulgarien", "Burmese" : "Burmese", "Cantonese" : "Cantonais", "Catalan" : "Catalan", "Chinese" : "Chinois", "Creole" : "Créole", "Czech" : "Tchèque", "Danish" : "Danois", "Dutch" : "Hollandais", "English" : "Anglais", "Estonian" : "Estonien", "Euskera" : "Euskera", "Farsi" : "Farsi", "Filipino" : "Filipin", "Finnish" : "Finlandais", "Flemish" : "Flamand", "French" : "Français", "Gaelic" : "Gaelique", "Gallego" : "Gallego", "Georgian" : "Georgien", "German" : "Allemand", "Greek" : "Grecque", "Guarani" : "Guarani", "Hebrew" : "Hebreu", "Hindi" : "Hindi", "Hokkien" : "Hokkien", "Hungarian" : "Hongrois", "Icelandic" : "Islandais", "Indonesian" : "Indonésien", "Inuktitut" : "Inuktitut", "Italian" : "Italien", "Japanese" : "Japonais", "Kannada" : "Kannada", "Kazakh" : "Kazakh", "Khmer" : "Khmer", "Kirgizian" : "Kirgizian", "Klingon" : "Klingon", "Korean" : "Coréen", "Kurdish" : "Kurde", "Latin" : "Latin", "Latvian" : "Letton", "Lingala" : "Lingala", "Lithuanian" : "Lithuanien", "Macedonian" : "Macédonien", "Malagasy" : "Malagasy", "Malay" : "Malais", "Malayalam" : "Malayalam", "Mandarin" : "Mandarin", "Marathi" : "Marathi", "Maya" : "Maya", "Mongolese" : "Mongole", "Norwegian" : "Norvégien", "Other" : "Autre", "Pashto" : "Pashto", "Persian" : "Perse", "Polish" : "Polonais", "Portuguese" : "Portuguais", "Punjabi" : "Pendjabi", "Romanian" : "Roumain", "Romany" : "Romani", "Russian" : "Russe", "Serb" : "Serbe", "Serbo-Croatian" : "Serbo-croate" , "Serbo_croat" : "Serbo Croate", "Sign_Language" : "Language des signes", "Silent" : "Muet", "Slovak" : "Slovaque", "Slovenian" : "Slovénien", "Somali" : "Somalien", "Sotho" : "Sotho", "Spanish" : "Espagnol", "Swahili" : "Swahili", "Swedish" : "Suédois", "Swiss german" : "Suisse Allemand", "Tadzhik" : "Tadjik", "Tamil" : "Tamoul", "Thai" : "Thailandais", "Telugu" : "Télougou", "Tibetan" : "Tibétain", "Turkish" : "Turc", "Ukrainian" : "Ukrainien", "Undetermined_Language" : "Non déterminé", "Urdu" : "Urdu", "Valenciano" : "Valencien", "Vietnamese" : "Vietnamien", "Wolof" : "Wolof", "Yiddish" : "Yiddish", "Zanskari" : "Zanskari", "Zulu" : "Zoulou" , "Zhuang" : "Zhuang"  }
+            var lastpage = 0;
+            var sc_prefix = 'https://www.senscritique.com/film/';
+            var mc_prefix = 'https://metacritic.com/';
+            var lb_prefix = 'https://letterboxd.com/film/';
+            var rt_prefix = 'https://rottentomatoes.com';
+            var jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche', 'Lundi',]
+            var ratingsorder = ['lbox_r','imdb_r','sc_r','allos_r','mcrit_r','allop_r','rt_r'];
+            var colref = [];
+            var newcolref;
+            var min_xxl = min_xl = min_l = min_tablet = false;
+            var resetTime;
+            var timeout = watchlist_updated = false;
+            var delay = 500;
+            var minwidth = [];
+            var refwidth;
+            var scrolltop = true;
+            var watchlist = [];
+            var diary_epoch = watchlist_epoch = 0;
+            var watchlist_lifespan = 180;
+            var watchtype = "";
+            var favontop = 1;
+            var watchedonbot = 0;
+            var syncdiary = 0;
+            var favorder = [];
+            var diary =[];
+            var watched_tresh = 180;
+            var whatsappmode = 0;
+            var share_token = null;
+            var shared_movs = null;
+            var share_url = false;
+            let favmovs = new Set();
+            let watchmovs = new Set();
+
+            // Keep track of selected rows (DataTables select extension handles this internally, but you might need it for your menu)
+            var selectedRows, selectedIds = []; // You can get this from dtable.rows({ selected: true }).data();
+            let isLongPressActive = false; // Flag to track if a long-press is currently happening
+            let isMultiSelectMode = false;
+
+            minwidth["tablet"] = 800
+            minwidth["l"] = 1000
+            minwidth["xl"] = 1200 
+            minwidth["xxl"] = 1600
+
+                            var islogged = false;
+            
+                            var loc_jours = jours;
+                var locale = 'fr';
+                var js_lang_strings = {
+                    book : "Réserver",
+                    addfav : "Ajouter/Enlever des favoris",
+                    remwatch : "Marquer comme non-vu",
+                    book_disc : "Les liens de réservation vous redirigent vers des sites externes non affiliés à Paris-Ciné.info. <br><br> Merci de bien vérifier la date et l'heure avant de commander.",
+                    eventdisc : "Cette page affiche une sélection non exhaustive de séances spéciales",     
+                    account_notify : "<b><a href=javascript:void(0); onclick=login() title='compte'>Créez un compte</a></b> pour retrouver vos films favoris et vus 🆕, vos watchlists <br>Letterboxd & SensCritique sur différents appareils ainsi que des options exclusives.",
+                    newfeat_notify : "Vous pouvez maintenant marquer vos films vus, sélectionner et partager plusieurs films (click long), <br> et synchroniser vos films vus Letterboxd. De nouvelles options disponible dans le panneau utilisateur.",
+                    ok : "Compris",
+                    close : "Fermer",
+                    loading : "Chargement..",
+                    favhelper_title : "Ré-organisez vos notes préférées en les glissant verticalement.",
+                    emptytable : "Aucun film trouvé selon vos critères :( <br> Essayez avec moins de filtres, en cas de doute raffraichissez la page ou <a href='https://paris-cine.info'>revenez à l'accueil</a>. <br> Si ça ne marche toujours pas vous pouvez aussi <a href='javascript:clear_cookie_reload()' style='text-decoration:underline;font-weight:bold;'> réinitialiser vos cookies et recharger la page</a>",
+                    zeroRecords : 'Aucun film trouvé !',
+                    watchupd: ' films en watchlist',
+                    diaryupd : ' films vus (max: 50)',
+                    lastsync1 : 'Synchronisé il y a ',
+                    lastsync2 : ' min.',
+                    nowatchlist : "Cet utilisateur n'a pas de watchlist ou la watchlist est privée <a href='https://letterboxd.com/watchlist/' target='blank' title='watchlist'><i>(make this list public)</i></a>",
+                    watchlisterror : "Erreur lors de la synchronisation",
+                    wrong_user : "Utilisateur non trouvé",
+                    too_large : "Watchlist trop grosse (>2000 films)",
+                    share_clip : "Texte et addresse de partage copiés dans le presse-papier",
+                    share_text : "Ces films à l'affiche cette semaine m'intéressent :",
+                    share_text_day : "Ces films m'intéressent et sont à l'affiche ",
+                    sharedmovs_text : "Films Partagés",
+                    othermovs_text : "Autres films à l'affiche"
+                };
+
+                var genre_strings =  { pri : { act : "Action", adv : "Aventures", ani : "Animation", com : "Comédie", doc : "Documentaire", dra : "Drame", hor : "Epouvante-horreur", fam : "Famille", fan : "Fantastique", his : "Historique", mys : "Mystère", pol : "Policier", rom : "Romance", sci : "Science fiction", thr : "Thriller", wes : "Western" } , sec : { mar : "Arts Martiaux", bio : "Biographique", bol : "Bollywood", cod : "Comédie dramatique", cmu : "Comédie musicale", con : "Concert", sho : "Court Métrage", ero : "Erotique", spy : "Espionnage", exp : "Expérimental", noi : "Film Noir", war : "Guerre", jud : "Judiciaire", mus : "Musique", ope : "Opéra" } }
+
+            
+
+            function loadIdsFromCookie(cookieName, targetSet) {
+                const cookieStr = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith(cookieName + '='));
+
+                if (!cookieStr) return;
+
+                const value = decodeURIComponent(cookieStr.split('=')[1]);
+
+                const ids = value
+                    .split('|')                   // change delimiter if needed
+                    .map(id => parseInt(id, 10))
+                    .filter(id => !isNaN(id));
+
+                // Clear and repopulate the target set
+                targetSet.clear();
+                ids.forEach(id => targetSet.add(id));
+            }
+
+            
+                const favscook = readCookie("favmovs");
+                if (favscook) loadIdsFromCookie('favmovs', favmovs);
+
+                const watchcook = readCookie("watchmovs");
+                if (watchcook) loadIdsFromCookie('watchmovs', watchmovs);
+
+            
+            var parameters = {};
+            window.location.href.replace(location.hash, '').replace(
+                /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+                function (m, key, value) { // callback
+                    parameters[key] = value !== undefined ? value : '';
+                }
+            );
+
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('pageselect').addEventListener('change', function() {
+                    loadpage(this.value);
+                });
+            });
+
+
+            function waitForDataTableReady(callback, checkInterval = 100) {
+                const interval = setInterval(() => {
+                    // Check if DataTable is initialized
+                    if ($.fn.dataTable.isDataTable(dtable)) {
+                        // Check if it has rows
+                        if (dtable.rows().count() > 0) {
+                            clearInterval(interval);
+                            callback();
+                        }
+                    }
+                    // else: wait until it's initialized
+                }, checkInterval);
+            }
+
+
+            function truncate(input,max) {
+                if (input.length > max)
+                return input.substring(0,max) + '..';
+                else
+                return input;
+            };
+
+            function minutesSince(timestamp) {
+                let now = Math.floor(Date.now() / 1000); // Convert JS time to seconds
+                return Math.floor((now - timestamp) / 60); // Convert seconds to minutes
+            }
+
+            function getcardval() {
+                return $("#selcard").val().replace('+', '\+')
+
+            }
+
+            $("#ratepicker").on ("click", function(e) {
+                e.preventDefault();
+                ratings_orderdrag()
+            } );
+
+
+
+            function update_state(replace=false){
+            
+                    langstate = $("#sellang").val() !== null ? $("#sellang").val() : "all"
+                    genrestate = $("#selgenre").val() !== null ? $("#selgenre").val() : "all"
+
+                    app_params = {  'page': page ,
+                                    'settings' : {
+                                        'selcard': getcardval(),
+                                        'selday' : $("#selday").val() , 
+                                        'seltime' : $("#seltime").val() , 
+                                        'seladdr' : $("#seladdr").val(),
+                                        'selcine': $("#selcine").val() ,
+                                        'selformat' :$("#selformat").val() ,
+                                        'mySearchText' : $("#mySearchText").val(),
+                                        'sellang' : langstate,
+                                        'selgenre' : genrestate
+                                    }
+                            }
+                    if (replace) {
+                        history.replaceState(app_params,false,'')
+                    } else {
+                        window.history.pushState(app_params,'',get_current_url(false,false,true));
+                    }
+            }
+
+
+            function getmoviesurl(init=false) {
+                    share_token = parameters['share_token'];
+                    if (share_token != null)  {
+                        tokenparam = "&share_token=" + share_token;
+                    }
+                    return "get_pcimovies.php?selday=" + seldayval + "&seldayid=" + seldayid + "&selcard=" + getcardval() + "&selformat=" + selformat + "&seladdr=" + locfilter['zip'].join(',')  + "&selcine=" + cinefilter.join(',') + "&selevent=" + selevent + "&seltime=" + time  + "&sellang=" + langfilter +  "&init=" + init +  "&watchtype=" + watchtype +  "&debug=" + debug + tokenparam
+            }
+
+
+            function populate_langs(mov_langs) {
+                    mov_langs_unsorted = {};
+                    for (const element of mov_langs) {
+                        if (mov_langs_unsorted[element]) {
+                            mov_langs_unsorted[element] ++;
+                        } else {
+                            mov_langs_unsorted[element] = 1;
+                        }
+                    }
+
+                    mov_langs = Object.entries(mov_langs_unsorted);
+                    mov_langs.sort(function(a,b) {
+                        if ( (a[1] > 10 ) || (b[1] > 10 ) )  {
+                            if (a[1] > b[1]) return -1;
+                            if (a[1] < b[1]) return 1;
+                        }
+
+                                                    if (langs_fr[a[0]] > langs_fr[b[0]]) return 1;
+                            if (langs_fr[a[0]] < langs_fr[b[0]]) return -1;
+                                            });
+
+                    if (langfilter == "all" || mov_langs_saved.length == 0)  {
+                        mov_langs_saved = mov_langs;
+                    }
+                    else {
+                        if (langfilter != "all" && langfilter != "VF" && langfilter != "VO" && mov_langs_saved.length > mov_langs.length)  {
+                            mov_langs = mov_langs_saved;
+                        }
+                    }
+
+                    var optgroup = document.createElement("optgroup");
+                    optgroup.label = "--"
+                    sellang.add(optgroup, null);
+                    
+                    var alreadygrouped = true;
+                    for (var j = 0; j < mov_langs.length; j++){
+                        if (mov_langs[j][1] < 1) {
+                            break;
+                        }
+
+                        if (mov_langs[j-1] ) {
+                            if ( (mov_langs[j][1] < 10 ) && (mov_langs[j-1][1] >= 10 ) && (alreadygrouped) ) {
+                                var optgroup = document.createElement("optgroup");
+                                optgroup.label = "--"
+                                sellang.add(optgroup, null);
+                                alreadygrouped = false;
+                            }
+                        }
+
+                        if ( (mov_langs[j][0] != "?") && (mov_langs[j][0] != "Other") && (mov_langs[j][0] != "undefined") ) {
+                            
+
+                            var opt = document.createElement("option");
+                            opt.value = mov_langs[j][0];
+
+                                                            opt.text = langs_fr[mov_langs[j][0]] + " (" + mov_langs[j][1] + ")" ;
+                                                        sellang.add(opt, null);
+                        }
+
+                    }
+
+                    document.getElementById("sellang").value = langfilter
+                    if (langfilter !== "all" ) {
+                        document.getElementById("sellang").classList.add("selchanged");
+                    }
+            }
+
+
+            function get_genres() {
+
+                const hashtable = {};
+                genrelist = dtable.columns('genre:name').data()[0]
+
+                // Iterate over each item in the array
+                genrelist.forEach(item => {
+                    // Split the item by commas to get individual short strings
+                    const shortStrings = item.split(',');
+                    // Iterate over each short string
+                    shortStrings.forEach(str => {
+                        // If the short string is already in the hashtable, increment its count
+                        if (hashtable[str]) {
+                        hashtable[str]++;
+                        } else {
+                        // Otherwise, initialize the count to 1
+                        hashtable[str] = 1;
+                        }
+                    });
+                });
+                    
+
+                return hashtable
+
+            }
+
+
+            function populate_genres() {
+
+                mov_genres = get_genres()
+
+                $("#selgenre").find('option').not(':first').remove()
+                $("#selgenre").find('optgroup').remove()
+                
+
+                for (const genre_type in genre_strings) {
+
+                    if (genre_type == "sec") {
+                        var optgroup = document.createElement("optgroup");
+                        optgroup.label = "--"
+                        selgenre.add(optgroup, null);
+                    }
+                    for (const genre_id in genre_strings[genre_type]) {
+                        if (mov_genres[genre_id] > 0 || genre_id == genre) {
+                            var opt = document.createElement("option");
+                            var numgenre = mov_genres[genre_id] > 0 ? mov_genres[genre_id] : 0
+                            opt.value = genre_id;
+                            opt.text = genre_strings[genre_type][genre_id] + " (" + numgenre + ")" ;
+                            selgenre.add(opt, null);
+                        }
+                    }
+                }
+                
+
+                $("#selgenre").val(genre);
+
+            }
+
+            function toggleNav() {
+                document.cookie = "menuopened=1" + ";max-age=31536000; path=/";
+                
+                if (document.getElementById("mySidebar").clientWidth == 0) { //open the menu
+                    $("#mySidebar").addClass("menuOpened").removeClass("menuClosed")
+                    $("#main").addClass("menuOpened").removeClass("menuClosed")
+                    if (ismobile) {
+                        document.getElementById("mySidebar").addEventListener('transitionend', onSidebarTransitionEnd, { once: true });
+                        //scrollToActiveElement();
+                        
+                    }
+                    
+                }
+                else {  //close the menu
+                    $("#mySidebar").addClass("menuClosed").removeClass("menuOpened")
+                    $("#main").addClass("menuClosed").removeClass("menuOpened")
+                }
+            }
+            
+            function onSidebarTransitionEnd() {
+                scrollToActiveElement(); // Ensure the active element is scrolled into view
+            }
+
+            const rollerSliders = document.getElementsByClassName('roller-slider');
+
+            if (ismobile) {
+                let startX = 0;
+                let endX = 0;
+                let hasMoved = false; 
+                let touchOrigin = null;
+                const swipeThreshold = 250; // Minimum distance for swipe to be considered
+
+                // Listen for touch events on the document
+                document.addEventListener("touchstart", function (event) {
+                    startX = event.touches[0].clientX;
+                    touchOrigin = event.target; 
+                    hasMoved = false; // Reset movement flag
+                });
+
+                document.addEventListener("touchmove", function (event) {
+                    endX = event.touches[0].clientX;
+                    hasMoved = true; // Mark that movement occurred
+                });
+
+                document.addEventListener("touchend", function () {
+                    if (!hasMoved) {
+                        // No movement detected; ignore touchend
+                        return;
+                    }
+
+                    const deltaX = endX - startX;
+
+                    if (Array.from(rollerSliders).some(slider => slider.contains(touchOrigin))) {
+                        return; // Do nothing if the touch started inside any roller-slider
+                    }
+            
+                    if (Math.abs(deltaX) > swipeThreshold) {
+                        if (deltaX > 0) {
+                            // Swiped right
+                            openMenu();
+                        } else {
+                            // Swiped left
+                            closeMenu();
+                        }
+                    }
+                });
+
+            }
+
+            function openMenu() {
+                $("#mySidebar").addClass("menuOpened").removeClass("menuClosed");
+                $("#main").addClass("menuOpened").removeClass("menuClosed");
+            }
+
+            function closeMenu() {
+                $("#mySidebar").addClass("menuClosed").removeClass("menuOpened");
+                $("#main").addClass("menuClosed").removeClass("menuOpened");
+            }
+
+            function filtr_clearbtn(noshare=false) {
+                selday = document.getElementById("selday");
+                seldayid = selday.selectedIndex;
+                seldayval = selday.value;
+                seldaytext = selday.options[seldayid].text
+                var cines = '';
+
+                filtr_prefix = "Filtre :&nbsp;&nbsp;";
+                filtrhtml = ""
+
+                firstparam = false;
+                
+                var filtr_count = 0;
+
+                if (cinefilter != "") {
+                    cines = cinefilter.join(",")		
+                    if (cinefilter.length > 1) { var cinetxt = cinefilter.length + " salles filtrées" } else { var cinetxt = truncate( $('#selcine option:selected').text() ,20) }
+                    
+                    filtrhtml +=  "<div class='filtr_button' title='Filtre cinéma' onclick='$(\"#selcine\").val(\"\");$(&quot;#selcine&quot;).trigger(&quot;chosen:updated&quot;);$(&quot;#selcine&quot;).change();redrawcine()'>" + cinetxt + "<span class='filtr_delete' title='Supprimer le filtre'>x</b></span></div>"
+                    filtr_count ++ ;
+                }
+                else if ((locfilter['cities'] == "Paris") || (locfilter['zip'].length == 0)) 
+                {	
+                    if ((filtr_count == 0) && ( !ismobile)) { filtrhtml += filtr_prefix }
+                    filtrhtml += "<div class='filtr_button' title='Paris uniquement' onclick='$(&quot;#seladdr&quot;).val(&quot;*&quot;).trigger(&quot;chosen:updated&quot;);$(&quot;#seladdr&quot;).change();redrawaddr()'>Paris<span class='filtr_delete' title='Supprimer le filtre'>x</b></span></div>"
+                    filtr_count ++ ;
+                    $("#mySidebar input[type='text']").css("min-height", "40px")
+                    
+                }
+                else {
+                    if (locfilter['zip'] != "*") {
+                        if (locfilter['zip'].length < 4) {
+                            for (let i = 0; i < locfilter['zip'].length; i++) { 
+                                    var truncloc =  truncate(locfilter['cities'][i],8);
+                                    filtrhtml += "<div class='filtr_button' title='Filtre actif : " + locfilter['cities'][i]  + "' onclick='$(&quot;#seladdr option[value=&#39;" + locfilter['zip'][i] + "&#39;]&quot;).remove();$(&quot;#seladdr&quot;).trigger(&quot;chosen:updated&quot;);$(&quot;#seladdr&quot;).change();redrawaddr()'>" + truncloc + "<span class='filtr_delete' title='Supprimer le filtre'>x</b></span></div>"
+                                    filtr_count ++ ;
+                            }
+                        }
+                        else {
+                                filtrhtml += "<div class='filtr_button' title='Filtre localisation' onclick='$(\"#seladdr\").val(\"\");$(&quot;#seladdr&quot;).trigger(&quot;chosen:updated&quot;);$(&quot;#seladdr&quot;).change();redrawaddr()'>" + locfilter['zip'].length + " lieux filtrés" + "<span class='filtr_delete' title='Supprimer le filtre'>x</b></span></div>"
+                                filtr_count ++ ;
+                        }
+                        
+                        $("#mySidebar input[type='text']").css("min-height", "0px")
+                    }
+                }
+                
+
+                
+                selcard = document.getElementById("selcard");
+                card = getcardval();
+                if (card != "all") {
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"selcard\").value=\"all\";redrawcard()'>" + card + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    selcard.classList.add("selchanged");
+                }
+                else {
+                    ;
+                    selcard.classList.remove("selchanged");
+                }
+                
+               
+
+
+                if (seldayval != "week") {
+                    selday.classList.add("selchanged");
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"selday\").value=\"week\";redrawtime()'>" + seldaytext + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    firstparam = true;
+                }
+                else {
+                    selday.classList.remove("selchanged");
+                }
+
+
+                time = document.getElementById("seltime").value;
+                if (time != "all") {
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"seltime\").value=\"all\";redrawtime()'>" + time + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    seltime.classList.add("selchanged");
+                }
+                else {
+                    seltime.classList.remove("selchanged");
+                }
+
+                
+                genre = document.getElementById("selgenre").value;
+                if (genre != "all") {
+                    gstring = genre_strings["pri"][genre] ? genre_strings["pri"][genre] : genre_strings["sec"][genre] ? genre_strings["sec"][genre] : "Genre"
+                    gstring = $( "#selgenre option:selected" ).text().split(' (')[0]
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"selgenre\").value=\"all\";redrawgenre()'>" + gstring + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    selgenre.classList.add("selchanged");
+                }
+                else {
+                    selgenre.classList.remove("selchanged");
+                }
+
+                selformat = document.getElementById("selformat").value;
+                if (selformat != "all") {
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"selformat\").value=\"all\";redrawformat()'>" + document.getElementById("selformat").options[document.getElementById("selformat").selectedIndex].text.split(" ")[0] + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    document.getElementById("selformat").classList.add("selchanged");
+                }
+                else {
+                    document.getElementById("selformat").classList.remove("selchanged");
+                }
+
+                if (langfilter != "all") {
+                                            typeof langs_fr[langfilter] !== 'undefined' ? (langstring = langs_fr[langfilter]) : (langstring = langfilter)
+                    
+                    filtrhtml += "<div class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"sellang\").value=\"all\";redrawlang()'>" + langstring + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                    filtr_count ++ ;
+                    firstparam = true;
+                }
+                else {
+                    sellang.classList.remove("selchanged");
+                }
+
+                filtrhtml +="<div class='searchinf'></div>";
+
+                var followtoken = parameters['followtoken'];
+                if ( (share_token != null) && (noshare == false) ){   
+                    filtrhtml += "<div class='filtr_button' title='" + js_lang_strings["sharedmovs_text"] +"' onclick='filtr_clearbtn(true);return false;'>" + js_lang_strings["sharedmovs_text"] +"<span class='filtr_delete' title='Supprimer le filtre'>x</b></span></div>"
+                    filtr_count ++ ;
+                }
+                else if (noshare) {
+                    share_token=null;
+                    window.location = get_current_url(false,false,true)
+                }
+
+
+                if (filtrhtml) {
+                    $(".filtinf").css("display","block");
+                    $(".filtinf").html(filtrhtml);
+                }
+                else {
+                    $(".filtinf").css("display","none");
+                }
+                
+
+                searchaction(false)
+            }
+
+            function nextWeekdayDate(date, day_in_week) {
+                var ret = new Date(date||new Date());
+                ret.setDate(ret.getDate() + (day_in_week - 1 - ret.getDay() + 7) % 7 + 1);
+                ret.setHours(0, 0, 0, 0)
+                return ret;
+            }
+    
+            function readCookie(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            }
+            
+            function resetval(value) {
+                document.getElementById(value).value = "";
+                redraw();
+            }
+            
+            function addslashes(string) {
+                return string.replace(/\\/g, '\\\\').
+                    replace(/\u0008/g, '\\b').
+                    replace(/\t/g, '\\t').
+                    replace(/\n/g, '\\n').
+                    replace(/\f/g, '\\f').
+                    replace(/\r/g, '\\r').
+                    replace(/'/g, '\\\'').
+                    replace(/"/g, '\\"');
+            }
+
+            Date.prototype.addDays = function(days) {
+                var date = new Date(this.valueOf());
+                date.setDate(date.getDate() + days);
+                return date;
+            }
+            
+            function getAllUrlParams(url) {
+                // get query string from url (optional) or window
+                var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+                // we'll store the parameters here
+                var obj = {};
+
+                // if query string exists
+                if (queryString) {
+
+                    // stuff after # is not part of query string, so get rid of it
+                    queryString = queryString.split('#')[0];
+
+                    // split our query string into its component parts
+                    var arr = queryString.split('&');
+
+                    for (var i = 0; i < arr.length; i++) {
+                    // separate the keys and the values
+                    var a = arr[i].split('=');
+
+                    // set parameter name and value (use 'true' if empty)
+                    var paramName = a[0];
+                    var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+                    // (optional) keep case consistent
+                    paramName = paramName.toLowerCase();
+                    if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+                    // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+                    if (paramName.match(/\[(\d+)?\]$/)) {
+
+                        // create key if it doesn't exist
+                        var key = paramName.replace(/\[(\d+)?\]/, '');
+                        if (!obj[key]) obj[key] = [];
+
+                        // if it's an indexed array e.g. colors[2]
+                        if (paramName.match(/\[\d+\]$/)) {
+                        // get the index value and add the entry at the appropriate position
+                        var index = /\[(\d+)\]/.exec(paramName)[1];
+                        obj[key][index] = paramValue;
+                        } else {
+                        // otherwise add the value to the end of the array
+                        obj[key].push(paramValue);
+                        }
+                    } else {
+                        // we're dealing with a string
+                        if (!obj[paramName]) {
+                        // if it doesn't exist, create property
+                        obj[paramName] = paramValue;
+                        } else if (obj[paramName] && typeof obj[paramName] === 'string'){
+                        // if property does exist and it's a string, convert it to an array
+                        obj[paramName] = [obj[paramName]];
+                        obj[paramName].push(paramValue);
+                        } else {
+                        // otherwise add the property
+                        obj[paramName].push(paramValue);
+                        }
+                    }
+                    }
+                }
+
+                return obj;
+            
+            }
+
+            function getcol(rating,size) {
+                var clas ="";
+
+                if (size == 100) {
+                    if (rating >= 80 && rating <= 100) { return 'u9'; }
+                    if (rating >= 70 && rating <= 80) { return 'u8'; }
+                    if (rating >= 60 && rating <= 70) { return 'u7'; }
+                    if (rating >= 50 && rating <= 60) { return 'u6'; }
+                    return 'u5';
+                }
+
+                if (size == 10) {
+
+                    if (rating >= 8 && rating <= 10) { return 'u9'; }
+                    if (rating >= 7 && rating <= 8) { return 'u8'; }
+                    if (rating >= 6 && rating <= 7) { return 'u7'; }
+                    if (rating >= 5 && rating <= 6) { return 'u6'; }
+                    return 'u5';
+                }
+
+                if (size == 5) {
+
+                    if (rating >= 4 && rating <= 5) { return 'u9'; }
+                    if (rating >= 2.8 && rating <= 4) { return 'u8'; }
+                    if (rating >= 2.3 && rating <= 2.8) { return 'u7'; }
+                    if (rating >= 1.5 && rating <= 2.3) { return 'u6'; }
+                    return 'u5';
+                }
+
+            }
+
+            
+            function excl_cardformat() {
+                var common = ["imax", "imax3d", "dci", "ice", "scx", "onx", "4dx", "4de"]
+                var excl_format = {
+                    ugc: common,
+                    cip: common.concat(["dat"]),
+                    librepass: common.concat(["dat"]),
+                    mk2: common.concat(["dat"]),
+                    pass: ["ice"]
+                }
+                
+                $('#selformat option').prop('disabled', false);
+                scard =  getcardval()
+                if (scard in excl_format) {
+                    if (! ($('#selformat').val() in excl_format[scard])) {
+                        excl_format[scard].forEach(e => {
+                            $('#selformat option[value="' + e + '"]').prop("disabled", true);
+                        });
+                    }
+                }
+            }
+
+
+            
+           // 
+                      
+
+
+            function initable(data) {
+                dtable = $('#allmovies').DataTable({
+                    "data" : [],
+                    "columns": cols,
+                    "order": sortorder ,
+                    "colReorder":false,
+                    'processing': true,
+                    //"layout": { topStart: null,topEnd:  null,bottomStart: 'info',bottomEnd: 'paging'},
+                    "dom": 'rt<"bottom"i<"just-between"<"filtinf"><"pagin"p>>>',
+                    "bLengthChange": false,
+                    "language": {
+                        "emptyTable": js_lang_strings['emptytable'],
+                        "sInfo": "_TOTAL_<br>films",
+                        "sInfoFiltered": "",
+                        "infoEmpty": "0<br>film",
+                        'loadingRecords': ' ',
+                        'processing': js_lang_strings['loading'],
+                        'zeroRecords' : js_lang_strings['zeroRecords']
+                    },
+                    "bFilter": true,
+                    "bPaginate": true,
+                    "bAutoWidth": false,
+                    "search": {regex: true},
+                    "select": {
+                        info: false,
+                        style: 'api'
+                    },
+                    "displayStart": 0,
+                    "pagingType" : "numbers",
+                    "iDisplayLength": 200,
+                    "drawCallback": function (settings) {
+                        var api = this.api();
+                    
+                        if (api.data().length > 0 ) {
+                            //Groupage des reals si retrospectives & vue all week
+                            if (page == "retro") {
+                            
+                                var rows = api.rows({ search: 'applied' }, { order: 'applied' }).nodes();
+                                var last = null;
+                                if ( api.order()[0][0] == 2 ) {
+                                    api.column('real:name',{ search: 'applied' }, { order: 'applied' } ).data().each(function (group, i) {
+                                        if (last !== group) {
+                                            $(rows).eq(i).before(
+                                                '<tr class="group"><td colspan="12">' + group + '</td></tr>'
+                                            );
+                                            last = group;
+                                            
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+
+                                if (page == "calendar") {
+                            
+                                    var rows = api.rows({ search: 'applied' }, { order: 'applied' }).nodes();
+                                    var last = null;
+                                    var future = true;
+                                    var show_future = false;
+                                        
+                                        api.column('released:name',{ search: 'applied' }, { order: 'applied' }).data().each(function (cur, i) {
+                                            if (last !== cur ) {
+
+                                                dateobj = new Date(cur)
+
+                                                if ( future == true ) {
+                                                    dif = dateobj.getTime() - datenow.getTime()
+                                                    if (dif > ( 604700000 *2) ) {
+                                                        if ( ! show_future) {
+                                                            if (locale =="fr") {
+                                                                $(rows).eq(i).before('<tr class="group"><td colspan="12">Sorties à venir plus tard</td></tr>');
+                                                            }
+                                                            else {
+                                                                $(rows).eq(i).before('<tr class="group"><td colspan="12">Released later</td></tr>');
+                                                            }
+                                                            show_future = true
+                                                        }
+                                                        last = cur;
+                                                        return;
+                                                    }
+                                                    else {
+                                                        future = false;
+                                                    }
+                                                }
+                                            
+                                                dif = (new Date(last)).getTime() - dateobj.getTime()
+                                            
+                                                if  ( dif > 604700000 || last == null )
+                                                {
+                                                    if (locale =="fr") {
+                                                        $(rows).eq(i).before('<tr class="group"><td colspan="12"> Sorties du ' + datetofrdate(dateobj) + '</td></tr>');
+                                                    }
+                                                    else {
+                                                        $(rows).eq(i).before('<tr class="group"><td colspan="12"> Released on ' + cur + '</td></tr>');
+                                                    }
+                                                    
+                                                    last = cur;
+                                                    future= false
+                                                }
+                                            }
+                                        });
+                                    //
+                                }
+
+                                //Groupage des films partagés si shared_movs
+
+                                if ( ( shared_movs) && (shared_movs.length > 0) ) { 
+                                    if ( api.order()[0][0] == 0 ) {
+
+                                        //var shared_movs_str = shared_movs.map(String);
+
+                                        var share_count = api.rows({ search: 'applied' }).data().toArray().filter(function(row) {
+                                            return shared_movs.includes(row.id);
+                                        }).length;
+
+                                        if (share_count > 0) {
+                                            var rows = api.rows({ search: 'applied' }, { order: 'applied' }).nodes();
+                                            $(rows).eq(0).before('<tr class="favgroup"><td colspan="12"> ' + js_lang_strings["sharedmovs_text"]  +'</td></tr>');
+                                            $(rows).eq(share_count).before('<tr class="favgroup"><td colspan="12">' + js_lang_strings["othermovs_text"]  +'</td></tr>');
+                                        }
+                                      
+                                        ids = api.columns('id:name',{ search: 'applied' }, { order: 'applied' }).data()[0];
+                                        
+                                    }
+                                
+                                    api.order([[0,'desc'],[3, 'desc'], [1, 'asc']])
+                                }
+                            }
+
+
+                            const sellang = document.getElementById("sellang");
+                            var optcount = sellang.options.length
+                            for(var i = 6; i < optcount ; i++) {
+                                    sellang.options[6].remove()
+                            }
+                            $("#sellang").find('optgroup').remove()
+                            populate_langs(this.api().columns('lang:name',{ search: 'applied' }).data()[0] );
+                            populate_genres();
+            
+                        }
+
+                        if (api.page() != lastpage ){
+                            lastpage = api.page()
+                            $('html, body').animate({
+                                scrollTop: 0
+                            }, 300);
+                        }
+
+                        
+                        if (settings._iDisplayLength > settings.fnRecordsDisplay()) {
+                            $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+                        } else {
+                            $(settings.nTableWrapper).find('.dataTables_paginate').show();
+                        }
+
+                        //$("#allmovies_processing").removeClass("d-block");
+                        scrolltop = true;
+
+                    },
+                    "createdRow": function (row, data) {
+
+                            if (data.wat > 0) {
+                                $(row).addClass('watched');
+                            } else if (data.fav > 0) {
+                                $(row).addClass('bookmark');
+                            }
+
+
+                            if (data.ne == '1') {
+                                $(row).addClass('new');
+                            }
+                            else if (data.ne == '2') {
+                                $(row).addClass('prerel');
+                            }
+
+                                
+                            if (isMultiSelectMode && selectedIds.includes(data.id)) {
+                                $(row).addClass('selected');
+                            }
+                        
+
+                        $("td:eq(1)", row).attr('title', 'Afficher/Masquer les séances');
+                    },
+                    "initComplete": function(settings) {
+                        
+                        var api = this.api();
+                        $("#allmovies_processing").addClass("d-block");
+
+
+                        $('#allmovies').on( 'order.dt', function () {
+
+                            if ( (api.order().length == 1) && (api.order()[0][0] == 0 ) ) {
+                                api.order([[0,'desc'],[3, 'desc'], [1, 'asc']]).draw()
+                            }
+                            //weird scroll issue on mobile (ff)
+                            if (scrolltop) {
+                                $("html, body").animate({ scrollTop: 0 }, 100)
+                            }
+                        
+                            
+                        } );
+                    
+                        $('#allmovies thead th').off('mousedown');
+
+                        excl_cardformat();
+                        
+                        if (!ismobile ) {
+                            $(window).resize(function () {
+                            resetTime = new Date();
+                            
+                            if (timeout === false) {
+                                timeout = true;
+                                setTimeout(executeOnResizeEnd, delay);
+                            }
+                            });
+                        }
+
+                        if ( movid > 0) {
+                            filtrhtml += "<span class='filtr_button' title='Supprimer le filtre' onclick='document.getElementById(\"selday\").value=\"week\";redrawday()'>" +  dtable.data()[0].ti.split("<")[0] + "</b></span>"
+                        }
+
+                        $('#allmovies tbody').on('click', 'tr', function (e) {
+
+                            if (!e || !e.target) return;
+
+                            var $target;
+                            try {
+                                $target = $(e.target);
+                            } catch (err) {
+                                console.error('Invalid click target:', e.target, err);
+                                return;
+                            }
+
+                            var row = dtable.row(this);
+
+                            if ($target.closest('.seance_info').length > 0) {
+                        
+                                return; 
+                            }
+
+                            // Stop here if click on calendar
+                            if ($target.closest('.calrootrow').length > 0) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                return; 
+                            }
+
+                            if (isMultiSelectMode) {
+                                // This block executes ONLY when multi-select mode is active.
+                                // Any click on a row will now explicitly toggle its selection.
+                                if (row.selected()) {
+                                    row.deselect();
+                                } else {
+                                    row.select();
+                                }
+                                selectedRows = dtable.rows({ selected: true }).data().toArray();
+                                selectedIds = selectedRows.map(x => x.id)
+                                // Show/hide the floating context menu based on selection
+                                if (selectedRows.length > 0) {
+                                    showFloatingContextMenu();
+                                } else {
+                                    hideFloatingContextMenu();
+                                }
+                                e.preventDefault(); // Stop default browser actions (like text selection)
+                                e.stopPropagation(); // Stop event from bubbling up
+                                return; // Crucial: Stop processing here, don't fall through to toggleCal
+                            }
+
+                            if ($target.closest('.status_btn').length > 0) {
+                                toggle_status($target);
+                                return;
+                            }
+
+                            if ($target.closest('td').hasClass('titleclick') || $target.closest('td').hasClass('real') ) {
+                                // We still need to consider `isLongPressActive` for the *initial* long-press that might also
+                                // trigger a quick click. This ensures `toggleCal` doesn't fire immediately after a long-press.
+                                if (isLongPressActive) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // isLongPressActive will be reset by hideFloatingContextMenu
+                                    return;
+                                }
+                                toggleCal($target);
+                                return;
+                            }
+                            
+                            if ($target.hasClass('director')) {
+                                return;
+                            }
+                        })
+                        colref = api.columns()[0]
+                    }
+                });
+
+                console.log("table init")
+            
+            }
+
+            function executeOnResizeEnd() {
+                
+                // if the difference between the current time and reset time is less than the delay, set timeout for function again
+                if (new Date() - resetTime < delay) {
+                    setTimeout(executeOnResizeEnd, delay);
+                } else {
+                    updatecols();
+                    // if window is not resized in last 500ms, execute the below code
+                    timeout = false;
+                }
+            }
+
+
+            function arrondissementToZip(arr) {
+                let m = arr.match(/^(\d{1,2})/);
+                if (m) {
+                    let num = parseInt(m[1], 10);
+                    if (num >= 1 && num <= 20) {
+                    return "75" + num.toString().padStart(3, "0");
+                    }
+                }
+                return null;
+            }
+
+            function zipToArrondissement(zip) {
+                let m = zip.match(/^75(\d{3})$/);
+                if (m) {
+                    let num = parseInt(m[1], 10);
+                    if (num >= 1 && num <= 20) {
+                    return num + (num === 1 ? "er" : "e"); // "1er", "7e", "15e"
+                    }
+                }
+                return null;
+            }
+
+            // Convert mixed array (zip, city, arrondissement) → array of zips
+            function normalizeAddrtoZip(arr) {
+                let sel = document.getElementById("seladdr");
+                let options = [...sel.options];
+
+                let zips = arr.map(item => {
+                    if (/^\d+$/.test(item)) {
+                    // already zip
+                    return item;
+                    }
+                    let arrZip = arrondissementToZip(item);
+                    if (arrZip) {
+                    return arrZip;
+                    }
+                    let found = options.find(opt => opt.textContent.toLowerCase() === item.toLowerCase());
+                    return found ? found.value : item;
+                });
+
+                // empty if only paris
+                if (zips.length === 1 && zips[0] === "75000") {
+                    return [];
+                }
+
+                return zips;
+            }
+
+            // Convert array of zips → array of city names or arrondissement notation
+            function normalizeAddrtoCities(arr) {
+
+                if ( arr.length == 0 ) { return []; }
+                let sel = document.getElementById("seladdr");
+                let options = [...sel.options];
+
+                return arr.map(zip => {
+                    let arrName = zipToArrondissement(zip);
+                    if (arrName) {
+                    return arrName;
+                    }
+                    let found = options.find(opt => opt.value === zip);
+                    return found ? found.textContent : zip;
+                });
+            }
+            
+            function load_presel() {
+                
+                movid = getAllUrlParams().movid;
+
+                var cardget = decodeURI(getAllUrlParams().card);
+                if (cardget != "undefined"){
+                    document.getElementById("selcard").value = cardget;
+                    _paq.push(['trackEvent', 'CardSelect', '[get]' + cardget]);
+                    card_presel = cardget
+                }
+                else 
+                {
+                    var cardcook = readCookie("card");
+
+                    if (cardcook) {
+                        document.getElementById("selcard").value = cardcook;
+                        _paq.push(['trackEvent', 'CardSelect', '[cookie]' + cardcook]);
+                        card_presel = cardcook
+                    }
+                }
+            
+
+                var addrget = decodeURI(getAllUrlParams().loc);
+                
+                if (addrget != "undefined"){
+                    locfilter['zip'] = normalizeAddrtoZip(addrget.split(','));
+                    document.getElementById("seladdr").value = addrget;
+                    if ((addrget != "") && (addrget != "Paris") ) {
+                        $('#seladdr').val(locfilter['zip'])
+                        locfilter['cities'] = normalizeAddrtoCities(locfilter['zip'])
+                        
+                        
+                        $('#seladdr').trigger("chosen:updated");
+                        $("#mySidebar input[type='text']").css("min-height", "0px")
+                        _paq.push(['trackEvent', 'LocSelect', '[get]' + locfilter['cities'].join(',')]);
+                        addr_presel = locfilter['zip'].join(',')
+                        $('#selcine').prop('disabled', true).trigger("chosen:updated")
+                    }
+                }
+                else {
+                    var addrcook = readCookie("addr");
+
+                    if (addrcook) {
+                        locfilter['zip'] = normalizeAddrtoZip(addrcook.split('|'));
+                        
+                        if ((addrcook != "") && (addrcook != "Paris" ) && (addrcook != "ALL" ) ) {
+                        
+                            $('#seladdr').val(locfilter['zip'] )
+                            locfilter['cities'] = normalizeAddrtoCities(locfilter['zip'])
+                            $('#seladdr').trigger("chosen:updated");
+                            $("#mySidebar input[type='text']").css("min-height", "0px")
+                            _paq.push(['trackEvent', 'LocSelect', '[cookie]' + locfilter['cities'].join(',')]);
+                            addr_presel = locfilter['zip'].join(',')
+                            
+                            if (addrcook != "*") {
+                                $('#selcine').prop('disabled', true).trigger("chosen:updated")
+                                cinefilter = [''];
+                            }
+                        }
+                        
+                    }
+                    else { 
+                        locfilter['cities'] = ['Paris']
+                        //document.getElementById("seladdr_chosen").classList.add("selchanged");
+                    }
+                }
+
+
+                                    var ratecook = readCookie("ratings");
+                    if (ratecook) {
+                        ratingsorder = ratecook.split('|');
+                        _paq.push(['trackEvent', 'ratingsorder', ratingsorder.join('|')]);
+                        _paq.push(['trackEvent', 'favrating', ratingsorder[0]]);
+                    }
+                
+
+                
+                if ( (addr_presel == "") || (addr_presel == "*") || (addr_presel == "Paris") )
+                {
+                    if (getAllUrlParams().cine){
+                        var cineget = decodeURI(getAllUrlParams().cine).toUpperCase();
+                        cinefilter = cineget.split(',');
+                        document.getElementById("selcine").value = cineget;
+                        if (cineget != "" ) {
+                            $('#selcine').val(cinefilter)
+                                $('#selcine').trigger("chosen:updated");
+                                $("#mySidebar input[type='text']").css("min-height", "0px")
+                                _paq.push(['trackEvent', 'CineSelect', '[get]' + cinefilter.join(',')]);
+                                $('#seladdr').prop('disabled', true).trigger("chosen:updated")
+                        }
+                    }
+                    else {
+                        if (readCookie("cine")) {
+                            var cinecook = readCookie("cine").toUpperCase();
+                            cinefilter = cinecook.split('|');
+                            //if (addrcook != "") {
+                                $('#selcine').val(cinefilter)
+                                $('#selcine').trigger("chosen:updated");
+                                $("#mySidebar input[type='text']").css("min-height", "0px")
+                                _paq.push(['trackEvent', 'CineSelect', '[cookie]' + cinefilter.join(',')]);
+                                $('#seladdr').prop('disabled', true).trigger("chosen:updated")
+                            //}
+                        }
+                        else { cinefilter = [''] }
+                    }
+                }
+                
+                var timeget = decodeURI(getAllUrlParams().time);
+                if (timeget != "undefined") {
+                    if (timeget != "all") {
+                        document.getElementById("seltime").value = timeget
+                        document.getElementById("seltime").classList.add("selchanged");
+                        _paq.push(['trackEvent', 'LocSelect', '[get]' + timeget]);
+                    }
+                }
+
+
+                var formatget = decodeURI(getAllUrlParams().format);
+
+                if (formatget == "3D") { formatget = "3d" }
+                if (formatget != "undefined") {
+                    if (formatget != "all") {
+                        document.getElementById("selformat").value = formatget
+                        document.getElementById("selformat").classList.add("selchanged");
+                        _paq.push(['trackEvent', 'FormatSelect', '[get]' + formatget]);
+                    }
+                }	
+                else {
+                    var formatcook = readCookie("format");
+
+                    if (formatcook) {
+                        document.getElementById("selformat").value = formatcook;
+                        _paq.push(['trackEvent', 'CardSelect', '[cookie]' + formatcook]);
+                        format_presel = formatcook
+                    }
+                }
+                    
+                var dayget = getAllUrlParams().day;
+                if (dayget) {
+                    if (dayget !="week") {
+                        document.getElementById("selday").value = dayget
+                        document.getElementById("selday").classList.add("selchanged");
+                        _paq.push(['trackEvent', 'DaySelect', '[get]' + dayget]);
+                    }
+                
+                }
+                seldayval = document.getElementById("selday").value;
+                seldayid = document.getElementById("selday").selectedIndex;
+
+
+                var langget = parameters['lang'];
+                if (langget) {
+                    if (langget !="all") {
+                        langfilter = langget
+                    
+                        
+                        
+
+                        _paq.push(['trackEvent', 'LangSelect', '[get]' + langget]);
+                    }
+                
+                } else {
+                    var langcook = readCookie("lang");
+                    if (langcook) {
+                        _paq.push(['trackEvent', 'LangSelect', '[cookie]' + langcook]);
+                        langfilter = langcook
+                        if (langfilter !== "VF" && langfilter !== "VO") {
+                            load_sellang = langcook
+                        }
+                        else {
+                            document.getElementById("sellang").value = langfilter
+                            document.getElementById("sellang").classList.add("selchanged");
+                        }
+                    }
+                    else {
+                        langfilter = document.getElementById("sellang").value;
+                    }
+                }
+
+
+                var genreget = parameters['genre'];
+                if (genreget) {
+                    if (genreget !="all") {
+                        genrefilter = genreget
+                        _paq.push(['trackEvent', 'LangSelect', '[get]' + langget]);
+                    }
+                } 
+                else {
+                    genrefilter = document.getElementById("selgenre").value;
+                }
+                
+                var searchget = getAllUrlParams().search;
+                if (searchget) {
+                    if (searchget !="") {
+                        //$("#mySearchText").val(searchget)
+                        _paq.push(['trackEvent', 'search', '[get]' + searchget]);
+                    }
+                }
+            }
+
+            function popu_selday() {
+                //Population du select day
+                var jnow = datenow.getDay();
+                var jourmax = jnow + 8;
+                var j = datenow.getDay() + 1;
+                var c = true;
+
+                jdat = datenow.addDays(1)
+                jdat.setHours(0, 0, 0, 0)
+                var nwdate = new Date();
+                nwdate = nextWeekdayDate(datenow,3)
+
+                while (j < jourmax) {
+                    var sel = document.getElementById('selday')
+                    var option = document.createElement("option");
+                    option.text = loc_jours[j];
+                    option.value = jours[j].toLowerCase();
+                    jdat.setDate(jdat.getDate() + 1)
+
+                    if (jdat > nwdate) {
+                        option.classList.add('nextweek');
+                    }
+
+                    sel.add(option);
+                    j++;
+                }
+                var option = document.createElement("option");
+                option.text = "Toutes dates"
+                option.classList.add('nextweek');
+                option.value = "all"
+                sel.add(option)
+            }
+
+            
+            function refresh_data(init=false) {
+                console.log("refresh_data")
+                $.ajax({  type: 'GET',
+                        url: getmoviesurl(init),
+                        dataType: "json",
+                        success: function(json) {
+
+                            d = json
+                                                               //var favarr = Array.from(favmovs)
+                                    filtfav = json["data"].filter(x => favmovs.has(x.id))
+                                    filtfav.forEach(mov => { mov.fav = 1 })
+                                    watchedonbot == 1 ? watfavval = -1 : watfavval = 0
+                                    filtwatch = json["data"].filter(x => watchmovs.has(x.id))
+                                    filtwatch.forEach(mov => { mov.wat = 1 ; mov.fav = watfavval})
+                            
+
+                            if (favontop == 1 ) {
+                                favorder = [0, 'desc']
+                            }
+                            else {
+                                favorder = []
+                            }
+                            
+                            if (json['shared_movs'].length > 0) {
+                                
+                                try {
+                                    shared_movs = json['shared_movs'];
+
+                                    if (shared_movs.length > 0) {
+                                        filtshare = json["data"].filter(x => shared_movs.includes(x.id))
+                                        filtshare.forEach(mov => { mov.shr = 1 ; mov.fav = 10 })
+                                    }
+
+                                }
+                                catch {
+                                    console.log("share error")
+                                }
+                                _paq.push(['trackEvent', 'shared_movs', "1"])
+                            }
+
+
+                            favontop == 1 || shared_movs != null ? sortorder = [[0,'desc'],[3, 'desc'], [1, 'asc']] : sortorder = [[3, 'desc'], [1, 'asc']] 
+
+                            if (init) {
+                                var waitForJQuery = setInterval(function () {
+                                    if ((jQuery.isReady) &&  (typeof dtable === 'object')) {
+                                        //adding data to table
+                                        dtable.rows.add(json["data"]).order(sortorder)
+
+                                        if (shared_movs != null) {
+                                            filtr_clearbtn()
+                                        }
+
+                                        $("#allmovies_processing").removeClass("d-block");
+                                        clearInterval(waitForJQuery);
+                                        $('#addedCSS').text('')
+                                        if (genrefilter != "all") {
+                                            $('#selgenre').val(genrefilter)
+                                            redrawgenre(false)
+                                        }
+
+                                        if (window.location.hash != "") { 
+                                            loadpage(window.location.hash.slice(1))
+                                        }
+                                        dtable.draw()
+
+
+                                    }
+                                }, 10);
+
+                            }
+                            else {
+                                dtable.rows().remove()
+                                dtable.order(favorder,[3, 'desc'])
+                                dtable.rows.add(json["data"]).draw();
+                            }
+                        }
+                })
+            }
+            
+            popu_selday();
+            load_presel();
+            filtr_clearbtn();
+            var d;
+
+                            refresh_data(true)
+            
+            $('#addedCSS').text('.dt-empty{display: none;}');
+
+
+            function searchaction(draw=true) {
+
+                if (document.getElementById('mySearchText').value != "") {
+                    document.getElementById("searchdiv").classList.add("selchanged");
+                    document.getElementById("mySearchText").classList.add("selchanged");
+                    searchhtml = "<div class='filtr_button' title='Supprimer le filtre' onclick='resetsearch();'>" + $('#mySearchText').val() + "<span class='filtr_delete' title='Supprimer le filtre' >x</b></span></div>"
+                }
+                else {
+                    searchhtml = ""
+                    document.getElementById("searchdiv").classList.remove("selchanged");
+                    document.getElementById("mySearchText").classList.remove("selchanged");
+                }
+
+                if (draw) {
+                    dtable.search($('#mySearchText').val()).draw();	
+                }
+                
+                $(".searchinf").html(searchhtml);
+                
+            }
+
+            function get_watchlist(init=false) {
+                $.ajax({
+                    type: 'POST',
+                    ///use locale storage
+                    url: 'get_watchlist_diary.php',
+                    dataType: "json",
+                    success: function(data) {
+
+                        watchtype = data?.type
+                        watchlist = data?.data?.watchlist?.slugs
+                        if (watchlist == undefined) {
+                            watchlist = []
+                        }
+                        
+                        watchlist_epoch = data?.data?.watchlist?.epoch
+                        
+                        if (data?.data?.diary) {
+                            diary_data = data?.data?.diary?.diary
+                            diary_epoch = data?.data?.diary?.epoch
+                            if (diary_data !== undefined) {
+                                diary = getRecentSlugs(diary_data)
+                            }
+                            
+                        }
+                        refresh_data(init)
+                    },
+                    error:  function() {
+                        console.log("watchlist exception")
+                        refresh_data(init)
+                    }
+                })
+            }
+            function getRecentSlugs(entries) {
+                const today = new Date();
+                const tresh_date = new Date();
+                tresh_date.setDate(today.getDate() - watched_tresh );
+
+                return entries
+                    .filter(entry => {
+                    const entryDate = new Date(entry.full_date);
+                    return entryDate >= tresh_date && entryDate <= today;
+                    })
+                    .map(entry => entry.slug);
+            }
+
+            $(document).ready(function () { 
+                var deferredPrompt;
+                const addBtn = document.querySelector('.add-button');
+                addBtn.style.display = 'none';
+            
+                window.addEventListener('beforeinstallprompt', function(e) {
+                    // Prevent Chrome 67 and earlier from automatically showing the prompt
+                    //e.preventDefault();
+                    // Stash the event so it can be triggered later.
+                    deferredPrompt = e;
+                    // Update UI to notify the user they can add to home screen
+                    addBtn.style.display = 'block';
+            
+                    addBtn.addEventListener('click', function(e) {
+                        // hide our user interface that shows our A2HS button
+                        addBtn.style.display = 'none';
+                        // Show the prompt
+                        deferredPrompt.prompt();
+                        // Wait for the user to respond to the prompt
+                        deferredPrompt.userChoice.then( function (choiceResult) {
+                            if (choiceResult.outcome === 'accepted') {
+                                    console.log('User accepted the A2HS prompt');
+                                _paq.push(['trackEvent', 'AppInstall', '1']);
+                            } else {
+                                    console.log('User dismissed the A2HS prompt');
+                            }
+                            deferredPrompt = null;
+                        });
+                    });
+                });
+            
+                window.addEventListener('appinstalled', function (evt) {
+                    app.logEvent('a2hs', 'installed');
+                    _paq.push(['trackEvent', 'AppInstall', '1']);
+                });
+            
+                
+                
+                $(".chosen-select").chosen( {
+                //placeholder_text_multiple : "Plip Plop"
+                });
+
+                if (dispcook = readCookie("disptitle")) {
+                    document.getElementById("seldisptitle").value = dispcook;
+                }
+
+                dispmode = document.getElementById("seldisptitle").value;
+
+                var favs_icon = '<svg xmlns="http://www.w3.org/2000/svg" class="fav_header" viewBox="0 0 512 512"><title>Favoris</title><path d="M128 80V64a48 48.14 0 0148-48h224a48.14 48.14 0 0148 48v368l-80-64" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path><path d="M320 96H112a48.14 48.14 0 00-48 48v352l152-128 152 128V144a48.14 48.14 0 00-48-48z" stroke-linejoin="round" class="ionicon-fill-none ionicon-stroke-width"></path></svg>'
+                
+
+                refwidth = window.innerWidth;
+                if (refwidth >= minwidth["tablet"]) {
+                        min_tablet = true;
+                } 
+                if (refwidth >=  minwidth["l"] ) {
+                        min_l = true;
+                }
+                if (refwidth >= minwidth["xl"]) {
+                        min_xl = true;
+                }
+                if (refwidth >=  minwidth["xxl"]) {
+                        min_xxl = true;
+                }
+
+                cols_start = [
+                    {
+                        "title": favs_icon,
+                        "data": null,
+                        "name":"fav",
+                        "type": 'num',
+                        "width": "25px",
+                        "className": "favcol",
+                        "orderSequence" : ['desc'],
+                        "render" : { 
+                            "display" : function ( data, type, row) {
+                                            activecss = "";
+                                            if (row["fav"] == 9) {
+                                                return '<a href="' + lb_prefix + row["lb_u"] + '" target="_blank" title="Fiche Letterboxd"><img class="watchlist_icon" title="Letterboxd" src="resources/img/lbox_r.svg" alt="lb"></a>'
+                                            } else if (row["fav"] == 8) {
+                                                return '<a href="' + sc_prefix + row["sc_u"] + '" target="_blank" title="Fiche Senscritique"><img class="headimg" title="Senscritique" src="resources/img/sc_r.png" alt="sc"></a>'
+                                            } else if (row["fav"] == 1) {
+                                                activecss = " active";
+                                            } else if (row["wat"] == 1 || row["fav"] == -1) {
+                                                activecss = " watched";
+                                                return '<svg class="status_btn watched_btn" aria-label="' + js_lang_strings['remwatch'] +'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" title="' + js_lang_strings['addfav'] +'"><use href="#watch-icon"/></svg>'
+                                            }
+                                            
+                                            return '<svg class="status_btn bookmark_btn' + activecss  + '" aria-label="' + js_lang_strings['addfav'] +'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" title="' + js_lang_strings['addfav'] +'"><use href="#bookmark-icon"/></svg>'
+                            },
+                            "sort" :  function (data, type, row) {
+                                if (type === 'sort') {
+                                        return row.fav//.toString()
+                                    }
+                            }
+                        }
+                    },
+                    {
+                        "title": "Titre",
+                        "data": "ti",
+                        "className": 'titleclick',
+                        "name":"titre",
+                        "render" : {
+                            "display" : function ( data, type, row, meta ) {
+
+                                var disptitle = data
+                                if (dispmode == "ori") {
+                                    if (row["o_ti"]) {
+                                        if (row["o_ti"] != data) {
+                                            disptitle = row["o_ti"] + '<div class="s_title">' + data + '</div>';
+                                        }
+                                    }
+                                }
+                                
+                                if (dispmode == "all") {
+                                    if (row["o_ti"]) {
+                                        if (row["o_ti"] != data) {
+                                            disptitle = data + '<div class="s_title">' + row["o_ti"] + '</div>';
+                                        }
+                                    }
+                                }
+                                pill = "";
+                                if (row["ne"] == '1') {
+                                    pill = '<span class="c-pill c-pill--new" title="Nouveau">N</span>'
+                                }
+                                else if (row["ne"] == '2') {
+                                    pill = '<span class="c-pill c-pill--prem" title="Avant-Première">A</span>'
+                                }
+
+                                if ( (langfilter == 'English') && (row["la"] != 'English') ) {
+                                    pill = '<div title="English Subtitles" class="fr_flag"></span>';
+                                }
+
+                                return '<div class="just-between tabletitle"><span class="title">' + disptitle + '</span>' + pill +'</div>';
+                            },
+
+                            "sort" : function ( data, type, row, meta ) {
+
+                                if (row["ne"] == '1') {
+                                            return  '00' + data;
+                                }
+                                if (row["ne"] == '2') {
+                                            return '01' + data;
+                                }
+                                if (dispmode == "ori") {
+                                        if (row["o_ti"]) {
+                                            return row["o_ti"];
+                                        }
+                                        else {
+                                            return data;
+                                        }
+                                }
+                                else {
+                                    return data;
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "title": "Réalisateur",
+                        "name":"real",
+                        "data": "di",
+                        "className": 'real',
+                        "render": { "display" : function ( data, type, row, meta ) {
+
+                                        if (!data) {
+                                            return ""
+                                        }
+
+                                        if (row["ret"] == '1') {
+                                            var dirurl =  encodeURI(data) 
+                                            return '<a class="director" href="#" onclick="filtdir(\'' + data + '\');return false;" title="Afficher la rétrospective")>' + data + '</a>';
+                                        }
+
+                                        return data
+                                }
+                        }
+                        
+                    }
+                ];
+                
+                col = []
+
+                col['imdb_r'] = {
+                    "title": "<img width='30px' height='30px' class='headimg' title='Imdb' src='resources/img/imdb_r.png' alt='im' />",
+                    "data": "im_r",
+                    "name":"imdb_r",
+                    "img" : "imdb_r.png",
+                    "string" : "IMDB",
+                    "url_identifier" : "i_id",
+                    "orderSequence": ["desc", "asc"],
+                    "width" : "15px",
+                    "render" : function ( data, type, row, meta ) {
+                            var col = ""
+
+                            rateclass = getcol(data,10)
+                            if (data == '0') { 
+                                if(row.i_id >0) {
+                                    rateclass =  'norating' ; 
+                                    data = "";
+                                } else {
+                                    return '';
+                                }
+                            }
+                            //return '<a class="' + rateclass + ' rating" href="https://www.imdb.com/title/tt' + row.i_id.padStart(7, "0") + '" target="_blank" title="Fiche IMDB">' + data + '</a>'
+                            return '<a class="' + rateclass + ' rating" href="https://www.imdb.com/title/tt' + row.i_id + '" target="_blank" title="Fiche IMDB">' + data + '</a>'
+                            
+                    }
+                }
+
+                col['sc_r'] = {
+                        "data": "sc_r",
+                        "name":"sc_r",
+                        "img" : "sc_r.png",
+                        "string" : "SensCritique",
+                        "orderSequence": ["desc", "asc"],
+                        "url_identifier" : "sc_u",
+                        "title": "<img class='headimg' title='Senscritique' src='resources/img/sc_r.png'  width='30px' height='30px'  alt='sc' />",
+                        "width" : "15px",
+                        "render" : function ( data, type, row, meta ) {
+                            rateclass = getcol(data,10)
+                            
+                            if (data == '0') { 
+                                if(row.sc_u) {
+                                    rateclass =  'norating' ; 
+                                    data = "";
+                                } else {
+                                    return '';
+                                }
+                            }
+                            return '<a class="' + rateclass + ' rating" href="' + sc_prefix + row.sc_u + '" target="_blank" title="Fiche SensCritique">' + data + '</a>';
+                        }
+                }
+                
+                col['allop_r'] = {
+                        "data": "ap_r",
+                        "name":"allop_r",
+                        "img" : "allop_r.png",
+                        "string" : "Allociné (presse)",
+                        "url_identifier" : "id",
+                        "title": "<img class='headimg' title='Allociné (presse)' src='resources/img/allop_r.png' width='30px' height='30px'  alt='al_p' />",
+                        "orderSequence": ["desc", "asc"],
+                        "width" : "15px",
+                        "render" : function ( data, type, row, meta ) {
+                                rateclass = getcol(data,5)
+
+                                if (data == '0') {
+                                    if(row.id) {
+                                        rateclass =  'norating' ; 
+                                        data = "";
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                                return '<a class="' + rateclass + ' rating" href="http://www.allocine.fr/film/fichefilm_gen_cfilm=' + row.id + '.html" target="_blank" title="note presse /5">' + data + '</a>'
+                                
+                        }
+                }
+
+                col['allos_r'] = {
+                        "data": "as_r",
+                        "name":"allos_r",
+                        "img" : "allos_r.png",
+                        "string" : "Allociné (spec)",
+                        "url_identifier" : "id",
+                        "title": "<img class='headimg' title='Allociné (spectateurs)' src='resources/img/allos_r.png' width='30px' height='30px' alt='al_s'/>",
+                        "width" : "15px",
+                        "orderSequence": ["desc", "asc"],
+                        "render" : function ( data, type, row, meta ) {
+                        
+                                var apcol = ""
+                                rateclass = getcol(data,5)
+
+                                if (data == '0') {
+                                    if(row.id) {
+                                        rateclass =  'norating' ; 
+                                        data = "";
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                                return '<a class="' + rateclass + ' rating" href="http://www.allocine.fr/film/fichefilm_gen_cfilm=' + row.id + '.html" target="_blank" title="note spectateurs /5">' + data + '</a>'       
+                        }
+                }
+
+                col['lbox_r'] = {
+                        "data": "lb_r",
+                        "name":"lbox_r",
+                        "img" : "lbox_r.svg",
+                        "string" : "Letterboxd",
+                        "url_identifier" : "lb_u",
+                        "title": "<img class='rating_icon' title='Letterboxd' src='resources/img/lbox_r.svg' alt='lb' width='30px' height='30px'  />",
+                        "width" : "15px",
+                        "orderSequence": ["desc", "asc"],
+                        "render" : function ( data, type, row, meta ) {
+                        
+                                rateclass = getcol(data,5)
+                                
+                                if (data == '0') { 
+                                    if(row.lb_u) {
+                                        rateclass =  'norating' ; 
+                                        data = "";
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                                return '<a class="' + rateclass + ' rating" href="' + lb_prefix + row.lb_u + '" target="_blank" title="note letterboxd">' + data + '</a>'
+                        }
+                }
+
+                col['mcrit_r'] = {
+                        "data": "mc_r",
+                        "name":"mcrit_r",
+                        "img" : "mcrit_r.svg",
+                        "string" : "MetaCritic",
+                        "url_identifier" : "mc_u",
+                        "title": "<img class='rating_icon title='Metacritic' src='resources/img/mcrit_r.svg' alt='mc' width='30px' height='30px'  />",
+                        "width" : "15px",
+                        "orderSequence": ["desc", "asc"],
+                        "render" : function ( data, type, row, meta ) {
+                        
+
+                                rateclass = getcol(data,100)
+                                if (data == '0') {
+                                    if(row.mc_u) {
+                                        rateclass =  'norating' ; 
+                                        data = "";
+                                    } else {
+                                        return '';
+                                    }
+                                }
+                                return '<a class="' + rateclass + ' rating" href="' + mc_prefix  + row.mc_u + '" target="_blank" title="note metacritic">' + data + '</a>'
+                        }
+                }
+
+                col['rt_r'] = {
+                    "data": "rt_r",
+                    "name":"rt_r",
+                    "img" : "rt_r.svg",
+                    "string" : "RottenTomatoes",
+                    "url_identifier" : "rt_u",
+                    "title": "<img class='rating_icon' title='Rottentomatoes' src='resources/img/rt_r.svg' alt='rt' width='30px' height='30px' />",
+                    "width" : "15px",
+                    "orderSequence": ["desc", "asc"],
+                    "render" : function ( data, type, row, meta ) {
+                    
+                            rateclass = getcol(data,100)
+                        
+                            if (data == '0') {
+                                if(row.rt_u) {
+                                    rateclass =  'norating' ; 
+                                    data = "";
+                                } else {
+                                    return '';
+                                }
+                            }
+                            
+                            return '<a class="' + rateclass + ' rating" href="' + rt_prefix + row.rt_u + '" target="_blank" title="note rottentomatoes">' + data + '</a>'
+                            
+                    }
+                }
+
+                cols_end = [
+                    {
+                        "title": "Année",
+                        "name":"year",
+                        "data": "ye",
+                        "width" : "18px",
+                        "orderSequence": ["desc", "asc"],
+                        "visible": min_l
+                    },
+                    {
+                        "title": "<img class='headimg' title='Nombre de copies recensées (Paris + petite couronne)' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAXCAAAAAA5VKC2AAAACXBIWXMAAAsSAAALEgHS3X78AAAAZ0lEQVQokWNgoAQwMjBY4JY9wcTAwHD8OBwHHw9A5jIwUWw4HsDCwMBgC+f9PMXAYMoB5x5mYEKWZWAXZhBEyDLYojtNmEEYhU/A7kEk/ZLhJbr0YQTv1UeGz0jyhykMc5rGN37NDAA4bySFgibmzAAAAABJRU5ErkJggg=='>",
+                        "name":"copies",
+                        "data": "co",
+                        "width" : "12px",
+                        "visible": min_xxl
+                    },
+                    {
+                        "data": "ret",
+                        "name" : "retr",
+                        "visible": false
+                    },
+                    {
+                        "data": "ac",
+                        "name" : "actors",
+                        "visible": false
+                    },
+                    {
+                        "data": "id",
+                        "name":"id",
+                        "visible": false
+                    },
+                    {
+                        "data": "o_ti",
+                        "name":"orig_title",
+                        "visible": false
+                    },
+                    {
+                        "data": "ge",
+                        "name":"genre",
+                        "visible": false
+                    },
+                    {
+                        "data": "la",
+                        "name":"lang",
+                        "visible": false
+                    },
+                    {
+                        "data": "rel",
+                        "name":"released",
+                        "visible": false
+                    },
+                    {
+                        "data": "i_id",
+                        "name":"imdb_id",
+                        "visible": false
+                    }
+                ];
+
+                if (! ismobile) {
+                    col[ratingsorder[0]]["visible"] = true
+                    col[ratingsorder[1]]["visible"] = min_tablet
+                    col[ratingsorder[2]]["visible"] = min_l
+                    col[ratingsorder[3]]["visible"] = min_xl
+                    col[ratingsorder[4]]["visible"] = min_xxl
+                    col[ratingsorder[5]]["visible"] = min_xxl
+                    col[ratingsorder[6]]["visible"] = false
+                }
+
+                cols_rating = [].concat(col[ratingsorder[0]], col[ratingsorder[1]], col[ratingsorder[2]], col[ratingsorder[3]], col[ratingsorder[4]], col[ratingsorder[5]], col[ratingsorder[6]])
+                cols = cols_start.concat(cols_rating , cols_end)
+
+                update_ratingsicons();
+                
+                if (page == "events" ) { selevent = "events"}
+
+                if (ismobile) {
+                    col1 = 15
+                    dirwidth = parseInt( (screen.width - 30)  * 0.30)
+                    filmwidth = parseInt( (screen.width - 30)  * 0.70)
+                    cols[1].width = filmwidth;
+                    cols[2].width = dirwidth;
+                    for(var i = 3; i < 10; i++) cols[i].visible = false
+                    cols[3].visible= true
+                }
+                
+                // ----------Datatable init--------------
+                $("#allmovies_processing").addClass("d-block");
+                initable()
+                if (! ismobile) {
+                    $('#allmovies tbody').on('contextmenu', 'tr', function(e) {
+
+                        var $target = $(e.target); // Get the actual element that was clicked
+                        if (isMultiSelectMode) {
+                            if ($target.closest('td').hasClass('titleclick') || $target.closest('td').hasClass('real') ) {
+                                    // We still need to consider `isLongPressActive` for the *initial* long-press that might also
+                                    // trigger a quick click. This ensures `toggleCal` doesn't fire immediately after a long-press.
+                                    if (isLongPressActive) {
+                                        toggleCal($target);
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        // isLongPressActive will be reset by hideFloatingContextMenu
+                                        return;
+                                    }
+                                    return;
+                            }
+                        }
+
+                       
+                        if ($target.closest('.calrootrow').length > 0) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return; // Stop here, don't proceed to toggleCal or other handlers
+                        }
+
+                        isLongPressActive = true; // Set the flag
+                        var row = dtable.row(this);
+                        select_row(row)
+
+                        // Prevent the default browser context menu from appearing
+                        e.preventDefault();
+                        // Stop the event from bubbling up to any parent elements
+                        e.stopPropagation();
+                        console.log("Native context menu prevented on long press.");
+
+                    });
+                }
+               
+
+                $('#allmovies tbody').on('long-press', 'tr', function (e) {
+
+
+                    var $target = $(e.target); // Get the actual element that was clicked
+                    
+                    if (isLongPressActive) {
+                        if ($target.closest('td').hasClass('titleclick') || $target.closest('td').hasClass('real') ) {
+                                // We still need to consider `isLongPressActive` for the *initial* long-press that might also
+                                // trigger a quick click. This ensures `toggleCal` doesn't fire immediately after a long-press.
+                                if (isLongPressActive) {
+                                    toggleCal($target);
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // isLongPressActive will be reset by hideFloatingContextMenu
+                                    return;
+                                }
+                                return;
+                        }
+                    }
+
+                    
+
+
+                    if ($target.closest('.calrootrow').length > 0) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return; // Stop here, don't proceed to toggleCal or other handlers
+                    }
+                    
+                    isLongPressActive = true; // Set the flag
+                    var row = dtable.row(this);
+
+                    select_row(row)
+
+                    // Not on mobile to prevent first click ignored behaviour
+                    if (! ismobile) {
+                        e.preventDefault();
+                        e.stopPropagation(); // Important for stopping propagation to parent elements
+                    }
+                  
+                });
+        
+                if (filtrhtml) { 
+                    $(".filtinf").css("display","block");
+                    $(".filtinf").html(filtrhtml);
+                }
+
+                //search params
+                document.getElementById('mySearchText').value = "";
+
+                var searchText = parameters['search'];
+                if (searchText != null) {
+                    searchText = decodeURIComponent(searchText);
+                    searchText = searchText.replace('+', ' ')
+                    $("#mySearchText").val(searchText)
+                    searchaction();
+                    
+                }
+
+                $('#seladdr').on('change', function (evt, params) {
+                    addr_change(params)
+                    redrawaddr();
+                });
+
+                $('#selcine').on('change', function (evt, params) {
+                    cine_change();
+                    redrawcine();
+                });
+
+                $('#sellang').on('change', function (evt, params) {
+                    redrawlang();
+                });
+
+                $('#mySearchText').on('keyup search', function () {
+                    searchaction();
+                });
+
+
+                var password = document.getElementById("new-password");
+                var confirm_password = document.getElementById("regconfirm_password");
+
+                function validatePassword(){
+                    if(password.value != confirm_password.value) {
+                        confirm_password.setCustomValidity("Passwords Don't Match");
+                    } else {
+                        confirm_password.setCustomValidity('');
+                    }
+                }
+
+                password.onchange = validatePassword;
+                confirm_password.onkeyup = validatePassword;
+
+
+                $( "#login-form" ).submit(function( event ) {
+                    event.preventDefault();
+                    do_login();
+                });
+                
+                $( "#register-form" ).submit(function( event ) {
+                    event.preventDefault();
+                    do_register();
+                })
+
+                update_state(true)
+
+            
+                // Event listeners for menu actions
+
+                const floatingMenu = document.getElementById('floatingContextMenu');
+                const bookmarkSelectedBtn = document.getElementById('bookmarkSelectedBtn');
+                const watchedSelectedBtn = document.getElementById('watchedSelectedBtn');
+                const resetSelectedBtn = document.getElementById('resetSelectedBtn');
+                const shareSelectedBtn = document.getElementById('shareSelectedBtn');
+                const cancelSelectionBtn = document.getElementById('cancelSelectionBtn');
+
+                bookmarkSelectedBtn.addEventListener('click', function() {
+                    bookmark_selection(false);
+                    dtable.rows().deselect();
+                    hideFloatingContextMenu();
+                });
+
+                watchedSelectedBtn.addEventListener('click', function() {
+                    watched_selection(false);
+                    dtable.rows().deselect();
+                    hideFloatingContextMenu();
+                });
+
+                resetSelectedBtn.addEventListener('click', function () {
+                    reset_selection();
+                    dtable.rows().deselect();
+                    hideFloatingContextMenu();
+                    
+                });
+
+                shareSelectedBtn.addEventListener('click', function () {
+                    share_selection();
+                    dtable.rows().deselect();
+                    hideFloatingContextMenu();
+                    
+                });
+
+                cancelSelectionBtn.addEventListener('click', function() {
+                    dtable.rows().deselect();
+                    hideFloatingContextMenu();
+                });
+
+
+
+                // Hide menu if user clicks outside of the table and menu
+                //$(document).on('click', function(e) {
+                //    if (!$(e.target).closest('#allmovies').length && !$(e.target).closest('#floatingContextMenu').length) {
+                //        if (dtable.rows({ selected: true }).any()) { // Only deselect if rows are actually selected
+                //            dtable.rows().deselect();
+                //            hideFloatingContextMenu();
+                //        }
+                //    }
+                //});
+
+                
+            });
+
+            //end on doc ready
+                    
+            
+
+            $('input[type=search]').on('search', function () {
+                dtable
+                    .search('')
+                    .columns().search('')
+                    .draw();
+            })
+
+            window.addEventListener("popstate", (event) => {
+                if (event.state != null) {
+                    load_state(event.state)
+                }
+                else {
+                    resetfilters();
+                }
+            });
+
+            async function share(title,url) {
+
+                if (navigator.share) {
+                    try {
+                    await navigator.share({ title: title, url: url });
+                    console.log("Data was shared successfully");
+                    } catch (err) {
+                        console.error("Share failed:", err.message);
+                    }
+                }
+                else {
+                    navigator.clipboard.writeText(url);
+                    alert("Adresse copiée dans le presse-papier!");
+                }
+            }
+
+            function update_ratingsicons() {
+                var rateicons =  col[ratingsorder[0]].title + col[ratingsorder[1]].title + col[ratingsorder[2]].title + col[ratingsorder[3]].title  + col[ratingsorder[4]].title;
+                $("#rateordericons").html(rateicons)
+            }
+
+            function update_ratingsorder() {
+                if (ismobile) {
+                    dtable.columns([3, 4, 5, 6, 7, 8, 9]).visible(false)
+                    dtable.columns(ratingsorder[0] + ':name').visible(true)
+                }
+                else {
+                    dtable.columns(ratingsorder[0] + ':name').visible(true)
+                    dtable.columns(ratingsorder[1] + ':name').visible(min_tablet)
+                    dtable.columns(ratingsorder[2] + ':name').visible(min_l)
+                    dtable.columns(ratingsorder[3] + ':name').visible(min_xl)
+                    dtable.columns(ratingsorder[4] + ':name').visible(min_xxl)
+                    dtable.columns(ratingsorder[5] + ':name').visible(min_xxl)
+                    dtable.columns(ratingsorder[6] + ':name').visible(false)
+                    dtable.columns('year:name').visible(min_l)
+                    dtable.columns('copies:name').visible(min_xxl)
+                    dtable.colReorder.order(colref, false )
+                }
+
+                update_ratingsicons()
+
+                if ( ( shared_movs != null) || favontop  == 1 ) {
+                    dtable.order([[0,'desc'],[dtable.column(ratingsorder[0] + ':name').index(), 'desc'], [1, 'asc']]).draw() 
+                } else {
+                    dtable.order([dtable.column(ratingsorder[0] + ':name').index(), 'desc'], [1, 'asc']).draw()
+                }
+                
+
+                                    document.cookie = "ratings=" + ratingsorder.join('|') + ";max-age=31536000; path=/";
+                
+                _paq.push(['trackEvent', 'ratingsorder', ratingsorder.join('|')]);
+                $("#allmovies_processing").removeClass("d-block");
+            }
+
+            //php
+
+        </script>
+        
+        <div id="main">
+            <div id="topheader">
+                <button id="menubtn" onclick="toggleNav()">☰</button>
+                <span class="maintitle"><a href="#" onclick="loadpage('allmovies')" title="faAccueil"><img id="pci_logo" src="resources\img\Paris_Cine-Info_text.svg" title="Paris Ciné Info" alt="Paris Ciné Info"/></a></span>
+                
+                <span id="main_login" class="main_logprof" onclick="login()"><svg class="svg-icon login-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: #000;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M512 590.75c-142.5 0-258.75-116.25-258.75-258.75s116.25-262.5 258.75-262.5 258.75 116.25 258.75 258.75-116.25 262.5-258.75 262.5zM512 144.5c-101.25 0-183.75 82.5-183.75 183.75s82.5 183.75 183.75 183.75 183.75-82.5 183.75-183.75-82.5-183.75-183.75-183.75z"  /><path d="M170.75 950.75c-18.75 0-37.5-15-37.5-37.5 0-7.5 0-11.25 0-15 0-210 172.5-382.5 382.5-382.5 22.5 0 37.5 15 37.5 37.5s-15 37.5-37.5 37.5c-168.75 0-307.5 138.75-307.5 307.5v11.25c0 22.5-18.75 41.25-37.5 41.25v0z"  /><path d="M853.25 947v0c-22.5 0-37.5-15-37.5-37.5v-11.25c0-168.75-138.75-307.5-307.5-307.5-22.5 0-37.5-15-37.5-37.5s15-37.5 37.5-37.5c210 0 382.5 172.5 382.5 382.5 0 3.75 0 7.5 0 11.25 0 22.5-15 37.5-37.5 37.5z"  /></svg></span>
+                                </div>
+            <div id="underheader">La base de données des séances de cinéma</div>
+            <div id="underheader" class="d-none" style="background-color:red;color:white">Maintenance en cours..</div>
+            <div id="ratingsdrag" class="d-none"><ul class="sortable-list"></ul></div>
+            <div id="topbanner" class="d-none"></div>
+            <table id="allmovies" class="hover row-border footer-margin" style="width:100%" data-long-press-delay="500">
+                <thead>
+                    <tr>
+                        <th>Favoris</th>
+                        <th>Titre</th>
+                        <th>Réalisateur</th>
+                        <th>note_imdb</th>
+                        <th>note_allo_presse</th>
+                        <th>note_allo_spect</th>
+                        <th>note_senscritique</th>
+                        <th>note lboxd</th>
+                        <th>note meta</th>
+                        <th>note rotten</th>
+                        <th>Année</th>
+                        <th>Copies</th>
+                        <th>Rétrospective</th>
+                        <th>Actors</th>
+                        <th>id</th>
+                        <th>ori_title</th>
+                        <th>lang</th>
+                        <th>released</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div style="display: none;" id="fancybox-hidden">
+        </div>
+
+        <div style="display: none;" id="fancybox-login" class="fancybox-logreg">
+                                <h1>Connexion</h1>
+                <span class="login-header">ou  <a href="#" title="register" onclick="register();return false;">Créer un compte</a></span>
+                <form id="login-form" action="login.php" method="post" data-bitwarden-watching="1">
+                    <input class="inpt" type="email" id="login_email" required="" placeholder="E-mail" name="email" autocomplete="email">
+                    <input class="inpt" id="current-password" type="password" required="" placeholder="Mot de passe" name="password" autocomplete="current-password">
+                    <input type="checkbox" name="remember" value="true" checked=""> Se souvenir de moi                    <br><span id="login_error_msg"></span>
+                    <br><input type="submit" class="btn btn-fullwidth" name="login-submit" id="login-submit" value="Connexion">
+                    <div class="text-small"><a href="login/reset.php" target="blank">Mot de passe oublié ?</a></div>
+                    <hr class="rounded">
+                </form>
+                
+                <div class="_container gbtn"><a type="button" class="login-with-google-btn" href="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&amp;access_type=online&amp;client_id=516028721538-3u5d01vgpohh55e0r97kri5bgfbthrrb.apps.googleusercontent.com&amp;redirect_uri=https%3A%2F%2Fparis-cine.info%2Fgoogle-auth%2Fredirect.php&amp;state&amp;scope=email%20profile&amp;approval_prompt=auto">Se connecter avec Google</a></div>
+                        </div>
+
+
+        <svg style="display: none;">
+                <symbol id="watch-icon" viewBox="0 0 96 96">
+                    <path d="M48,4c24.26,0,44,19.74,44,44s-19.74,44-44,44S4,72.26,4,48S23.74,4,48,4Z" fill="none" stroke="currentColor" stroke-width="2"></path>
+                    <path fill="currentcolor" d="M26.764,49.277c0.644-3.734,4.906-5.813,8.269-3.79c0.305,0.182,0.596,0.398,0.867,0.646l0.026,0.025 c1.509,1.446,3.2,2.951,4.876,4.443l1.438,1.291l17.063-17.898c1.019-1.067,1.764-1.757,3.293-2.101 c5.235-1.155,8.916,5.244,5.206,9.155L46.536,63.366c-2.003,2.137-5.583,2.332-7.736,0.291c-1.234-1.146-2.576-2.312-3.933-3.489 c-2.35-2.042-4.747-4.125-6.701-6.187C26.993,52.809,26.487,50.89,26.764,49.277Z" class="watchicon"></path></svg>
+                </symbol>
+        </svg>
+        <svg style="display: none;">
+                <symbol id="bookmark-icon" viewBox="0 0 512 512">
+                    <path class="bookicon" d="M400 480a16 16 0 01-10.63-4L256 357.41 122.63 476A16 16 0 0196 464V96a64.07 64.07 0 0164-64h192a64.07 64.07 0 0164 64v368a16 16 0 01-16 16z"></path>
+                </symbol>                
+        </svg>
+
+
+
+        
+
+
+        <div style="display: none;" id="fancybox-profile">
+
+                        <div class="foot">
+            <button class="fancyclose fancybtn btn-red" style="float:left;" onclick="logout();return false;" title="logout">Se déconnecter</button>
+            <button class="fancyclose fancybtn" onclick="$.fancybox.close()">Fermer</button>
+            </div>
+        </div>
+
+        <div style="display: none;" id="fancybox-register" class="fancybox-logreg">
+
+            <h1>Créer un compte</h1>
+            <span class="login-header">ou <a href="#" title="login" onclick="login();return false;">Connexion</a></span>
+            <br>
+            <form id="register-form" action="register.php" method="post">
+                <input class="inpt" id="reg_email" type="email" required placeholder="E-mail" name="email" autocomplete="email" >
+                <input class="inpt" id="reg_username" type="text" required placeholder="Prénom / Pseudo" name="username" autocomplete="given-name" >
+                <input class="inpt" id="new-password" type="password" required placeholder="Mot de passe" name="password" autocomplete="new-password" pattern=".{5,}"  minlength="5">
+                <input class="inpt" id="regconfirm_password" type="password" required placeholder="confirmer mot de passe" name="confirm_password" autocomplete="new-password" pattern=".{5,}"  minlength="5">
+                <span id="register_error_msg"></span><br>
+                <input type="submit" class="btn " name="register-submit" id="register-submit" value='Créer un compte' />
+                <div class="discl">En créant un compte vous acceptez notre <br> <a href="polconfid.html" target="blank">politique de confidentialité</a></div>
+            </form>
+
+        </div>
+
+        <div id="floatingContextMenu" class="floating-context-menu">
+                <button id="bookmarkSelectedBtn" title="Ajouter aux favoris">Favoris</button>
+                <button id="watchedSelectedBtn"  title="Vu">Vu</button>
+                <button id="resetSelectedBtn" title="Reset">Reset</button>
+                <button id="shareSelectedBtn" title="Partager">Partager</button>
+                <button id="cancelSelectionBtn" title="Fermer">Fermer</button>
+        </div>
+
+        <div id="floatingContextMessage" class="floating-context-menu"></div>
+
+    </div>
+
+
+</body>
+</html>

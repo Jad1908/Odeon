@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciné Hebdo</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #f9f9f9; font-family: Helvetica, Arial, sans-serif; color: #333; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #ddd; }
+        .p-20 { padding: 20px; }
+        .text-muted { color: #777; font-size: 13px; }
+        .cat-header { background-color: #eee; padding: 10px 20px; border-left: 5px solid #e50914; }
+        .movie-card { border-bottom: 1px solid #eee; padding: 20px 0; }
+        .rating-box { display: inline-block; margin-right: 10px; font-size: 12px; font-weight: bold; }
+        .rating-img { vertical-align: middle; height: 16px; width: auto; margin-right: 4px; }
+        .showtime-box { background-color: #f4f4f4; padding: 10px; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <table class="container" cellpadding="0" cellspacing="0" align="center">
+        <!-- GLOBAL INTRO -->
+        <tr>
+            <td class="p-20" style="background-color: #222; color: #fff; text-align: center;">
+                <h1 style="margin: 0; font-size: 24px;">Paris Ciné</h1>
+                <p style="color: #ccc; margin-top: 10px;">En 2026, voici la première édition de cette newsletter ciné !</p>
+            </td>
+        </tr>
+
+        <!-- SECTIONS LOOP -->
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Nouveautes</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Les films sortis cette semaine (Gourou c&#39;est nul).
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=328179" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Gourou">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Gourou</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 126 min | thr,dra
+                                        <br>De Yann Gozlan
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                6.3
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                5.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Les Halles</strong>
+                                                (24 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 28 autres cinémas (333 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=328179.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=324466" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Nuremberg">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Nuremberg</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 148 min | his,dra
+                                        <br>De James Vanderbilt
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.4
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                2.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                61
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                72
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Pathé Parnasse</strong>
+                                                (12 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 17 autres cinémas (153 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=324466.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000004512" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Baise-en-ville">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Baise-en-ville</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 94 min | com
+                                        <br>De Martin Jauvat
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                6.3
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Les Halles</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 6 autres cinémas (78 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000004512.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=326109" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Reconnu coupable">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Reconnu coupable</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 101 min | sci,thr,act,dra
+                                        <br>De Timur Bekmambetov
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                6.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                4.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                2.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                2.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                34
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                23
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Les Halles</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 8 autres cinémas (102 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=326109.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=320123" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Dreams">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Dreams</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 98 min | dra,rom,thr
+                                        <br>De Michel Franco
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                5.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.3
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                2.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                68
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Les Halles</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 8 autres cinémas (99 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=320123.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000023001" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="La Vie après Siham">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">La Vie après Siham</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 76 min | doc
+                                        <br>De Namir Abdel Messeeh
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.1
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">MK2 Beaubourg</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 2 autres cinémas (22 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000023001.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000006454" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Promis le ciel">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Promis le ciel</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 92 min | dra
+                                        <br>De Erige Sehiri
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                6.7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.4
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Gobelins</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 6 autres cinémas (72 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000006454.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000017241" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Mardaani 3">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Mardaani 3</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2026 | 129 min | act,thr,pol
+                                        <br>De Abhiraj Minawala
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Pathé La Villette</strong>
+                                                (3 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000017241.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Toujours au cine</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Toujours temps de les voir.
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000005026" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Le Mage du Kremlin">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Le Mage du Kremlin</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 152 min | thr,dra,his
+                                        <br>De Olivier Assayas
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                5.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                5.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                2.9
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                54
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                49
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Bercy</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 33 autres cinémas (289 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000005026.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000014092" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="L’Affaire Bojarski">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">L’Affaire Bojarski</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 128 min | dra
+                                        <br>De Jean-Paul Salomé
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Pathé Beaugrenelle</strong>
+                                                (14 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 24 autres cinémas (218 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000014092.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=317403" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="La Femme de ménage">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">La Femme de ménage</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 131 min | thr
+                                        <br>De Paul Feig
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                5.4
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                2.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                65
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                74
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Ciné Cité Bercy</strong>
+                                                (22 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 24 autres cinémas (177 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=317403.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=315003" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Hamnet">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Hamnet</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 125 min | dra,rom
+                                        <br>De Chloé Zhao
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.1
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                84
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                86
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">MK2 Bibliothèque</strong>
+                                                (16 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 21 autres cinémas (213 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=315003.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=187247" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Avatar : de Feu et de Cendres">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Avatar : de Feu et de Cendres</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 195 min | sci,adv,act,fan
+                                        <br>De James Cameron
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.4
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                6.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                61
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                66
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Pathé Beaugrenelle</strong>
+                                                (25 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 17 autres cinémas (140 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=187247.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000009761" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="L&#39;Agent secret">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">L&#39;Agent secret</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 158 min | pol,dra,his
+                                        <br>De Kleber Mendonça Filho
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.9
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.9
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                91
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                98
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Odéon</strong>
+                                                (8 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 22 autres cinémas (77 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000009761.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000000966" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="28 Ans Plus Tard : Le Temple Des Morts">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">28 Ans Plus Tard : Le Temple Des Morts</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2026 | 110 min | hor,thr
+                                        <br>De Nia DaCosta
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                80
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                93
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">MK2 Bibliothèque</strong>
+                                                (14 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 12 autres cinémas (93 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000000966.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Avant-premieres</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Prenez de l&#39;avance pour montrer que vous êtes un vrai cinéphile.
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=317669" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Marsupilami">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Marsupilami</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2026 | 99 min | com,adv,fam
+                                        <br>De Philippe Lacheau
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                5.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">CGR Paris Lilas</strong>
+                                                (45 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 18 autres cinémas (535 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=317669.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=323925" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Rental Family - Dans la vie des autres">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Rental Family - Dans la vie des autres</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 110 min | com,dra
+                                        <br>De Mitsuyo Miyazaki
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">UGC Odéon</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 2 autres cinémas (2 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=323925.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Classiques</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Voyage dans le temps.
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=2570" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Le Voleur de bicyclette">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Le Voleur de bicyclette</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        1948 | 89 min | dra
+                                        <br>De Vittorio De Sica
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                99
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Ecoles Cinema Club</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=2570.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=836" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Boulevard du crépuscule">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Boulevard du crépuscule</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        1950 | 110 min | dra,rom,noi
+                                        <br>De Billy Wilder
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.4
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                8.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                94
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                98
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Filmothèque du Quartier Latin</strong>
+                                                (2 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=836.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=4063" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="12 hommes en colère">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">12 hommes en colère</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        1957 | 96 min | dra,jud
+                                        <br>De Sidney Lumet
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                8.7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                97
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                100
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Les 3 Luxembourg</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=4063.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=225953" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Whiplash">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Whiplash</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2014 | 106 min | dra,mus
+                                        <br>De Damien Chazelle
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.5
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                8
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                89
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                94
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Filmothèque du Quartier Latin</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=225953.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Letterboxd les adore</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Il n&#39;y a que l&#39;avis de Letterboxd qui compte.
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=28682" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Mulholland Drive">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Mulholland Drive</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2001 | 147 min | fan,thr,dra,mys
+                                        <br>De David Lynch
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.9
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.7
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                87
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                84
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Filmothèque du Quartier Latin</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 1 autre cinéma (1 séance)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=28682.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=265940" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Je suis toujours là">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Je suis toujours là</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2024 | 136 min | dra,thr,bio,his
+                                        <br>De Walter Salles
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.1
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.2
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                4.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                85
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                97
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Nouvel Odéon</strong>
+                                                (4 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=265940.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=206432" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="La Chasse">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">La Chasse</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2012 | 115 min | dra
+                                        <br>De Thomas Vinterberg
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                8.3
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.8
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.1
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                4.2
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4.3
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                77
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                92
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Filmothèque du Quartier Latin</strong>
+                                                (1 seances)
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=206432.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+            
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;">Pour les vrais cinephiles</h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    Si t&#39;es vraiment un prouveur....
+                </td>
+            </tr>
+            
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=319858" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Resurrection">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Resurrection</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 160 min | sci,pol,dra
+                                        <br>De Bi Gan
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.3
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.5
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                4
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                86
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                89
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Le Brady</strong>
+                                                (3 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 1 autre cinéma (2 séances)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=319858.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="https://paris-cine.info/get_poster.php?id=1000017055" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="Mr. Nobody Against Putin">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;">Mr. Nobody Against Putin</h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        2025 | 90 min | doc
+                                        <br>De David Borenstein,Pavel Talankin
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    
+                                    <div style="margin-bottom: 12px;">
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg" class="rating-img" alt="IMDB">
+                                                
+                                                7.6
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7018f379-ccaa-4f84-a9e7-6de35be3aca1/content" class="rating-img" alt="SensCritique">
+                                                
+                                                7.1
+                                                <span style="color:#aaa; font-weight:normal;">/10</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Presse)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Presse)</span>
+                                                
+                                                3.7
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/7d6127a0-473b-4cf3-84f3-7cdbbbaca01f/content" class="rating-img" alt="Allociné (Spectateurs)">
+                                                
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(Spectateurs)</span>
+                                                
+                                                3.6
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://1lig1.mjt.lu/img2/1lig1/acf0a4e5-df04-4865-8a94-361bfde2bf1e/content" class="rating-img" alt="Letterboxd">
+                                                
+                                                3.8
+                                                <span style="color:#aaa; font-weight:normal;">/5</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" class="rating-img" alt="Metacritic">
+                                                
+                                                80
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                            <span class="rating-box">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Rotten_Tomatoes.svg" class="rating-img" alt="Rotten Tomatoes">
+                                                
+                                                100
+                                                <span style="color:#aaa; font-weight:normal;">/100</span>
+                                            </span>
+                                        
+                                    </div>
+                                    
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong>Ou le voir ?</strong><br>
+                                                Majoritairement au <strong style="color: #e50914;">Le Balzac</strong>
+                                                (3 seances)
+                                            </div>
+                                            
+                                            
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em>+ 1 autre cinéma (1 séance)</em>
+                                                </div>
+                                            
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=1000017055.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    Voir toutes les horaires &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    
+
+                                </td>
+                            </tr>
+                        </table>
+                    
+                </td>
+            </tr>
+        
+
+        <!-- GLOBAL CONCLUSION -->
+        <tr>
+            <td class="p-20" style="background-color: #eee; text-align: center; border-top: 1px solid #ddd;">
+                <p style="margin: 0;">Bon visionnage ! </p>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
