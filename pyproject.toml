@@ -1,0 +1,10 @@
+[project]
+name = "odeon"
+version = "0.1.0"
+description = "Paris cinema newsletter pipeline: scrape, categorize, curate and render the weekly program"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.31.0",
+    "flask>=3.0.0",
+]
