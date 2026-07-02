@@ -588,9 +588,15 @@
                 .then(r => r.json())
                 .then(data => {
                     updatePipelineUI(data);
-                    if (!data.is_running && (data.status === 'complete' || data.status === 'error')) {
+                    if (data.is_running && !pipelinePolling) {
+                        // Page opened while a fetch is in progress: resume polling
+                        startPolling();
+                    } else if (!data.is_running && (data.status === 'complete' || data.status === 'error')) {
+                        // Reload only when a run we were polling just finished;
+                        // a status that is already 'complete' on page load must not reload again
+                        const runJustFinished = pipelinePolling !== null;
                         stopPolling();
-                        if (data.status === 'complete') {
+                        if (runJustFinished && data.status === 'complete') {
                             setTimeout(() => window.location.reload(), 1500);
                         }
                     }

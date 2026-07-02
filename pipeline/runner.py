@@ -193,12 +193,15 @@ class PipelineRunner:
         cache = get_cache_info(data_file)
         use_cache = cache["fresh"] and not force
 
+        # Mark busy before the thread spawns so a status poll racing the
+        # thread start never sees a stale 'complete' state
+        self.is_running = True
+        self.status = "starting"
+        self.error = None
+        self.logs = []
+
         def _fetch():
             try:
-                self.is_running = True
-                self.error = None
-                self.logs = []
-
                 if use_cache:
                     self.log(f"Using cached scrape from {cache['scraped_at']} "
                              f"(cinema week of {cache['week_start']}, {cache['movie_count']} movies)")
