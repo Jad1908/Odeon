@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 # ---------------------------------------------------------
 # CONFIGURATION
 # ---------------------------------------------------------
-INPUT_FILE = 'week_full.json'
-OUTPUT_FILE = 'newsletter_data.json'
+INPUT_FILE = 'data/week_full.json'
+OUTPUT_FILE = 'data/newsletter_data.json'
 
 # AUTOMATIC DATE DETECTION
 # Since your data might be in the future (2026) or now (2025), 
