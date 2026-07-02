@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciné Hebdo</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #f9f9f9; font-family: Helvetica, Arial, sans-serif; color: #333; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #ddd; }
+        .p-20 { padding: 20px; }
+        .text-muted { color: #777; font-size: 13px; }
+        .cat-header { background-color: #eee; padding: 10px 20px; border-left: 5px solid #e50914; }
+        .movie-card { border-bottom: 1px solid #eee; padding: 20px 0; }
+        .rating-box { display: inline-block; margin-right: 10px; font-size: 12px; font-weight: bold; }
+        .rating-img { vertical-align: middle; height: 16px; width: auto; margin-right: 4px; }
+        .showtime-box { background-color: #f4f4f4; padding: 10px; border-radius: 4px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <table class="container" cellpadding="0" cellspacing="0" align="center">
+        <!-- GLOBAL INTRO -->
+        <tr>
+            <td class="p-20" style="background-color: #222; color: #fff; text-align: center;">
+                <h1 style="margin: 0; font-size: 24px;"><%= text.newsletter_title %></h1>
+                <p style="color: #ccc; margin-top: 10px;"><%= text.global_intro %></p>
+            </td>
+        </tr>
+
+        <!-- SECTIONS LOOP -->
+        <% Object.keys(sections).forEach(sectionKey => { %>
+            <% const config = sectionsConfig[sectionKey] || { title: sectionKey, description: "" }; %>
+            
+            <!-- Section Header -->
+            <tr>
+                <td class="cat-header">
+                    <h2 style="margin: 0; font-size: 18px; text-transform: uppercase;"><%= config.title %></h2>
+                </td>
+            </tr>
+            <!-- Section Description -->
+            <% if (config.description) { %>
+            <tr>
+                <td style="padding: 10px 20px 0 20px; color: #555; font-style: italic; font-size: 14px;">
+                    <%= config.description %>
+                </td>
+            </tr>
+            <% } %>
+
+            <tr>
+                <td class="p-20">
+                    <!-- MOVIES LOOP -->
+                    <% sections[sectionKey].forEach(movie => { %>
+                        <table width="100%" class="movie-card">
+                            <tr>
+                                <!-- POSTER -->
+                                <td width="130" valign="top">
+                                    <img src="<%= movie.poster_url %>" width="120" style="display:block; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" alt="<%= movie.title %>">
+                                </td>
+                                
+                                <!-- DETAILS -->
+                                <td valign="top" style="padding-left: 15px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 18px;"><%= movie.title %></h3>
+                                    
+                                    <div class="text-muted" style="margin-bottom: 8px;">
+                                        <%= movie.year %> | <%= movie.duration_minutes %> min | <%= movie.genre %>
+                                        <br>De <%= movie.director %>
+                                    </div>
+
+                                    <!-- RATINGS -->
+                                    <% if (movie.ui_ratings.length > 0) { %>
+                                    <div style="margin-bottom: 12px;">
+                                        <% movie.ui_ratings.forEach(rating => { %>
+                                            <span class="rating-box">
+                                                <img src="<%= rating.logo_url %>" class="rating-img" alt="<%= rating.source %>">
+                                                <% if (rating.short_label) { %>
+                                                    <span style="color:#666; font-weight:normal; font-size:10px;">(<%= rating.short_label %>)</span>
+                                                <% } %>
+                                                <%= rating.score %>
+                                                <span style="color:#aaa; font-weight:normal;">/<%= rating.max_score %></span>
+                                            </span>
+                                        <% }) %>
+                                    </div>
+                                    <% } %>
+
+                                    <!-- SHOWTIMES LOGIC (Clean UI) -->
+                                    <% if (movie.ui_showtimes.main_cinema) { %>
+                                        <div class="showtime-box">
+                                            <div style="font-size: 14px; color: #333;">
+                                                <strong><%= text.ui_labels.where_to_see %></strong><br>
+                                                <%= text.ui_labels.mainly_at %> <strong style="color: #e50914;"><%= movie.ui_showtimes.main_cinema %></strong>
+                                                (<%= movie.ui_showtimes.main_count %> <%= text.ui_labels.screenings %>)
+                                            </div>
+                                            
+                                            <% if (movie.ui_showtimes.remainder_text) { %>
+                                                <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                                    <em><%= movie.ui_showtimes.remainder_text %></em>
+                                                </div>
+                                            <% } %>
+                                            
+                                            <div style="margin-top: 8px;">
+                                                <a href="https://www.allocine.fr/film/fichefilm_gen_cfilm=<%= movie.id %>.html" style="background-color: #333; color: #fff; text-decoration: none; padding: 4px 8px; font-size: 11px; border-radius: 3px;">
+                                                    <%= text.ui_labels.see_all_showtimes %> &rarr;
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% } else { %>
+                                        <div style="margin-top: 10px; color: #999; font-size: 12px; font-style: italic;">
+                                            <%= text.ui_labels.no_showtimes %>
+                                        </div>
+                                    <% } %>
+
+                                </td>
+                            </tr>
+                        </table>
+                    <% }) %>
+                </td>
+            </tr>
+        <% }) %>
+
+        <!-- GLOBAL CONCLUSION -->
+        <tr>
+            <td class="p-20" style="background-color: #eee; text-align: center; border-top: 1px solid #ddd;">
+                <p style="margin: 0;"><%= text.global_conclusion %></p>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
