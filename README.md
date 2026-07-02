@@ -40,17 +40,17 @@ paris-cine.info API
 
 ## Running it
 
-Python steps run from the repo root:
+Python steps use [uv](https://docs.astral.sh/uv/) and run from the repo root:
 
 ```bash
-pip install -r requirements.txt
+uv sync
 
 # 1+2. Scrape and categorize (or drive both from the web UI)
-python -m pipeline.scraper --showtimes -o data/week_full.json
-python -m pipeline.analysis
+uv run python -m pipeline.scraper --showtimes -o data/week_full.json
+uv run python -m pipeline.analysis
 
 # 3. Curate in the browser (http://localhost:5000)
-python viewer.py
+uv run python viewer.py
 
 # 4. Render the newsletter
 cd builder && npm install && node build.js
