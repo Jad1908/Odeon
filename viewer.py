@@ -69,27 +69,53 @@ def load_all_movies() -> list:
     return movies
 
 
+def build_select_movies() -> list:
+    """Slim, deduplicated movie list for the selection UI.
+
+    Each movie appears once, tagged with every category it belongs to,
+    so the client can filter without showing duplicates.
+    """
+    categorized = load_categorized()
+    membership = {}
+    for key in CATEGORIES:
+        for m in categorized.get(key, []):
+            membership.setdefault(str(m['id']), []).append(key)
+
+    slim = []
+    for m in load_all_movies():
+        mid = str(m['id'])
+        slim.append({
+            "id": mid,
+            "title": m['title'],
+            "original_title": m.get('original_title') or "",
+            "director": m.get('director') or "",
+            "actors": m.get('actors') or "",
+            "year": m.get('year'),
+            "genre": m.get('genre') or "",
+            "duration": m.get('duration_minutes'),
+            "copies": m.get('copies_count') or 0,
+            "showtimes": len(m.get('showtimes') or []),
+            "poster_url": m.get('poster_url'),
+            "score": m['calculated_score'],
+            "ratings": [{"s": r['source'], "v": r['score'], "m": r['max_score']}
+                        for r in m.get('ratings', [])],
+            "cats": membership.get(mid, []),
+            "release_date": m.get('release_date'),
+            "premiere": bool(m.get('is_premiere')),
+            "new_release": bool(m.get('is_new_release')),
+        })
+    return slim
+
+
 @app.route('/')
 def index():
-    all_movies = load_all_movies()
-    movie_index = {
-        str(m['id']): {
-            "title": m['title'],
-            "year": m.get('year'),
-            "poster_url": m.get('poster_url'),
-            "score": m['calculated_score']
-        }
-        for m in all_movies
-    }
     return render_template(
         'viewer.html',
-        data=load_categorized(),
-        all_movies=all_movies,
+        select_movies=build_select_movies(),
         categories=CATEGORIES,
         sections=issue_store.load_sections(),
         issue=issue_store.load_issue(),
-        cache=get_cache_info(),
-        movie_index=movie_index
+        cache=get_cache_info()
     )
 
 

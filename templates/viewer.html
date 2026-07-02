@@ -9,15 +9,13 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .tab-btn.active { background-color: rgb(59, 130, 246); color: white; }
-        .subtab-btn.active { background-color: rgb(31, 41, 55); color: white; }
-        .subtab-content { display: none; }
-        .subtab-content.active { display: block; }
+        .cat-pill.active { background-color: rgb(31, 41, 55); color: white; border-color: rgb(31, 41, 55); }
+        .view-btn.active { background-color: rgb(59, 130, 246); color: white; }
         .movie-card.selected {
             border-color: rgb(34, 197, 94);
             border-width: 2px;
             background-color: rgb(240, 253, 244);
         }
-        .rating-badge { min-width: 40px; text-align: center; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -112,91 +110,56 @@
         <!-- ============ 2. SELECT ============ -->
         <div id="tab-select" class="tab-content">
             <div class="bg-white rounded-lg shadow p-6 mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">Select movies</h2>
-                <p class="text-gray-500 mb-4">Pick the movies for this issue. Picking from a category pre-assigns that section.</p>
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Select movies</h2>
+                        <p class="text-gray-500">Each movie appears once, tagged with its categories. Selecting pre-assigns the filtered (or first) category as section.</p>
+                    </div>
+                    <div class="flex rounded-lg border border-gray-300 overflow-hidden flex-shrink-0">
+                        <button onclick="setView('list')" id="viewBtn-list" class="px-3 py-1.5 text-sm font-medium">☰ List</button>
+                        <button onclick="setView('mosaic')" id="viewBtn-mosaic" class="px-3 py-1.5 text-sm font-medium border-l border-gray-300">▦ Mosaic</button>
+                    </div>
+                </div>
 
-                {% if not all_movies %}
+                {% if not select_movies %}
                 <div class="text-center py-12 text-gray-400">
                     <p>No movie data yet. Run a fetch first.</p>
                 </div>
                 {% else %}
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button class="subtab-btn px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-300 active" data-subtab="all">
-                        All movies ({{ all_movies|length }})
-                    </button>
-                    {% for key, cat in categories.items() %}
-                    <button class="subtab-btn px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-300" data-subtab="{{ key }}">
-                        {{ cat.name }} ({{ data.get(key, [])|length }})
-                    </button>
-                    {% endfor %}
+                <!-- Category pills -->
+                <div id="catPills" class="flex flex-wrap gap-2 mb-3"></div>
+
+                <!-- Filter bar -->
+                <div class="flex flex-wrap gap-3 mb-4 items-center">
+                    <input id="searchBox" type="search" placeholder="Search title, director, actor…"
+                           oninput="setFilter('search', this.value)"
+                           class="border rounded-lg px-3 py-1.5 text-sm w-64">
+                    <select id="sortSelect" onchange="setFilter('sort', this.value)" class="border rounded-lg px-2 py-1.5 text-sm">
+                        <option value="score">Sort: score</option>
+                        <option value="copies">Sort: most screened</option>
+                        <option value="release">Sort: release date</option>
+                        <option value="year_desc">Sort: year (newest)</option>
+                        <option value="year_asc">Sort: year (oldest)</option>
+                        <option value="title">Sort: title</option>
+                    </select>
+                    <select id="minScoreSelect" onchange="setFilter('minScore', parseFloat(this.value))" class="border rounded-lg px-2 py-1.5 text-sm">
+                        <option value="0">Any score</option>
+                        <option value="6">Score ≥ 6</option>
+                        <option value="7">Score ≥ 7</option>
+                        <option value="7.5">Score ≥ 7.5</option>
+                        <option value="8">Score ≥ 8</option>
+                    </select>
+                    <select id="genreSelect" onchange="setFilter('genre', this.value)" class="border rounded-lg px-2 py-1.5 text-sm">
+                        <option value="">All genres</option>
+                    </select>
+                    <label class="flex items-center gap-1.5 text-sm text-gray-600">
+                        <input type="checkbox" onchange="setFilter('hideSelected', this.checked)"> Hide selected
+                    </label>
+                    <span id="resultCount" class="text-sm text-gray-500 ml-auto"></span>
                 </div>
 
-                {% macro movie_card(movie, source) %}
-                <div class="movie-card bg-gray-50 rounded-lg p-4 border border-gray-200" data-movie-id="{{ movie.id }}">
-                    <div class="flex items-start gap-4">
-                        <button onclick="toggleSelect('{{ movie.id }}', '{{ source }}')"
-                                class="select-btn flex-shrink-0 w-10 h-10 rounded-full border-2 border-gray-300
-                                       hover:border-green-500 hover:bg-green-50 flex items-center justify-center"
-                                data-movie-id="{{ movie.id }}">
-                            <span class="text-gray-400 text-xl leading-none pointer-events-none">+</span>
-                        </button>
-                        {% if movie.poster_url %}
-                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}"
-                             class="w-16 h-24 object-cover rounded shadow-sm flex-shrink-0"
-                             loading="lazy" onerror="this.style.display='none'">
-                        {% endif %}
-                        <div class="flex-1 min-w-0">
-                            <h3 class="text-lg font-bold text-gray-800">{{ movie.title }}</h3>
-                            {% if movie.original_title and movie.original_title != movie.title %}
-                            <p class="text-sm text-gray-500 italic">{{ movie.original_title }}</p>
-                            {% endif %}
-                            <div class="flex flex-wrap gap-2 mt-2 text-xs text-gray-600">
-                                {% if movie.director %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.director }}</span>{% endif %}
-                                {% if movie.year %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.year }}</span>{% endif %}
-                                {% if movie.duration_minutes %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.duration_minutes }} min</span>{% endif %}
-                                {% if movie.copies_count %}<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded">{{ movie.copies_count }} copies</span>{% endif %}
-                                {% if movie.showtimes %}<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{{ movie.showtimes|length }} showtimes</span>{% endif %}
-                            </div>
-                            {% if movie.genre %}
-                            <div class="flex flex-wrap gap-1 mt-2">
-                                {% for g in movie.genre.split(',') %}
-                                <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded">{{ g.strip() }}</span>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                        </div>
-                        <div class="w-56 flex-shrink-0">
-                            <span class="text-base font-bold px-2.5 py-0.5 rounded text-white {{ 'bg-green-500' if movie.calculated_score >= 7.5 else ('bg-yellow-500' if movie.calculated_score >= 6 else 'bg-orange-500') }}">
-                                {{ "%.1f"|format(movie.calculated_score) }}
-                            </span>
-                            <div class="grid grid-cols-1 gap-1 text-xs mt-2">
-                                {% for rating in movie.ratings %}
-                                <div class="flex items-center gap-1 bg-white p-1 rounded border">
-                                    <span class="rating-badge text-white text-xs font-bold px-1.5 py-0.5 rounded {{ 'bg-green-500' if (rating.score / rating.max_score * 10) >= 7 else ('bg-yellow-500' if (rating.score / rating.max_score * 10) >= 5 else 'bg-red-500') }}">
-                                        {{ "%.1f"|format(rating.score) }}
-                                    </span>
-                                    <span class="text-gray-600 truncate">{{ rating.source[:20] }}</span>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endmacro %}
-
-                <div id="subtab-all" class="subtab-content active">
-                    <div class="grid gap-3">
-                        {% for movie in all_movies %}{{ movie_card(movie, '') }}{% endfor %}
-                    </div>
-                </div>
-                {% for key, cat in categories.items() %}
-                <div id="subtab-{{ key }}" class="subtab-content">
-                    <p class="text-gray-500 text-sm mb-3">{{ cat.description }}</p>
-                    <div class="grid gap-3">
-                        {% for movie in data.get(key, []) %}{{ movie_card(movie, key) }}{% endfor %}
-                    </div>
-                </div>
-                {% endfor %}
+                <div id="movieList"></div>
+                <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 mt-4"></div>
                 {% endif %}
             </div>
         </div>
@@ -277,7 +240,22 @@
         let SECTIONS = {{ sections | tojson }};
         let issueMovies = {{ issue.movies | tojson }};
         let issueStatus = {{ issue.status | tojson }};
-        const MOVIE_INDEX = {{ movie_index | tojson }};
+        const SELECT_MOVIES = {{ select_movies | tojson }};
+        const SELECT_INDEX = Object.fromEntries(SELECT_MOVIES.map(m => [m.id, m]));
+        const CATEGORY_NAMES = {
+            {% for key, cat in categories.items() %}'{{ key }}': '{{ cat.name }}',
+            {% endfor %}
+        };
+        const CATEGORY_SHORT = {
+            'top_new_releases': 'New', 'current_landscape': 'Current',
+            'premieres_events': 'Premieres', 'old_classics': 'Classics',
+            'letterboxd_picks': 'Letterboxd', 'niche_gems': 'Niche'
+        };
+        const RATING_SHORT = {
+            'IMDB': 'IMDb', 'SensCritique': 'SC', 'Allociné (Presse)': 'Allo·P',
+            'Allociné (Spectateurs)': 'Allo·S', 'Letterboxd': 'LB',
+            'Metacritic': 'MC', 'Rotten Tomatoes': 'RT'
+        };
 
         // ---- Header ----
         function updateHeader() {
@@ -302,37 +280,230 @@
                 if (btn.dataset.tab === 'curate') renderCurate();
             });
         });
-        document.querySelectorAll('.subtab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
-            });
-        });
+        // ---- Selection browser (filters, pagination, views) ----
+        let selState = {
+            search: '', cat: 'all', sort: 'score', minScore: 0, genre: '',
+            hideSelected: false, page: 1, pageSize: 24,
+            view: localStorage.getItem('selectView') || 'list'
+        };
 
-        // ---- Selection ----
-        function toggleSelect(movieId, source) {
+        function setFilter(key, value) {
+            selState[key] = value;
+            selState.page = 1;
+            renderSelect();
+        }
+
+        function setCat(cat) {
+            setFilter('cat', cat);
+        }
+
+        function setView(view) {
+            selState.view = view;
+            localStorage.setItem('selectView', view);
+            renderSelect();
+        }
+
+        function setPage(page) {
+            selState.page = page;
+            renderSelect();
+            document.getElementById('movieList').scrollIntoView({ behavior: 'instant', block: 'start' });
+        }
+
+        function filteredMovies() {
+            let list = SELECT_MOVIES;
+            if (selState.cat === 'selected') list = list.filter(m => issueMovies[m.id]);
+            else if (selState.cat !== 'all') list = list.filter(m => m.cats.includes(selState.cat));
+            const q = selState.search.trim().toLowerCase();
+            if (q) list = list.filter(m =>
+                (m.title + ' ' + m.original_title + ' ' + m.director + ' ' + m.actors).toLowerCase().includes(q));
+            if (selState.minScore > 0) list = list.filter(m => m.score >= selState.minScore);
+            if (selState.genre) list = list.filter(m =>
+                m.genre.split(',').map(g => g.trim()).includes(selState.genre));
+            if (selState.hideSelected && selState.cat !== 'selected')
+                list = list.filter(m => !issueMovies[m.id]);
+
+            const sorts = {
+                score: (a, b) => b.score - a.score,
+                copies: (a, b) => b.copies - a.copies,
+                release: (a, b) => (b.release_date || '').localeCompare(a.release_date || ''),
+                year_desc: (a, b) => (b.year || 0) - (a.year || 0),
+                year_asc: (a, b) => (a.year || 9999) - (b.year || 9999),
+                title: (a, b) => a.title.localeCompare(b.title)
+            };
+            return [...list].sort(sorts[selState.sort] || sorts.score);
+        }
+
+        function suggestedSection(movieId) {
+            if (selState.cat !== 'all' && selState.cat !== 'selected' && CATEGORY_NAMES[selState.cat]) {
+                return selState.cat;
+            }
+            const m = SELECT_INDEX[movieId];
+            return (m && m.cats.length) ? m.cats[0] : null;
+        }
+
+        function toggleSelect(movieId) {
             movieId = String(movieId);
             if (issueMovies[movieId]) {
                 delete issueMovies[movieId];
             } else {
-                issueMovies[movieId] = { section: source || null, comment: '' };
+                issueMovies[movieId] = { section: suggestedSection(movieId), comment: '' };
             }
-            updateCardButtons(movieId);
             scheduleSave();
             updateHeader();
+            renderSelect();
         }
 
-        function updateCardButtons(movieId) {
-            const selected = !!issueMovies[movieId];
-            document.querySelectorAll(`.movie-card[data-movie-id="${movieId}"]`).forEach(card => {
-                card.classList.toggle('selected', selected);
-                const btn = card.querySelector('.select-btn');
-                btn.classList.toggle('bg-green-500', selected);
-                btn.classList.toggle('border-green-500', selected);
-                btn.querySelector('span').textContent = selected ? '✓' : '+';
-                btn.querySelector('span').classList.toggle('text-white', selected);
+        function scoreColor(score) {
+            return score >= 7.5 ? 'bg-green-500' : (score >= 6 ? 'bg-yellow-500' : 'bg-orange-500');
+        }
+
+        function catBadges(m) {
+            return m.cats.map(c =>
+                `<span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full font-medium">${CATEGORY_SHORT[c] || c}</span>`
+            ).join('');
+        }
+
+        function posterHtml(m, classes) {
+            if (m.poster_url) {
+                return `<img src="${m.poster_url}" alt="" class="${classes}" loading="lazy"
+                             onerror="this.outerHTML='<div class=\\'${classes} bg-gray-300 flex items-center justify-center text-gray-500 font-bold\\'>${escapeHtml(m.title[0] || '?')}</div>'">`;
+            }
+            return `<div class="${classes} bg-gray-300 flex items-center justify-center text-gray-500 font-bold">${escapeHtml(m.title[0] || '?')}</div>`;
+        }
+
+        function listCard(m) {
+            const sel = !!issueMovies[m.id];
+            const ratings = m.ratings.map(r =>
+                `<span class="whitespace-nowrap"><span class="font-bold">${RATING_SHORT[r.s] || r.s}</span> ${r.v}/${r.m}</span>`
+            ).join(' · ');
+            const flags = (m.new_release ? '<span class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">Sortie</span>' : '')
+                        + (m.premiere ? '<span class="bg-pink-100 text-pink-700 text-xs px-2 py-0.5 rounded-full font-medium">Avant-première</span>' : '');
+            return `
+                <div class="movie-card ${sel ? 'selected' : ''} bg-gray-50 rounded-lg p-3 border border-gray-200 flex items-start gap-3">
+                    <button onclick="toggleSelect('${m.id}')"
+                            class="flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center
+                                   ${sel ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 text-gray-400 hover:border-green-500 hover:bg-green-50'}">
+                        ${sel ? '✓' : '+'}
+                    </button>
+                    ${posterHtml(m, 'w-14 h-20 object-cover rounded shadow-sm flex-shrink-0')}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-bold text-gray-800">${escapeHtml(m.title)}</h3>
+                            ${m.original_title && m.original_title !== m.title ? `<span class="text-sm text-gray-400 italic">${escapeHtml(m.original_title)}</span>` : ''}
+                            ${catBadges(m)}${flags}
+                        </div>
+                        <p class="text-sm text-gray-500 mt-0.5">
+                            ${escapeHtml(m.director)}${m.year ? ' · ' + m.year : ''}${m.duration ? ' · ' + m.duration + ' min' : ''}${m.genre ? ' · ' + escapeHtml(m.genre) : ''}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">${ratings || 'No ratings'}</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span class="text-base font-bold px-2.5 py-0.5 rounded text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
+                        <span class="text-xs text-gray-400">${m.copies} copies · ${m.showtimes} séances</span>
+                    </div>
+                </div>`;
+        }
+
+        function mosaicTile(m) {
+            const sel = !!issueMovies[m.id];
+            return `
+                <div onclick="toggleSelect('${m.id}')" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
+                     class="relative rounded-lg overflow-hidden cursor-pointer group shadow-sm ${sel ? 'ring-4 ring-green-500' : 'hover:ring-2 hover:ring-blue-400'}">
+                    ${posterHtml(m, 'w-full aspect-[2/3] object-cover')}
+                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
+                    ${sel ? '<span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">✓</span>' : ''}
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent px-2 pt-6 pb-1.5">
+                        <p class="text-white text-xs font-bold leading-tight">${escapeHtml(m.title)}</p>
+                        <p class="text-gray-300 text-[10px]">${m.year || ''}</p>
+                    </div>
+                </div>`;
+        }
+
+        function renderCatPills() {
+            const counts = { all: SELECT_MOVIES.length, selected: Object.keys(issueMovies).length };
+            for (const key of Object.keys(CATEGORY_NAMES)) {
+                counts[key] = SELECT_MOVIES.filter(m => m.cats.includes(key)).length;
+            }
+            const pill = (key, label) => `
+                <button onclick="setCat('${key}')"
+                        class="cat-pill px-3 py-1.5 rounded-full text-sm font-medium border border-gray-300 hover:bg-gray-100 ${selState.cat === key ? 'active' : ''}">
+                    ${label} (${counts[key]})
+                </button>`;
+            document.getElementById('catPills').innerHTML =
+                pill('all', 'All') +
+                Object.entries(CATEGORY_NAMES).map(([key, name]) => pill(key, name)).join('') +
+                pill('selected', '✓ Selected');
+        }
+
+        function renderPagination(total) {
+            const pages = Math.max(1, Math.ceil(total / selState.pageSize));
+            selState.page = Math.min(selState.page, pages);
+            const p = selState.page;
+
+            let nums = [];
+            for (let i = 1; i <= pages; i++) {
+                if (i === 1 || i === pages || Math.abs(i - p) <= 2) nums.push(i);
+                else if (nums[nums.length - 1] !== '…') nums.push('…');
+            }
+            const numBtns = nums.map(n => n === '…'
+                ? '<span class="px-2 text-gray-400">…</span>'
+                : `<button onclick="setPage(${n})" class="px-3 py-1 rounded-lg text-sm ${n === p ? 'bg-blue-600 text-white' : 'hover:bg-gray-200 text-gray-700'}">${n}</button>`
+            ).join('');
+
+            document.getElementById('pagination').innerHTML = pages <= 1 && total <= selState.pageSize ? `
+                <span class="text-sm text-gray-500">${total} movies</span>
+                <span></span>` : `
+                <div class="flex items-center gap-1">
+                    <button onclick="setPage(${Math.max(1, p - 1)})" ${p === 1 ? 'disabled' : ''}
+                            class="px-3 py-1 rounded-lg text-sm hover:bg-gray-200 text-gray-700 disabled:opacity-40">&larr; Prev</button>
+                    ${numBtns}
+                    <button onclick="setPage(${Math.min(pages, p + 1)})" ${p === pages ? 'disabled' : ''}
+                            class="px-3 py-1 rounded-lg text-sm hover:bg-gray-200 text-gray-700 disabled:opacity-40">Next &rarr;</button>
+                </div>
+                <select onchange="setFilter('pageSize', parseInt(this.value))" class="border rounded-lg px-2 py-1 text-sm">
+                    ${[12, 24, 48, 96].map(n => `<option value="${n}" ${selState.pageSize === n ? 'selected' : ''}>${n} / page</option>`).join('')}
+                </select>`;
+        }
+
+        function renderSelect() {
+            const listEl = document.getElementById('movieList');
+            if (!listEl) return;  // no data fetched yet
+
+            renderCatPills();
+            document.getElementById('viewBtn-list').className =
+                'view-btn px-3 py-1.5 text-sm font-medium ' + (selState.view === 'list' ? 'active' : 'text-gray-600 hover:bg-gray-100');
+            document.getElementById('viewBtn-mosaic').className =
+                'view-btn px-3 py-1.5 text-sm font-medium border-l border-gray-300 ' + (selState.view === 'mosaic' ? 'active' : 'text-gray-600 hover:bg-gray-100');
+
+            const list = filteredMovies();
+            renderPagination(list.length);
+            document.getElementById('resultCount').textContent =
+                `${list.length} movie${list.length === 1 ? '' : 's'}`;
+
+            const start = (selState.page - 1) * selState.pageSize;
+            const pageItems = list.slice(start, start + selState.pageSize);
+
+            if (pageItems.length === 0) {
+                listEl.innerHTML = '<p class="text-gray-400 text-sm text-center py-12">No movies match these filters.</p>';
+                return;
+            }
+            if (selState.view === 'mosaic') {
+                listEl.innerHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">${pageItems.map(mosaicTile).join('')}</div>`;
+            } else {
+                listEl.innerHTML = `<div class="grid gap-2">${pageItems.map(listCard).join('')}</div>`;
+            }
+        }
+
+        function initGenreFilter() {
+            const sel = document.getElementById('genreSelect');
+            if (!sel) return;
+            const genres = new Set();
+            SELECT_MOVIES.forEach(m => m.genre.split(',').forEach(g => { g = g.trim(); if (g) genres.add(g); }));
+            [...genres].sort().forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                sel.appendChild(opt);
             });
         }
 
@@ -450,7 +621,7 @@
         }
 
         function curateRow(movieId) {
-            const info = MOVIE_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', score: 0, poster_url: null };
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', score: 0, poster_url: null };
             const entry = issueMovies[movieId];
             const score = (info.score || 0).toFixed(1);
             return `
@@ -465,7 +636,7 @@
                                 <select onchange="setSection('${movieId}', this.value)" class="border rounded-lg px-2 py-1 text-sm">
                                     ${sectionOptions(entry.section)}
                                 </select>
-                                <button onclick="toggleSelect('${movieId}', ''); renderCurate();"
+                                <button onclick="toggleSelect('${movieId}'); renderCurate();"
                                         class="text-red-500 hover:text-red-700 text-sm" title="Remove from issue">&times; remove</button>
                             </div>
                         </div>
@@ -640,15 +811,16 @@
         }
 
         function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text == null ? '' : String(text);
-            return div.innerHTML;
+            return String(text == null ? '' : text)
+                .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
         }
 
         // ---- Init ----
         updateHeader();
         renderSectionChips();
-        Object.keys(issueMovies).forEach(updateCardButtons);
+        initGenreFilter();
+        renderSelect();
         fetchPipelineStatus();
     </script>
 </body>
