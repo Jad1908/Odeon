@@ -22,11 +22,18 @@ paris-cine.info API
 2. Categorize    pipeline/analysis.py     → data/newsletter_data.json
         │
         ▼
-3. Curate        viewer.py (Flask UI)     → data/newsletter_selection.json
+3. Curate        viewer.py (Flask UI)     → data/issue.json
         │
         ▼
 4. Render        builder/build.js (EJS)   → builder/output/newsletter_output_v2.html
 ```
+
+The Flask UI drives the whole workflow for an issue: fetch the week's movies
+(cached per cinema week, Wed–Tue), select which ones make the cut, organize
+them into sections (six defaults, plus your own saved custom sections), write
+a comment for each, prerender the exact newsletter HTML through the Node
+builder, and validate it (completeness, broken images, stale showtimes,
+render integrity) before the issue is marked ready.
 
 ## Repository layout
 
@@ -44,16 +51,18 @@ Python steps use [uv](https://docs.astral.sh/uv/) and run from the repo root:
 
 ```bash
 uv sync
+cd builder && npm install && cd ..
 
-# 1+2. Scrape and categorize (or drive both from the web UI)
+# The whole workflow runs from the web UI (http://localhost:5000)
+uv run python viewer.py
+```
+
+The scrape and render steps can also be run standalone:
+
+```bash
 uv run python -m pipeline.scraper --showtimes -o data/week_full.json
 uv run python -m pipeline.analysis
-
-# 3. Curate in the browser (http://localhost:5000)
-uv run python viewer.py
-
-# 4. Render the newsletter
-cd builder && npm install && node build.js
+cd builder && node build.js
 ```
 
 Status: proof of concept. Sending (e.g. via Mailjet) is manual — the builder

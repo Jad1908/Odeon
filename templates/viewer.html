@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Workflow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn.active { background-color: rgb(59, 130, 246); color: white; }
+        .subtab-btn.active { background-color: rgb(31, 41, 55); color: white; }
+        .subtab-content { display: none; }
+        .subtab-content.active { display: block; }
+        .movie-card.selected {
+            border-color: rgb(34, 197, 94);
+            border-width: 2px;
+            background-color: rgb(240, 253, 244);
+        }
+        .rating-badge { min-width: 40px; text-align: center; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <header class="mb-6 flex items-center justify-between bg-white rounded-lg shadow p-5">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Newsletter Workflow</h1>
+                <p class="text-gray-500 text-sm">Fetch &rarr; Select &rarr; Curate &rarr; Preview &rarr; Validate</p>
+            </div>
+            <div class="text-right">
+                <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-sm font-bold"></span>
+                <p class="text-sm text-gray-500 mt-1"><span id="selectedCount">0</span> movies in this issue</p>
+            </div>
+        </header>
+
+        <!-- Workflow Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 bg-white p-3 rounded-lg shadow">
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700 active" data-tab="fetch">1. Fetch</button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="select">2. Select</button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="curate">3. Curate</button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="preview">4. Preview</button>
+            <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 text-gray-700" data-tab="validate">5. Validate</button>
+        </div>
+
+        <!-- ============ 1. FETCH ============ -->
+        <div id="tab-fetch" class="tab-content active">
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-1">Fetch movies</h2>
+                <p class="text-gray-500 mb-6">Scrape the week's Paris program (cached per cinema week, Wed&ndash;Tue)</p>
+
+                <!-- Cache status -->
+                <div class="border-2 rounded-lg p-5 mb-6 {{ 'border-green-300 bg-green-50' if cache.fresh else 'border-yellow-300 bg-yellow-50' }}">
+                    {% if cache.exists %}
+                    <p class="font-medium text-gray-800">
+                        {% if cache.fresh %}Cached data is current.{% else %}Cached data is from a past cinema week.{% endif %}
+                    </p>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Scraped {{ cache.scraped_at or 'at an unknown time' }}
+                        {% if cache.week_start %}(cinema week of {{ cache.week_start }}){% endif %}
+                        {% if cache.movie_count %}&mdash; {{ cache.movie_count }} movies{% endif %}
+                    </p>
+                    {% else %}
+                    <p class="font-medium text-gray-800">No data yet — run a fetch to get started.</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex gap-3 mb-6">
+                    <button onclick="startFetch(false)" id="fetchBtn"
+                            class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50">
+                        Fetch (use cache if current)
+                    </button>
+                    <button onclick="startFetch(true)" id="forceFetchBtn"
+                            class="bg-gray-200 text-gray-700 py-2 px-6 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-50">
+                        Force re-scrape (~15 min)
+                    </button>
+                </div>
+
+                <!-- Progress -->
+                <div id="progressSection" class="border-2 border-gray-200 rounded-lg p-5 mb-6 hidden">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-gray-800">Progress</h3>
+                        <span id="statusBadge" class="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700">Idle</span>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span id="currentTask">Waiting...</span>
+                            <span><span id="progressCount">0</span> / <span id="totalCount">0</span></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div id="progressBar" class="bg-blue-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="errorDisplay" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg">
+                        <span class="font-medium">Error:</span> <span id="errorMessage"></span>
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div class="border-2 border-gray-200 rounded-lg p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="font-bold text-gray-800">Logs</h3>
+                        <button onclick="resetPipeline()" class="text-sm text-gray-500 hover:text-gray-700">Clear / Reset</button>
+                    </div>
+                    <div id="logsContainer" class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-xs h-48 overflow-y-auto">
+                        <p class="text-gray-500">No logs yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 2. SELECT ============ -->
+        <div id="tab-select" class="tab-content">
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-1">Select movies</h2>
+                <p class="text-gray-500 mb-4">Pick the movies for this issue. Picking from a category pre-assigns that section.</p>
+
+                {% if not all_movies %}
+                <div class="text-center py-12 text-gray-400">
+                    <p>No movie data yet. Run a fetch first.</p>
+                </div>
+                {% else %}
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="subtab-btn px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-300 active" data-subtab="all">
+                        All movies ({{ all_movies|length }})
+                    </button>
+                    {% for key, cat in categories.items() %}
+                    <button class="subtab-btn px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-300" data-subtab="{{ key }}">
+                        {{ cat.name }} ({{ data.get(key, [])|length }})
+                    </button>
+                    {% endfor %}
+                </div>
+
+                {% macro movie_card(movie, source) %}
+                <div class="movie-card bg-gray-50 rounded-lg p-4 border border-gray-200" data-movie-id="{{ movie.id }}">
+                    <div class="flex items-start gap-4">
+                        <button onclick="toggleSelect('{{ movie.id }}', '{{ source }}')"
+                                class="select-btn flex-shrink-0 w-10 h-10 rounded-full border-2 border-gray-300
+                                       hover:border-green-500 hover:bg-green-50 flex items-center justify-center"
+                                data-movie-id="{{ movie.id }}">
+                            <span class="text-gray-400 text-xl leading-none pointer-events-none">+</span>
+                        </button>
+                        {% if movie.poster_url %}
+                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}"
+                             class="w-16 h-24 object-cover rounded shadow-sm flex-shrink-0"
+                             loading="lazy" onerror="this.style.display='none'">
+                        {% endif %}
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-bold text-gray-800">{{ movie.title }}</h3>
+                            {% if movie.original_title and movie.original_title != movie.title %}
+                            <p class="text-sm text-gray-500 italic">{{ movie.original_title }}</p>
+                            {% endif %}
+                            <div class="flex flex-wrap gap-2 mt-2 text-xs text-gray-600">
+                                {% if movie.director %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.director }}</span>{% endif %}
+                                {% if movie.year %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.year }}</span>{% endif %}
+                                {% if movie.duration_minutes %}<span class="bg-gray-200 px-2 py-0.5 rounded">{{ movie.duration_minutes }} min</span>{% endif %}
+                                {% if movie.copies_count %}<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded">{{ movie.copies_count }} copies</span>{% endif %}
+                                {% if movie.showtimes %}<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{{ movie.showtimes|length }} showtimes</span>{% endif %}
+                            </div>
+                            {% if movie.genre %}
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                {% for g in movie.genre.split(',') %}
+                                <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded">{{ g.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="w-56 flex-shrink-0">
+                            <span class="text-base font-bold px-2.5 py-0.5 rounded text-white {{ 'bg-green-500' if movie.calculated_score >= 7.5 else ('bg-yellow-500' if movie.calculated_score >= 6 else 'bg-orange-500') }}">
+                                {{ "%.1f"|format(movie.calculated_score) }}
+                            </span>
+                            <div class="grid grid-cols-1 gap-1 text-xs mt-2">
+                                {% for rating in movie.ratings %}
+                                <div class="flex items-center gap-1 bg-white p-1 rounded border">
+                                    <span class="rating-badge text-white text-xs font-bold px-1.5 py-0.5 rounded {{ 'bg-green-500' if (rating.score / rating.max_score * 10) >= 7 else ('bg-yellow-500' if (rating.score / rating.max_score * 10) >= 5 else 'bg-red-500') }}">
+                                        {{ "%.1f"|format(rating.score) }}
+                                    </span>
+                                    <span class="text-gray-600 truncate">{{ rating.source[:20] }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endmacro %}
+
+                <div id="subtab-all" class="subtab-content active">
+                    <div class="grid gap-3">
+                        {% for movie in all_movies %}{{ movie_card(movie, '') }}{% endfor %}
+                    </div>
+                </div>
+                {% for key, cat in categories.items() %}
+                <div id="subtab-{{ key }}" class="subtab-content">
+                    <p class="text-gray-500 text-sm mb-3">{{ cat.description }}</p>
+                    <div class="grid gap-3">
+                        {% for movie in data.get(key, []) %}{{ movie_card(movie, key) }}{% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ============ 3. CURATE ============ -->
+        <div id="tab-curate" class="tab-content">
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Curate</h2>
+                        <p class="text-gray-500">Assign each movie to a section and write your comment. Everything autosaves.</p>
+                    </div>
+                    <span id="saveIndicator" class="text-xs text-gray-400"></span>
+                </div>
+
+                <!-- Section manager -->
+                <div class="border-2 border-gray-200 rounded-lg p-4 mb-6">
+                    <h3 class="font-bold text-gray-800 mb-2">Sections</h3>
+                    <div id="sectionChips" class="flex flex-wrap gap-2 mb-3"></div>
+                    <div class="flex gap-2">
+                        <input id="newSectionTitle" type="text" placeholder="New section title"
+                               class="border rounded-lg px-3 py-1.5 text-sm flex-1">
+                        <input id="newSectionDesc" type="text" placeholder="Description (optional)"
+                               class="border rounded-lg px-3 py-1.5 text-sm flex-1">
+                        <button onclick="addSection()" class="bg-gray-800 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-gray-700">
+                            + Add section
+                        </button>
+                    </div>
+                    <p id="sectionError" class="text-red-600 text-sm mt-2 hidden"></p>
+                </div>
+
+                <div id="curateList"></div>
+            </div>
+        </div>
+
+        <!-- ============ 4. PREVIEW ============ -->
+        <div id="tab-preview" class="tab-content">
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Preview</h2>
+                        <p class="text-gray-500">Rendered with the real Node/EJS builder — this is exactly what gets sent.</p>
+                    </div>
+                    <button onclick="renderPreview()" id="renderBtn"
+                            class="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50">
+                        Render preview
+                    </button>
+                </div>
+                <div id="previewLog" class="hidden mb-4 p-3 rounded-lg text-sm font-mono"></div>
+                <div class="border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                    <iframe id="previewFrame" class="w-full bg-white" style="height: 75vh" title="Newsletter preview"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 5. VALIDATE ============ -->
+        <div id="tab-validate" class="tab-content">
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-1">Validate</h2>
+                        <p class="text-gray-500">Re-renders the newsletter and checks it. All checks must pass before the issue is ready.</p>
+                    </div>
+                    <button onclick="runValidation()" id="validateBtn"
+                            class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 font-medium disabled:opacity-50">
+                        Run validation
+                    </button>
+                </div>
+                <div id="validationResults" class="space-y-3">
+                    <p class="text-gray-400 text-sm">Not validated yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---- Server-provided state ----
+        let SECTIONS = {{ sections | tojson }};
+        let issueMovies = {{ issue.movies | tojson }};
+        let issueStatus = {{ issue.status | tojson }};
+        const MOVIE_INDEX = {{ movie_index | tojson }};
+
+        // ---- Header ----
+        function updateHeader() {
+            const badge = document.getElementById('issueStatusBadge');
+            if (issueStatus === 'ready') {
+                badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white';
+                badge.textContent = 'READY';
+            } else {
+                badge.className = 'px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800';
+                badge.textContent = 'DRAFT';
+            }
+            document.getElementById('selectedCount').textContent = Object.keys(issueMovies).length;
+        }
+
+        // ---- Tabs ----
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+                if (btn.dataset.tab === 'curate') renderCurate();
+            });
+        });
+        document.querySelectorAll('.subtab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.subtab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('subtab-' + btn.dataset.subtab).classList.add('active');
+            });
+        });
+
+        // ---- Selection ----
+        function toggleSelect(movieId, source) {
+            movieId = String(movieId);
+            if (issueMovies[movieId]) {
+                delete issueMovies[movieId];
+            } else {
+                issueMovies[movieId] = { section: source || null, comment: '' };
+            }
+            updateCardButtons(movieId);
+            scheduleSave();
+            updateHeader();
+        }
+
+        function updateCardButtons(movieId) {
+            const selected = !!issueMovies[movieId];
+            document.querySelectorAll(`.movie-card[data-movie-id="${movieId}"]`).forEach(card => {
+                card.classList.toggle('selected', selected);
+                const btn = card.querySelector('.select-btn');
+                btn.classList.toggle('bg-green-500', selected);
+                btn.classList.toggle('border-green-500', selected);
+                btn.querySelector('span').textContent = selected ? '✓' : '+';
+                btn.querySelector('span').classList.toggle('text-white', selected);
+            });
+        }
+
+        // ---- Autosave ----
+        let saveTimer = null;
+        function scheduleSave() {
+            issueStatus = 'draft';
+            updateHeader();
+            const indicator = document.getElementById('saveIndicator');
+            indicator.textContent = 'Saving…';
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                fetch('/api/issue', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ movies: issueMovies })
+                })
+                .then(r => r.json())
+                .then(() => { indicator.textContent = 'Saved'; })
+                .catch(() => { indicator.textContent = 'Save failed!'; });
+            }, 700);
+        }
+
+        // ---- Sections ----
+        function orderedSections() {
+            return Object.entries(SECTIONS)
+                .sort((a, b) => (a[1].order || 99) - (b[1].order || 99));
+        }
+
+        function renderSectionChips() {
+            const container = document.getElementById('sectionChips');
+            container.innerHTML = orderedSections().map(([key, s]) => `
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium
+                             ${s.default ? 'bg-gray-200 text-gray-700' : 'bg-indigo-100 text-indigo-800'}">
+                    ${escapeHtml(s.title)}
+                    ${s.default ? '' : `<button onclick="deleteSection('${key}')" title="Delete section"
+                        class="text-indigo-500 hover:text-red-600 font-bold leading-none">&times;</button>`}
+                </span>
+            `).join('');
+        }
+
+        function addSection() {
+            const title = document.getElementById('newSectionTitle').value;
+            const description = document.getElementById('newSectionDesc').value;
+            const errEl = document.getElementById('sectionError');
+            errEl.classList.add('hidden');
+            fetch('/api/sections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description })
+            })
+            .then(r => r.json().then(data => ({ ok: r.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) {
+                    errEl.textContent = data.error;
+                    errEl.classList.remove('hidden');
+                    return;
+                }
+                SECTIONS[data.key] = data;
+                document.getElementById('newSectionTitle').value = '';
+                document.getElementById('newSectionDesc').value = '';
+                renderSectionChips();
+                renderCurate();
+            });
+        }
+
+        function deleteSection(key) {
+            fetch('/api/sections/' + key, { method: 'DELETE' })
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok) { alert(data.error); return; }
+                    delete SECTIONS[key];
+                    let touched = false;
+                    Object.values(issueMovies).forEach(entry => {
+                        if (entry.section === key) { entry.section = null; touched = true; }
+                    });
+                    renderSectionChips();
+                    renderCurate();
+                    if (touched) scheduleSave();
+                });
+        }
+
+        // ---- Curate ----
+        function sectionOptions(selected) {
+            const opts = ['<option value="">— unassigned —</option>'];
+            for (const [key, s] of orderedSections()) {
+                opts.push(`<option value="${key}" ${key === selected ? 'selected' : ''}>${escapeHtml(s.title)}</option>`);
+            }
+            return opts.join('');
+        }
+
+        function renderCurate() {
+            const container = document.getElementById('curateList');
+            const ids = Object.keys(issueMovies);
+            if (ids.length === 0) {
+                container.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No movies selected yet — pick some in the Select tab.</p>';
+                return;
+            }
+
+            // Group: unassigned first, then sections in order
+            const groups = [['', 'Unassigned', ids.filter(id => !issueMovies[id].section)]];
+            for (const [key, s] of orderedSections()) {
+                groups.push([key, s.title, ids.filter(id => issueMovies[id].section === key)]);
+            }
+
+            container.innerHTML = groups.map(([key, title, groupIds]) => {
+                if (groupIds.length === 0) return '';
+                const warn = key === '' ? 'border-yellow-300 bg-yellow-50' : 'border-gray-200';
+                return `
+                    <div class="border-2 ${warn} rounded-lg p-4 mb-4">
+                        <h3 class="font-bold text-gray-800 mb-3">${escapeHtml(title)} (${groupIds.length})</h3>
+                        <div class="space-y-3">${groupIds.map(curateRow).join('')}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        function curateRow(movieId) {
+            const info = MOVIE_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', score: 0, poster_url: null };
+            const entry = issueMovies[movieId];
+            const score = (info.score || 0).toFixed(1);
+            return `
+                <div class="flex gap-3 bg-white p-3 rounded-lg border">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-18 object-cover rounded flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <p class="font-bold text-gray-800 truncate">${escapeHtml(info.title)}
+                                <span class="font-normal text-gray-400 text-sm">${info.year || ''} &middot; ${score}</span>
+                            </p>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <select onchange="setSection('${movieId}', this.value)" class="border rounded-lg px-2 py-1 text-sm">
+                                    ${sectionOptions(entry.section)}
+                                </select>
+                                <button onclick="toggleSelect('${movieId}', ''); renderCurate();"
+                                        class="text-red-500 hover:text-red-700 text-sm" title="Remove from issue">&times; remove</button>
+                            </div>
+                        </div>
+                        <textarea oninput="setComment('${movieId}', this.value)" rows="2"
+                                  placeholder="Your comment for the newsletter…"
+                                  class="w-full border rounded-lg px-3 py-2 text-sm ${entry.comment ? '' : 'border-yellow-400'}">${escapeHtml(entry.comment || '')}</textarea>
+                    </div>
+                </div>`;
+        }
+
+        function setSection(movieId, section) {
+            issueMovies[movieId].section = section || null;
+            scheduleSave();
+            renderCurate();
+        }
+
+        function setComment(movieId, comment) {
+            issueMovies[movieId].comment = comment;
+            scheduleSave();  // no re-render while typing
+        }
+
+        // ---- Preview ----
+        function renderPreview() {
+            const btn = document.getElementById('renderBtn');
+            const log = document.getElementById('previewLog');
+            btn.disabled = true;
+            btn.textContent = 'Rendering…';
+            fetch('/api/prerender', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    log.classList.remove('hidden');
+                    if (data.ok) {
+                        log.className = 'mb-4 p-3 rounded-lg text-sm font-mono bg-green-50 text-green-800';
+                        const missing = data.export && data.export.missing_ids.length
+                            ? ` ⚠ ${data.export.missing_ids.length} selected movie(s) missing from scraped data`
+                            : '';
+                        log.textContent = `${data.log} — ${data.export.movie_count} movies in ${data.export.sections_used.length} section(s)${missing}`;
+                        document.getElementById('previewFrame').src = '/preview?ts=' + Date.now();
+                    } else {
+                        log.className = 'mb-4 p-3 rounded-lg text-sm font-mono bg-red-50 text-red-800';
+                        log.textContent = data.log;
+                    }
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Render preview';
+                });
+        }
+
+        // ---- Validation ----
+        function runValidation() {
+            const btn = document.getElementById('validateBtn');
+            const container = document.getElementById('validationResults');
+            btn.disabled = true;
+            btn.textContent = 'Validating…';
+            container.innerHTML = '<p class="text-gray-400 text-sm">Rendering and checking (image checks hit the network)…</p>';
+            fetch('/api/validate', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    issueStatus = data.status;
+                    updateHeader();
+                    if (data.error) {
+                        container.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg font-mono text-sm">${escapeHtml(data.error)}</div>`;
+                        return;
+                    }
+                    const summary = data.passed
+                        ? '<div class="bg-green-500 text-white p-4 rounded-lg font-bold">All checks passed — this issue is READY.</div>'
+                        : '<div class="bg-yellow-100 text-yellow-800 p-4 rounded-lg font-bold">Validation failed — fix the problems below and re-run.</div>';
+                    container.innerHTML = summary + data.checks.map(c => `
+                        <div class="border-2 ${c.passed ? 'border-green-200' : 'border-red-200'} rounded-lg p-4">
+                            <p class="font-bold ${c.passed ? 'text-green-700' : 'text-red-700'}">
+                                ${c.passed ? '✓' : '✗'} ${escapeHtml(c.label)}
+                            </p>
+                            ${c.problems.length ? `<ul class="list-disc ml-6 mt-2 text-sm text-gray-700">${c.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
+                        </div>`).join('');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Run validation';
+                });
+        }
+
+        // ---- Pipeline (fetch) ----
+        let pipelinePolling = null;
+
+        function startFetch(force) {
+            fetch('/api/pipeline/fetch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ force })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) { alert(data.error); return; }
+                startPolling();
+            });
+        }
+
+        function resetPipeline() {
+            fetch('/api/pipeline/reset', { method: 'POST' }).then(() => {
+                stopPolling();
+                document.getElementById('progressSection').classList.add('hidden');
+                document.getElementById('logsContainer').innerHTML = '<p class="text-gray-500">No logs yet.</p>';
+            });
+        }
+
+        function startPolling() {
+            document.getElementById('progressSection').classList.remove('hidden');
+            if (pipelinePolling) clearInterval(pipelinePolling);
+            pipelinePolling = setInterval(fetchPipelineStatus, 1000);
+            fetchPipelineStatus();
+        }
+
+        function stopPolling() {
+            if (pipelinePolling) { clearInterval(pipelinePolling); pipelinePolling = null; }
+        }
+
+        function fetchPipelineStatus() {
+            fetch('/api/pipeline/status')
+                .then(r => r.json())
+                .then(data => {
+                    updatePipelineUI(data);
+                    if (!data.is_running && (data.status === 'complete' || data.status === 'error')) {
+                        stopPolling();
+                        if (data.status === 'complete') {
+                            setTimeout(() => window.location.reload(), 1500);
+                        }
+                    }
+                });
+        }
+
+        function updatePipelineUI(state) {
+            document.getElementById('fetchBtn').disabled = state.is_running;
+            document.getElementById('forceFetchBtn').disabled = state.is_running;
+
+            const badge = document.getElementById('statusBadge');
+            const statusColors = {
+                'idle': 'bg-gray-200 text-gray-700',
+                'scraping': 'bg-blue-100 text-blue-800',
+                'analyzing': 'bg-green-100 text-green-800',
+                'complete': 'bg-green-500 text-white',
+                'error': 'bg-red-500 text-white'
+            };
+            badge.className = `px-3 py-1 rounded-full text-sm font-medium ${statusColors[state.status] || statusColors.idle}`;
+            badge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+
+            document.getElementById('currentTask').textContent = state.current_task || 'Waiting...';
+            document.getElementById('progressCount').textContent = state.progress;
+            document.getElementById('totalCount').textContent = state.total;
+            const percent = state.total > 0 ? (state.progress / state.total * 100) : 0;
+            document.getElementById('progressBar').style.width = percent + '%';
+
+            const errorDisplay = document.getElementById('errorDisplay');
+            if (state.error) {
+                errorDisplay.classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = state.error;
+            } else {
+                errorDisplay.classList.add('hidden');
+            }
+
+            if (state.logs && state.logs.length > 0) {
+                const container = document.getElementById('logsContainer');
+                container.innerHTML = state.logs.map(log => `<div>${escapeHtml(log)}</div>`).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text == null ? '' : String(text);
+            return div.innerHTML;
+        }
+
+        // ---- Init ----
+        updateHeader();
+        renderSectionChips();
+        Object.keys(issueMovies).forEach(updateCardButtons);
+        fetchPipelineStatus();
+    </script>
+</body>
+</html>
