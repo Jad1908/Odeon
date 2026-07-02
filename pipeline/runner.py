@@ -2,7 +2,6 @@
 Pipeline Runner - Orchestrates scraping and analysis with progress reporting.
 """
 import json
-import sys
 import os
 import time
 import threading
@@ -10,16 +9,13 @@ from datetime import datetime
 from queue import Queue
 from typing import Callable, Optional
 
-# Add parent directory to path to import existing modules
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from movie_scraper import (
-    fetch_movies_from_api, 
-    parse_movie_data, 
+from .scraper import (
+    fetch_movies_from_api,
+    parse_movie_data,
     fetch_showtimes_for_movie,
     save_movies_to_file
 )
-from movie_analysis import process_movies
+from .analysis import process_movies
 
 
 class PipelineRunner:
@@ -68,7 +64,7 @@ class PipelineRunner:
             self.error = None
             self.is_running = False
     
-    def run_scraper(self, output_file: str = "week_full.json"):
+    def run_scraper(self, output_file: str = "data/week_full.json"):
         """Run the movie scraper with progress reporting."""
         if self.is_running:
             return {"error": "Pipeline already running"}
@@ -146,7 +142,7 @@ class PipelineRunner:
         
         return {"status": "started"}
     
-    def run_analysis(self, input_file: str = "week_full.json", output_file: str = "newsletter_data.json"):
+    def run_analysis(self, input_file: str = "data/week_full.json", output_file: str = "data/newsletter_data.json"):
         """Run the movie analysis to generate newsletter data."""
         if self.is_running:
             return {"error": "Pipeline already running"}
@@ -176,18 +172,18 @@ class PipelineRunner:
                 
                 # Run the analysis
                 # We need to temporarily modify the INPUT_FILE and OUTPUT_FILE
-                import movie_analysis
-                original_input = movie_analysis.INPUT_FILE
-                original_output = movie_analysis.OUTPUT_FILE
-                
-                movie_analysis.INPUT_FILE = input_file
-                movie_analysis.OUTPUT_FILE = output_file
-                
+                from . import analysis
+                original_input = analysis.INPUT_FILE
+                original_output = analysis.OUTPUT_FILE
+
+                analysis.INPUT_FILE = input_file
+                analysis.OUTPUT_FILE = output_file
+
                 try:
-                    movie_analysis.process_movies()
+                    analysis.process_movies()
                 finally:
-                    movie_analysis.INPUT_FILE = original_input
-                    movie_analysis.OUTPUT_FILE = original_output
+                    analysis.INPUT_FILE = original_input
+                    analysis.OUTPUT_FILE = original_output
                 
                 self.progress = 90
                 self.current_task = "Finalizing"

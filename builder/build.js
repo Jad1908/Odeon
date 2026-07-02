@@ -142,7 +142,7 @@ function reorganizeBySourceTab(moviesData, sectionsConfig) {
 // Read from movies.json if it exists and has source_tab, otherwise fallback to parent newsletter_selection.json
 let moviesRaw;
 const moviesJsonPath = 'movies.json';
-const selectionJsonPath = '../newsletter_selection.json';
+const selectionJsonPath = '../data/newsletter_selection.json';
 
 if (fs.existsSync(moviesJsonPath)) {
     moviesRaw = JSON.parse(fs.readFileSync(moviesJsonPath, 'utf8'));
@@ -185,5 +185,5 @@ const html = ejs.render(template, {
     text: textData 
 });
 
-fs.writeFileSync('newsletter_output_v2.html', html);
-console.log('Version 2 Generated: newsletter_output_v2.html');
+fs.writeFileSync('output/newsletter_output_v2.html', html);
+console.log('Version 2 Generated: output/newsletter_output_v2.html');

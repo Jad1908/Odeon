@@ -48,7 +48,7 @@ EXPORT_CATEGORIES = [
 
 def load_data():
     """Load newsletter data from JSON file."""
-    with open('newsletter_data.json', 'r', encoding='utf-8') as f:
+    with open('data/newsletter_data.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
 HTML_TEMPLATE = '''
@@ -223,7 +223,7 @@ HTML_TEMPLATE = '''
                             Fetch all movies playing in Paris this week with showtimes from paris-cine.info API.
                             This process takes 10-15 minutes.
                         </p>
-                        <p class="text-xs text-gray-400 mb-4">Output: week_full.json</p>
+                        <p class="text-xs text-gray-400 mb-4">Output: data/week_full.json</p>
                         <button onclick="startScraper()" 
                                 id="scrapeBtn"
                                 class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
@@ -241,7 +241,7 @@ HTML_TEMPLATE = '''
                             Process scraped data and categorize movies into newsletter sections
                             (new releases, classics, niche gems, etc.).
                         </p>
-                        <p class="text-xs text-gray-400 mb-4">Output: newsletter_data.json</p>
+                        <p class="text-xs text-gray-400 mb-4">Output: data/newsletter_data.json</p>
                         <button onclick="startAnalysis()" 
                                 id="analyzeBtn"
                                 class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
@@ -806,15 +806,15 @@ def pipeline_status():
 @app.route('/api/pipeline/scrape', methods=['POST'])
 def start_scraper():
     """Start the movie scraper."""
-    result = pipeline.run_scraper(output_file="week_full.json")
+    result = pipeline.run_scraper(output_file="data/week_full.json")
     return jsonify(result)
 
 @app.route('/api/pipeline/analyze', methods=['POST'])
 def start_analysis():
     """Start the analysis to generate newsletter data."""
     result = pipeline.run_analysis(
-        input_file="week_full.json",
-        output_file="newsletter_data.json"
+        input_file="data/week_full.json",
+        output_file="data/newsletter_data.json"
     )
     return jsonify(result)
 
