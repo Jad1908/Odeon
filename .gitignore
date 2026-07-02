@@ -8,3 +8,10 @@ node_modules/
 
 # macOS
 .DS_Store
+
+# Workflow runtime state
+data/issue.json
+data/scrape_meta.json
+data/sections.json
+builder/.prerender/
+builder/output/preview.html
