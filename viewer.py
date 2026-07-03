@@ -165,6 +165,16 @@ def add_section():
     return jsonify(section)
 
 
+@app.route('/api/sections/order', methods=['PUT'])
+def reorder_sections():
+    payload = request.get_json(force=True)
+    try:
+        sections = issue_store.reorder_sections(payload.get('keys', []))
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    return jsonify(sections)
+
+
 @app.route('/api/sections/<key>', methods=['PATCH'])
 def update_section(key):
     payload = request.get_json(force=True)

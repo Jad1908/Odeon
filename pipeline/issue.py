@@ -136,6 +136,24 @@ def add_section(title: str, description: str = "") -> dict:
     return {"key": key, **sections[key]}
 
 
+def reorder_sections(keys: list) -> dict:
+    """Persist a new section order; sections not listed keep their place after."""
+    sections = load_sections()
+    unknown = [k for k in keys if k not in sections]
+    if unknown:
+        raise ValueError(f"Unknown sections: {', '.join(unknown)}")
+    order = 1
+    for k in keys:
+        sections[k]["order"] = order
+        order += 1
+    for k, s in sorted(sections.items(), key=lambda kv: kv[1]["order"]):
+        if k not in keys:
+            s["order"] = order
+            order += 1
+    save_sections(sections)
+    return sections
+
+
 def update_section(key: str, title: str = None, description: str = None) -> dict:
     """Rename a section or change its description (defaults included)."""
     sections = load_sections()
@@ -183,7 +201,8 @@ def save_issue(movies: dict, content: dict = None, status: str = "draft") -> dic
         "movies": {
             str(mid): {
                 "section": entry.get("section") or None,
-                "comment": (entry.get("comment") or "").strip()
+                "comment": (entry.get("comment") or "").strip(),
+                "order": entry.get("order") if isinstance(entry.get("order"), int) else None
             }
             for mid, entry in movies.items()
         }

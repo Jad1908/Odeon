@@ -44,6 +44,14 @@
         .wfield:hover { border-color: #e6dfd8; }
         .wfield:focus { background: #ffffff; border-color: #c8a24a; }
         .wfield::placeholder { color: #b6b1a4; font-style: italic; }
+        /* Organize board drag & drop */
+        .board-row { cursor: grab; transition: box-shadow .1s; }
+        .board-row:active { cursor: grabbing; }
+        .board-row.row-over-top { box-shadow: 0 -3px 0 0 rgb(220 38 38); }
+        .board-row.row-over-bottom { box-shadow: 0 3px 0 0 rgb(220 38 38); }
+        .drop-zone.drop-target { outline: 2px dashed rgb(220 38 38); outline-offset: -2px; background-color: rgb(254 242 242); }
+        .section-head { cursor: grab; }
+        .section-head:active { cursor: grabbing; }
         ::-webkit-scrollbar { height: 8px; width: 8px; }
         ::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
     </style>
@@ -216,24 +224,13 @@
                 <div class="flex items-start justify-between mb-5">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900 mb-1">Organize</h2>
-                        <p class="text-slate-500 text-sm">Give each movie a section — the words come next, in Write. Everything autosaves.</p>
+                        <p class="text-slate-500 text-sm">Drag movies from the bench into sections and reorder them freely — that order is the newsletter's order. Drag section headers to reorder sections.</p>
                     </div>
                     <span class="save-indicator text-xs text-slate-400"></span>
                 </div>
 
-                <!-- Section manager -->
-                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 mb-6">
-                    <h3 class="font-semibold text-slate-800 text-sm mb-2">Sections</h3>
-                    <div id="sectionChips" class="flex flex-wrap gap-2 mb-3"></div>
-                    <div class="flex flex-wrap gap-2">
-                        <input id="newSectionTitle" type="text" placeholder="New section title" class="field flex-1 min-w-40">
-                        <input id="newSectionDesc" type="text" placeholder="Description (optional)" class="field flex-1 min-w-40">
-                        <button onclick="addSection()" class="btn-secondary !py-1.5 text-sm">+ Add section</button>
-                    </div>
-                    <p id="sectionError" class="text-red-600 text-sm mt-2 hidden"></p>
-                </div>
-
-                <div id="curateList"></div>
+                <div id="benchZone" class="mb-5"></div>
+                <div id="boardSections"></div>
             </div>
         </div>
 
@@ -438,11 +435,13 @@
             if (issueMovies[movieId]) {
                 delete issueMovies[movieId];
             } else {
-                issueMovies[movieId] = { section: suggestedSection(movieId), comment: '' };
+                const section = suggestedSection(movieId);
+                issueMovies[movieId] = { section: section, comment: '', order: sectionMovies(section || '').length };
             }
             scheduleSave();
             updateHeader();
             renderSelect();
+            renderCurate();
         }
 
         function scoreColor(score) {
@@ -638,44 +637,9 @@
                 .sort((a, b) => (a[1].order || 99) - (b[1].order || 99));
         }
 
-        function renderSectionChips() {
-            const container = document.getElementById('sectionChips');
-            container.innerHTML = orderedSections().map(([key, s]) => `
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
-                             ${s.default ? 'bg-slate-200 text-slate-700' : 'bg-indigo-100 text-indigo-800'}">
-                    ${escapeHtml(s.title)}
-                    ${s.default ? '' : `<button onclick="deleteSection('${key}')" title="Delete section"
-                        class="text-indigo-400 hover:text-red-600 font-bold leading-none">&times;</button>`}
-                </span>
-            `).join('');
-        }
-
-        function addSection() {
-            const title = document.getElementById('newSectionTitle').value;
-            const description = document.getElementById('newSectionDesc').value;
-            const errEl = document.getElementById('sectionError');
-            errEl.classList.add('hidden');
-            fetch('/api/sections', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, description })
-            })
-            .then(r => r.json().then(data => ({ ok: r.ok, data })))
-            .then(({ ok, data }) => {
-                if (!ok) {
-                    errEl.textContent = data.error;
-                    errEl.classList.remove('hidden');
-                    return;
-                }
-                SECTIONS[data.key] = data;
-                document.getElementById('newSectionTitle').value = '';
-                document.getElementById('newSectionDesc').value = '';
-                renderSectionChips();
-                renderCurate();
-            });
-        }
-
         function deleteSection(key) {
+            const count = sectionMovies(key).length;
+            if (count && !confirm(`Delete this section? Its ${count} movie(s) go back to the bench.`)) return;
             fetch('/api/sections/' + key, { method: 'DELETE' })
                 .then(r => r.json().then(data => ({ ok: r.ok, data })))
                 .then(({ ok, data }) => {
@@ -685,74 +649,205 @@
                     Object.values(issueMovies).forEach(entry => {
                         if (entry.section === key) { entry.section = null; touched = true; }
                     });
-                    renderSectionChips();
                     renderCurate();
                     if (touched) scheduleSave();
                 });
         }
 
-        // ---- Curate ----
-        function sectionOptions(selected) {
-            const opts = ['<option value="">— unassigned —</option>'];
-            for (const [key, s] of orderedSections()) {
-                opts.push(`<option value="${key}" ${key === selected ? 'selected' : ''}>${escapeHtml(s.title)}</option>`);
-            }
-            return opts.join('');
+        // ---- Organize board (bench + sections, drag & drop) ----
+        function sectionMovies(key) {
+            return Object.keys(issueMovies)
+                .filter(id => (issueMovies[id].section || '') === (key || ''))
+                .sort((a, b) => {
+                    const oa = issueMovies[a].order, ob = issueMovies[b].order;
+                    return (typeof oa === 'number' ? oa : 1e9) - (typeof ob === 'number' ? ob : 1e9);
+                });
         }
 
-        function renderCurate() {
-            const container = document.getElementById('curateList');
-            const ids = Object.keys(issueMovies);
-            if (ids.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-sm text-center py-10">No movies selected yet — pick some in the Select tab.</p>';
-                return;
-            }
+        let dragMovieId = null;
+        let dragSecKey = null;
 
-            // Group: unassigned first, then sections in order
-            const groups = [['', 'Unassigned', ids.filter(id => !issueMovies[id].section)]];
-            for (const [key, s] of orderedSections()) {
-                groups.push([key, s.title, ids.filter(id => issueMovies[id].section === key)]);
-            }
-
-            container.innerHTML = groups.map(([key, title, groupIds]) => {
-                if (groupIds.length === 0) return '';
-                const warn = key === ''
-                    ? 'border-amber-300 bg-amber-50'
-                    : 'border-slate-200 bg-slate-50';
-                return `
-                    <div class="border ${warn} rounded-xl p-4 mb-4">
-                        <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
-                            ${key === '' ? '⚠️' : '📂'} ${escapeHtml(title)}
-                            <span class="text-xs font-semibold bg-white border border-slate-200 rounded-full px-2 py-0.5 text-slate-500">${groupIds.length}</span>
-                        </h3>
-                        <div class="space-y-3">${groupIds.map(curateRow).join('')}</div>
-                    </div>`;
-            }).join('');
+        function onMovieDragStart(e, id) {
+            dragMovieId = id; dragSecKey = null;
+            e.dataTransfer.effectAllowed = 'move';
+            e.stopPropagation();
+        }
+        function onSectionDragStart(e, key) {
+            dragSecKey = key; dragMovieId = null;
+            e.dataTransfer.effectAllowed = 'move';
+            e.stopPropagation();
+        }
+        function endDrag() {
+            dragMovieId = null; dragSecKey = null;
+            document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+            document.querySelectorAll('.row-over-top, .row-over-bottom').forEach(el =>
+                el.classList.remove('row-over-top', 'row-over-bottom'));
         }
 
-        function curateRow(movieId) {
+        function onZoneOver(e) {
+            if (!dragMovieId && !dragSecKey) return;
+            e.preventDefault();
+            e.currentTarget.classList.add('drop-target');
+        }
+        function onZoneLeave(e) {
+            e.currentTarget.classList.remove('drop-target');
+        }
+        function onRowOver(e) {
+            if (!dragMovieId) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const rect = e.currentTarget.getBoundingClientRect();
+            const below = e.clientY > rect.top + rect.height / 2;
+            e.currentTarget.classList.toggle('row-over-top', !below);
+            e.currentTarget.classList.toggle('row-over-bottom', below);
+        }
+        function onRowLeave(e) {
+            e.currentTarget.classList.remove('row-over-top', 'row-over-bottom');
+        }
+
+        function moveMovie(id, key, index) {
+            const dest = sectionMovies(key).filter(x => x !== id);
+            dest.splice(Math.max(0, Math.min(index, dest.length)), 0, id);
+            issueMovies[id].section = key || null;
+            dest.forEach((x, i) => { issueMovies[x].order = i; });
+            scheduleSave();
+            renderCurate();
+        }
+
+        function dropOnZone(e, key) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (dragMovieId) {
+                moveMovie(dragMovieId, key, sectionMovies(key).length);
+            } else if (dragSecKey && key && dragSecKey !== key) {
+                reorderSectionsTo(dragSecKey, key);
+            }
+            endDrag();
+        }
+
+        function dropOnRow(e, targetId) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!dragMovieId || dragMovieId === targetId) { endDrag(); return; }
+            const key = issueMovies[targetId].section || '';
+            const rect = e.currentTarget.getBoundingClientRect();
+            const below = e.clientY > rect.top + rect.height / 2;
+            const list = sectionMovies(key).filter(x => x !== dragMovieId);
+            const index = list.indexOf(targetId) + (below ? 1 : 0);
+            moveMovie(dragMovieId, key, index);
+            endDrag();
+        }
+
+        function reorderSectionsTo(fromKey, toKey) {
+            const keys = orderedSections().map(([k]) => k).filter(k => k !== fromKey);
+            keys.splice(keys.indexOf(toKey), 0, fromKey);
+            keys.forEach((k, i) => { SECTIONS[k].order = i + 1; });
+            markIndicators('Saving…');
+            fetch('/api/sections/order', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keys })
+            })
+            .then(() => markIndicators('Saved ✓'))
+            .catch(() => markIndicators('Save failed!'));
+            scheduleSave();  // section order changes the rendered newsletter
+            renderCurate();
+        }
+
+        function addSectionFromBoard() {
+            const input = document.getElementById('boardNewSection');
+            const title = input.value.trim();
+            if (!title) return;
+            fetch('/api/sections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description: '' })
+            })
+            .then(r => r.json().then(data => ({ ok: r.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) { alert(data.error); return; }
+                SECTIONS[data.key] = data;
+                renderCurate();
+            });
+        }
+
+        function boardRow(movieId) {
             const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', score: 0, poster_url: null };
             const entry = issueMovies[movieId];
-            const score = (info.score || 0).toFixed(1);
             return `
-                <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
-                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-9 h-13 object-cover rounded-md flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
-                    <p class="flex-1 min-w-0 font-bold text-slate-900 truncate">${escapeHtml(info.title)}
-                        <span class="font-normal text-slate-400 text-sm">${info.year || ''} · ${score}</span>
-                        ${entry.comment ? '' : '<span class="font-normal text-amber-600 text-xs ml-1" title="No comment yet — add one in Write">✎ no note</span>'}
+                <div class="board-row flex items-center gap-2.5 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200"
+                     draggable="true"
+                     ondragstart="onMovieDragStart(event, '${movieId}')" ondragend="endDrag()"
+                     ondragover="onRowOver(event)" ondragleave="onRowLeave(event)"
+                     ondrop="dropOnRow(event, '${movieId}')">
+                    <span class="text-slate-300 select-none text-sm leading-none">⠿</span>
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-7 h-10 object-cover rounded flex-shrink-0 pointer-events-none" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <p class="flex-1 min-w-0 text-sm font-semibold text-slate-800 truncate pointer-events-none">${escapeHtml(info.title)}
+                        <span class="font-normal text-slate-400">${info.year || ''} · ${(info.score || 0).toFixed(1)}</span>
+                        ${entry.comment ? '' : '<span class="font-normal text-amber-600 text-xs ml-1" title="No note yet — write one in Write">✎</span>'}
                     </p>
-                    <select onchange="setSection('${movieId}', this.value)" class="field !py-1 text-sm flex-shrink-0">
-                        ${sectionOptions(entry.section)}
-                    </select>
-                    <button onclick="toggleSelect('${movieId}'); renderCurate();"
-                            class="text-slate-400 hover:text-red-600 text-sm font-medium flex-shrink-0" title="Remove from issue">&times;</button>
+                    <button onclick="toggleSelect('${movieId}')"
+                            class="text-slate-300 hover:text-red-600 text-sm font-medium flex-shrink-0" title="Remove from issue">&times;</button>
                 </div>`;
         }
 
-        function setSection(movieId, section) {
-            issueMovies[movieId].section = section || null;
-            scheduleSave();
-            renderCurate();
+        function benchCard(movieId) {
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, poster_url: null };
+            return `
+                <div class="board-row flex items-center gap-2 bg-white pl-2 pr-1 py-1 rounded-lg border border-slate-200 max-w-48"
+                     draggable="true"
+                     ondragstart="onMovieDragStart(event, '${movieId}')" ondragend="endDrag()">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-6 h-9 object-cover rounded flex-shrink-0 pointer-events-none" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <span class="text-xs font-semibold text-slate-800 truncate pointer-events-none">${escapeHtml(info.title)}</span>
+                    <button onclick="toggleSelect('${movieId}')"
+                            class="text-slate-300 hover:text-red-600 text-sm flex-shrink-0" title="Remove from issue">&times;</button>
+                </div>`;
+        }
+
+        function renderCurate() {
+            const benchEl = document.getElementById('benchZone');
+            const boardEl = document.getElementById('boardSections');
+            if (!benchEl) return;
+            const benchIds = sectionMovies('');
+            const total = Object.keys(issueMovies).length;
+
+            benchEl.innerHTML = `
+                <div class="drop-zone rounded-xl border-2 border-dashed ${benchIds.length ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-slate-50'} p-3"
+                     ondragover="onZoneOver(event)" ondragleave="onZoneLeave(event)" ondrop="dropOnZone(event, '')">
+                    <p class="text-xs font-semibold uppercase tracking-wide ${benchIds.length ? 'text-amber-700' : 'text-slate-400'} mb-2">
+                        Bench — ${benchIds.length ? benchIds.length + ' movie' + (benchIds.length > 1 ? 's' : '') + ' waiting for a section' : 'empty (drop a movie here to unassign it)'}
+                    </p>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${benchIds.map(benchCard).join('') || ''}
+                    </div>
+                </div>`;
+
+            boardEl.innerHTML = (total === 0
+                ? '<p class="text-slate-400 text-sm text-center py-10">No movies selected yet — pick some in the Select tab.</p>'
+                : orderedSections().map(([key, s]) => {
+                    const groupIds = sectionMovies(key);
+                    return `
+                        <div class="drop-zone rounded-xl border border-slate-200 bg-slate-50 mb-3"
+                             ondragover="onZoneOver(event)" ondragleave="onZoneLeave(event)" ondrop="dropOnZone(event, '${key}')">
+                            <div class="section-head flex items-center gap-2 px-3 pt-2.5 pb-1.5"
+                                 draggable="true" ondragstart="onSectionDragStart(event, '${key}')" ondragend="endDrag()">
+                                <span class="text-slate-300 select-none text-sm leading-none">⠿</span>
+                                <h3 class="font-bold text-slate-800 text-sm">${escapeHtml(s.title)}</h3>
+                                <span class="text-[11px] font-semibold bg-white border border-slate-200 rounded-full px-1.5 py-0.5 text-slate-500">${groupIds.length}</span>
+                                ${s.default ? '' : `<button onclick="deleteSection('${key}')" title="Delete section"
+                                    class="ml-auto text-slate-300 hover:text-red-600 text-sm font-bold">&times;</button>`}
+                            </div>
+                            <div class="px-3 pb-3 space-y-1.5">
+                                ${groupIds.map(boardRow).join('') ||
+                                  '<p class="text-xs text-slate-400 italic border border-dashed border-slate-200 rounded-lg px-3 py-2.5">Drop movies here</p>'}
+                            </div>
+                        </div>`;
+                }).join('')) + `
+                <div class="flex gap-2 mt-4">
+                    <input id="boardNewSection" type="text" placeholder="New section… (press Enter)"
+                           onkeydown="if (event.key === 'Enter') addSectionFromBoard()" class="field flex-1 max-w-72">
+                    <button onclick="addSectionFromBoard()" class="btn-secondary !py-1.5 text-sm">+ Add section</button>
+                </div>`;
         }
 
         function setComment(movieId, comment) {
@@ -824,10 +919,10 @@
             const doc = document.getElementById('writeDoc');
             const c = issueContent;
             const ids = Object.keys(issueMovies);
-            const unassigned = ids.filter(id => !issueMovies[id].section).length;
+            const unassigned = sectionMovies('').length;
 
             const sectionBlocks = orderedSections().map(([key, s], idx) => {
-                const groupIds = ids.filter(id => issueMovies[id].section === key);
+                const groupIds = sectionMovies(key);
                 if (groupIds.length === 0) return '';
                 const numeral = String(idx + 1).padStart(2, '0');
                 return `
@@ -1042,9 +1137,9 @@
 
         // ---- Init ----
         updateHeader();
-        renderSectionChips();
         initGenreFilter();
         renderSelect();
+        renderCurate();
         fetchPipelineStatus();
     </script>
 </body>

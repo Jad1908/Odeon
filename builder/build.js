@@ -109,11 +109,14 @@ function reorganizeBySourceTab(moviesData, sectionsConfig) {
         sections[tab].push(movie);
     });
     
-    // Sort each section according to its sort function
+    // Sort each section: an explicit editor-defined order (issue_order, set by
+    // the workflow UI) wins over the automatic per-category sort functions
     Object.keys(sections).forEach(tab => {
-        const sortFn = SORT_FUNCTIONS[tab];
-        if (sortFn) {
-            sections[tab].sort(sortFn);
+        const list = sections[tab];
+        if (list.every(m => typeof m.issue_order === 'number')) {
+            list.sort((a, b) => a.issue_order - b.issue_order);
+        } else if (SORT_FUNCTIONS[tab]) {
+            list.sort(SORT_FUNCTIONS[tab]);
         }
     });
     

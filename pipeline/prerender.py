@@ -39,7 +39,7 @@ def export_issue_inputs() -> dict:
 
     grouped = {}
     missing = []
-    for movie_id, entry in current["movies"].items():
+    for idx, (movie_id, entry) in enumerate(current["movies"].items()):
         movie = lookup.get(str(movie_id))
         if movie is None:
             missing.append(str(movie_id))
@@ -48,7 +48,15 @@ def export_issue_inputs() -> dict:
         section = entry.get("section") or UNASSIGNED_KEY
         movie["source_tab"] = section
         movie["comment"] = entry.get("comment") or ""
+        order = entry.get("order")
+        movie["_sort"] = (order if isinstance(order, int) else 10**9, idx)
         grouped.setdefault(section, []).append(movie)
+
+    # The editor's manual order within each section wins over automatic sorting
+    for movies_list in grouped.values():
+        movies_list.sort(key=lambda mv: mv.pop("_sort"))
+        for i, mv in enumerate(movies_list):
+            mv["issue_order"] = i
 
     with open(BASE_TEXT_FILE, "r", encoding="utf-8") as f:
         text_data = json.load(f)
