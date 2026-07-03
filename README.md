@@ -26,6 +26,9 @@ paris-cine.info API
         │
         ▼
 4. Render        builder/build.js (EJS)   → builder/output/newsletter_output_v2.html
+        │
+        ▼
+5. Send          pipeline/send.py         → Resend broadcast to the audience
 ```
 
 The Flask UI drives the whole workflow for an issue: fetch the week's movies
@@ -33,7 +36,10 @@ The Flask UI drives the whole workflow for an issue: fetch the week's movies
 them into sections (six defaults, plus your own saved custom sections), write
 a comment for each, prerender the exact newsletter HTML through the Node
 builder, and validate it (completeness, broken images, stale showtimes,
-render integrity) before the issue is marked ready.
+render integrity) before the issue is marked ready. Once validation passes,
+a Send button appears in the top bar: it uploads the validated render to
+[Resend](https://resend.com) as a broadcast and sends it to the configured
+audience (an unsubscribe link is appended automatically).
 
 ## Repository layout
 
@@ -65,5 +71,9 @@ uv run python -m pipeline.analysis
 cd builder && node build.js
 ```
 
-Status: proof of concept. Sending (e.g. via Mailjet) is manual — the builder
-output is pasted into the email tool by hand.
+### Sending via Resend
+
+Copy `.env.example` to `.env` and fill in your Resend API key, the segment id
+to send to, and the sender address (its domain must be verified in Resend).
+The Send button in the UI only appears after validation passes; sending marks
+the issue `sent` (any further edit puts it back into draft).

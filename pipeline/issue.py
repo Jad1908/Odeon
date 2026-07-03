@@ -150,10 +150,12 @@ def load_issue() -> dict:
 
 def save_issue(movies: dict, content: dict = None, status: str = "draft") -> dict:
     """Persist the issue draft. Any edit puts it back into draft status."""
+    previous = load_issue()
     if content is None:
-        content = load_issue().get("content")
+        content = previous.get("content")
     issue = {
         "status": status,
+        "last_send": previous.get("last_send"),
         "updated_at": datetime.now().isoformat(timespec="seconds"),
         "content": _clean_content(content),
         "movies": {
@@ -175,6 +177,22 @@ def set_issue_status(status: str) -> dict:
     issue = load_issue()
     issue["status"] = status
     issue["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    os.makedirs(os.path.dirname(ISSUE_FILE), exist_ok=True)
+    with open(ISSUE_FILE, "w", encoding="utf-8") as f:
+        json.dump(issue, f, indent=2, ensure_ascii=False)
+    return issue
+
+
+def record_send(broadcast_id: str, subject: str) -> dict:
+    """Mark the issue as sent and keep a trace of the Resend broadcast."""
+    issue = load_issue()
+    issue["status"] = "sent"
+    issue["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    issue["last_send"] = {
+        "broadcast_id": broadcast_id,
+        "subject": subject,
+        "sent_at": issue["updated_at"]
+    }
     os.makedirs(os.path.dirname(ISSUE_FILE), exist_ok=True)
     with open(ISSUE_FILE, "w", encoding="utf-8") as f:
         json.dump(issue, f, indent=2, ensure_ascii=False)

@@ -9,6 +9,9 @@ node_modules/
 # macOS
 .DS_Store
 
+# Secrets
+.env
+
 # Workflow runtime state
 data/issue.json
 data/scrape_meta.json
