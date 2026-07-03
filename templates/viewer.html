@@ -1248,6 +1248,14 @@
         }
 
         // ---- Init ----
+        // Reconcile: movies pointing at a section that no longer exists go back to the bench
+        (() => {
+            let orphaned = false;
+            Object.values(issueMovies).forEach(e => {
+                if (e.section && !SECTIONS[e.section]) { e.section = null; orphaned = true; }
+            });
+            if (orphaned) scheduleSave();
+        })();
         updateHeader();
         initGenreFilter();
         renderSelect();
