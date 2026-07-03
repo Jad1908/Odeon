@@ -71,6 +71,7 @@
             <div class="flex items-center gap-3 flex-shrink-0">
                 <span class="text-sm text-slate-300"><span id="selectedCount" class="font-bold text-white">0</span> movies picked</span>
                 <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
+                <button onclick="sendNewsletter()" id="sendBtn" class="hidden bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-bold px-4 py-1.5 rounded-full whitespace-nowrap transition-colors">Send 🚀</button>
             </div>
         </div>
         <!-- Workflow stepper -->
@@ -339,10 +340,15 @@
             if (issueStatus === 'ready') {
                 badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-emerald-500 text-white';
                 badge.textContent = 'READY';
+            } else if (issueStatus === 'sent') {
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-sky-500 text-white';
+                badge.textContent = 'SENT';
             } else {
                 badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-amber-400 text-amber-950';
                 badge.textContent = 'DRAFT';
             }
+            // The send button only exists once validation has marked the issue ready
+            document.getElementById('sendBtn').classList.toggle('hidden', issueStatus !== 'ready');
             const count = Object.keys(issueMovies).length;
             document.getElementById('selectedCount').textContent = count;
             document.getElementById('selectionTray').classList.toggle('hidden', count === 0);
@@ -1135,7 +1141,7 @@
                         return;
                     }
                     const summary = data.passed
-                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">🎉 All checks passed — this issue is READY.</div>'
+                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">🎉 All checks passed — this issue is READY. Use the <span class="underline">Send 🚀</span> button in the top bar to send it to your list.</div>'
                         : '<div class="bg-amber-100 text-amber-900 border border-amber-200 p-4 rounded-xl font-bold">Validation failed — fix the problems below and re-run.</div>';
                     container.innerHTML = summary + data.checks.map(c => `
                         <div class="border ${c.passed ? 'border-emerald-200 bg-emerald-50/40' : 'border-red-200 bg-red-50/40'} rounded-xl p-4">
@@ -1148,6 +1154,44 @@
                 .finally(() => {
                     btn.disabled = false;
                     btn.textContent = 'Run validation';
+                });
+        }
+
+        // ---- Send (Resend) ----
+        function sendNewsletter() {
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+            fetch('/api/send/status')
+                .then(r => r.json())
+                .then(status => {
+                    if (!status.configured) {
+                        alert(status.problems.join('\n'));
+                        return;
+                    }
+                    const subject = prompt('Send this issue to the Resend audience.\n\nEmail subject:', status.default_subject);
+                    if (subject === null) return; // cancelled
+                    if (!confirm(`Send the newsletter now?\n\nSubject: ${subject.trim() || status.default_subject}\n\nThis emails everyone in the audience.`)) return;
+                    btn.textContent = 'Sending…';
+                    return fetch('/api/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ subject })
+                    })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (!data.ok) {
+                                alert(data.error || 'Sending failed.');
+                                return;
+                            }
+                            issueStatus = 'sent';
+                            updateHeader();
+                            alert(`✅ Newsletter sent!\n\nSubject: ${data.subject}\nResend broadcast: ${data.broadcast_id}`);
+                        });
+                })
+                .catch(e => alert(`Sending failed: ${e}`))
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Send 🚀';
                 });
         }
 

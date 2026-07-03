@@ -14,6 +14,7 @@ from pipeline.runner import pipeline, get_cache_info
 from pipeline import issue as issue_store
 from pipeline import prerender as prerender_mod
 from pipeline import validation as validation_mod
+from pipeline import send as send_mod
 from pipeline.analysis import get_normalized_score
 
 app = Flask(__name__)
@@ -263,6 +264,27 @@ def validate():
                         "error": f"Prerender failed: {render_result['log']}"})
     result = validation_mod.run_validation()
     return jsonify(result)
+
+
+# ---- Send (Resend) ----
+
+@app.route('/api/send/status')
+def send_status():
+    """Whether Resend is configured, and the default subject for the issue."""
+    issue = issue_store.load_issue()
+    return jsonify({
+        "configured": not send_mod.config_problems(send_mod.get_config()),
+        "problems": send_mod.config_problems(send_mod.get_config()),
+        "default_subject": send_mod.default_subject(issue),
+        "last_send": issue.get("last_send")
+    })
+
+
+@app.route('/api/send', methods=['POST'])
+def send_newsletter():
+    payload = request.get_json(silent=True) or {}
+    result = send_mod.send_newsletter(subject=payload.get('subject'))
+    return jsonify(result), (200 if result["ok"] else 400)
 
 
 if __name__ == '__main__':
