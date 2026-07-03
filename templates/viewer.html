@@ -6,7 +6,7 @@
     <title>Paris Ciné — Newsletter Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
         .tab-content { display: none; }
@@ -36,6 +36,14 @@
         .movie-row { transition: box-shadow .15s, border-color .15s; }
         .movie-row:hover { border-color: rgb(203 213 225); box-shadow: 0 4px 12px rgb(0 0 0 / 0.06); }
         .movie-row.selected { border-color: rgb(16 185 129); background-color: rgb(236 253 245); }
+        /* Write tab: the text itself is the interface */
+        .serif { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; }
+        .wfield { display: block; width: 100%; background: transparent; border: 1px dashed transparent;
+                  border-radius: 8px; padding: 4px 8px; outline: none; resize: none;
+                  transition: border-color .15s, background-color .15s; }
+        .wfield:hover { border-color: #e6dfd8; }
+        .wfield:focus { background: #ffffff; border-color: #c8a24a; }
+        .wfield::placeholder { color: #b6b1a4; font-style: italic; }
         ::-webkit-scrollbar { height: 8px; width: 8px; }
         ::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
     </style>
@@ -67,13 +75,16 @@
                     <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">2</span> Select
                 </button>
                 <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="curate">
-                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">3</span> Curate
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">3</span> Organize
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="write">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">4</span> Write
                 </button>
                 <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="preview">
-                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">4</span> Preview
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">5</span> Preview
                 </button>
                 <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="validate">
-                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">5</span> Validate
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">6</span> Validate
                 </button>
             </div>
         </nav>
@@ -204,10 +215,10 @@
             <div class="card p-6 mb-6">
                 <div class="flex items-start justify-between mb-5">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900 mb-1">Curate</h2>
-                        <p class="text-slate-500 text-sm">Assign each movie to a section and write your blurb. Everything autosaves.</p>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Organize</h2>
+                        <p class="text-slate-500 text-sm">Give each movie a section — the words come next, in Write. Everything autosaves.</p>
                     </div>
-                    <span id="saveIndicator" class="text-xs text-slate-400"></span>
+                    <span class="save-indicator text-xs text-slate-400"></span>
                 </div>
 
                 <!-- Section manager -->
@@ -226,7 +237,25 @@
             </div>
         </div>
 
-        <!-- ============ 4. PREVIEW ============ -->
+        <!-- ============ 4. WRITE ============ -->
+        <div id="tab-write" class="tab-content">
+            <div class="card overflow-hidden mb-6">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Write</h2>
+                        <p class="text-slate-500 text-sm">This is your newsletter — click any text and type. Autosaves as you go.</p>
+                    </div>
+                    <span class="save-indicator text-xs text-slate-400"></span>
+                </div>
+                <div class="py-10 px-4" style="background:#faf9f5">
+                    <div class="mx-auto" style="max-width: 620px">
+                        <div id="writeDoc"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 5. PREVIEW ============ -->
         <div id="tab-preview" class="tab-content">
             <div class="card p-6 mb-6">
                 <div class="flex items-center justify-between gap-4 mb-5">
@@ -280,6 +309,7 @@
         let SECTIONS = {{ sections | tojson }};
         let issueMovies = {{ issue.movies | tojson }};
         let issueStatus = {{ issue.status | tojson }};
+        let issueContent = {{ issue.content | tojson }};
         const SELECT_MOVIES = {{ select_movies | tojson }};
         const SELECT_INDEX = Object.fromEntries(SELECT_MOVIES.map(m => [m.id, m]));
         const CATEGORY_NAMES = {
@@ -335,6 +365,8 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-' + name).classList.add('active');
             if (name === 'curate') renderCurate();
+            if (name === 'write') renderWrite();
+            if (name === 'preview') renderPreview();
         }
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => goToTab(btn.dataset.tab));
@@ -580,21 +612,23 @@
 
         // ---- Autosave ----
         let saveTimer = null;
+        function markIndicators(text) {
+            document.querySelectorAll('.save-indicator').forEach(el => { el.textContent = text; });
+        }
         function scheduleSave() {
             issueStatus = 'draft';
             updateHeader();
-            const indicator = document.getElementById('saveIndicator');
-            indicator.textContent = 'Saving…';
+            markIndicators('Saving…');
             clearTimeout(saveTimer);
             saveTimer = setTimeout(() => {
                 fetch('/api/issue', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ movies: issueMovies })
+                    body: JSON.stringify({ movies: issueMovies, content: issueContent })
                 })
                 .then(r => r.json())
-                .then(() => { indicator.textContent = 'Saved ✓'; })
-                .catch(() => { indicator.textContent = 'Save failed!'; });
+                .then(() => { markIndicators('Saved ✓'); })
+                .catch(() => { markIndicators('Save failed!'); });
             }, 700);
         }
 
@@ -701,25 +735,17 @@
             const entry = issueMovies[movieId];
             const score = (info.score || 0).toFixed(1);
             return `
-                <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
-                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-[4.5rem] object-cover rounded-lg flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
-                            <p class="font-bold text-slate-900 truncate">${escapeHtml(info.title)}
-                                <span class="font-normal text-slate-400 text-sm">${info.year || ''} · ${score}</span>
-                            </p>
-                            <div class="flex items-center gap-2 flex-shrink-0">
-                                <select onchange="setSection('${movieId}', this.value)" class="field !py-1 text-sm">
-                                    ${sectionOptions(entry.section)}
-                                </select>
-                                <button onclick="toggleSelect('${movieId}'); renderCurate();"
-                                        class="text-slate-400 hover:text-red-600 text-sm font-medium" title="Remove from issue">&times; remove</button>
-                            </div>
-                        </div>
-                        <textarea oninput="setComment('${movieId}', this.value)" rows="2"
-                                  placeholder="Your comment for the newsletter…"
-                                  class="field w-full ${entry.comment ? '' : '!border-amber-400'}">${escapeHtml(entry.comment || '')}</textarea>
-                    </div>
+                <div class="flex items-center gap-3 bg-white p-2.5 rounded-xl border border-slate-200">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-9 h-13 object-cover rounded-md flex-shrink-0" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <p class="flex-1 min-w-0 font-bold text-slate-900 truncate">${escapeHtml(info.title)}
+                        <span class="font-normal text-slate-400 text-sm">${info.year || ''} · ${score}</span>
+                        ${entry.comment ? '' : '<span class="font-normal text-amber-600 text-xs ml-1" title="No comment yet — add one in Write">✎ no note</span>'}
+                    </p>
+                    <select onchange="setSection('${movieId}', this.value)" class="field !py-1 text-sm flex-shrink-0">
+                        ${sectionOptions(entry.section)}
+                    </select>
+                    <button onclick="toggleSelect('${movieId}'); renderCurate();"
+                            class="text-slate-400 hover:text-red-600 text-sm font-medium flex-shrink-0" title="Remove from issue">&times;</button>
                 </div>`;
         }
 
@@ -732,6 +758,127 @@
         function setComment(movieId, comment) {
             issueMovies[movieId].comment = comment;
             scheduleSave();  // no re-render while typing
+        }
+
+        // ---- Write (editorial document) ----
+        function setContent(field, value) {
+            issueContent[field] = value;
+            scheduleSave();
+        }
+
+        function setInterlude(sectionKey, value) {
+            if (!issueContent.interludes) issueContent.interludes = {};
+            issueContent.interludes[sectionKey] = value;
+            scheduleSave();
+        }
+
+        let dirtySections = new Set();
+        let sectionPatchTimer = null;
+        function setSectionText(key, field, value) {
+            SECTIONS[key][field] = value;
+            dirtySections.add(key);
+            markIndicators('Saving…');
+            clearTimeout(sectionPatchTimer);
+            sectionPatchTimer = setTimeout(() => {
+                const patches = [...dirtySections].map(k =>
+                    fetch('/api/sections/' + k, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title: SECTIONS[k].title, description: SECTIONS[k].description })
+                    }));
+                dirtySections.clear();
+                Promise.all(patches)
+                    .then(() => markIndicators('Saved ✓'))
+                    .catch(() => markIndicators('Save failed!'));
+            }, 800);
+            scheduleSave();  // wording changed => rendered newsletter changed => back to draft
+        }
+
+        function autoGrow(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        function writeMovieBlock(movieId) {
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', poster_url: null };
+            const entry = issueMovies[movieId];
+            return `
+                <div class="flex gap-3 mt-5">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-[4.2rem] object-cover rounded-md flex-shrink-0 border border-[#e6dfd8]" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <div class="flex-1 min-w-0">
+                        <p class="serif text-lg font-semibold" style="color:#141413">${escapeHtml(info.title)}
+                            <span class="text-sm font-normal" style="color:#8e8b82">${info.year || ''}</span>
+                        </p>
+                        <div class="flex mt-1.5">
+                            <div class="w-0.5 flex-shrink-0" style="background:#c8a24a"></div>
+                            <textarea oninput="setComment('${movieId}', this.value); autoGrow(this)" rows="1"
+                                      placeholder="Votre note de la rédaction pour ce film…"
+                                      class="wfield wgrow serif italic text-[17px] leading-relaxed ml-0.5"
+                                      style="color:#252523; background:#f5f0e8">${escapeHtml(entry.comment || '')}</textarea>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderWrite() {
+            const doc = document.getElementById('writeDoc');
+            const c = issueContent;
+            const ids = Object.keys(issueMovies);
+            const unassigned = ids.filter(id => !issueMovies[id].section).length;
+
+            const sectionBlocks = orderedSections().map(([key, s], idx) => {
+                const groupIds = ids.filter(id => issueMovies[id].section === key);
+                if (groupIds.length === 0) return '';
+                const numeral = String(idx + 1).padStart(2, '0');
+                return `
+                    <div class="mt-10 pt-8" style="border-top:1px solid #e6dfd8">
+                        <p class="text-xs font-medium uppercase" style="color:#c8a24a; letter-spacing:1.5px">N° ${numeral}</p>
+                        <input value="${escapeHtml(s.title)}" oninput="setSectionText('${key}', 'title', this.value)"
+                               placeholder="Titre de la section"
+                               class="wfield serif text-3xl mt-1" style="color:#141413; letter-spacing:-0.5px">
+                        <textarea oninput="setSectionText('${key}', 'description', this.value); autoGrow(this)" rows="1"
+                                  placeholder="Sous-titre de la section (optionnel)…"
+                                  class="wfield wgrow italic text-sm mt-0.5" style="color:#6c6a64">${escapeHtml(s.description || '')}</textarea>
+                        ${groupIds.map(writeMovieBlock).join('')}
+                        <div class="mt-6 text-center">
+                            <textarea oninput="setInterlude('${key}', this.value); autoGrow(this)" rows="1"
+                                      placeholder="✦ Interlude après cette section (optionnel)…"
+                                      class="wfield wgrow serif italic text-[17px] text-center"
+                                      style="color:#3d3d3a">${escapeHtml((c.interludes || {})[key] || '')}</textarea>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            doc.innerHTML = `
+                ${unassigned ? `<div class="mb-6 text-center text-sm rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-4 py-2">
+                    ${unassigned} film${unassigned > 1 ? 's' : ''} sans section — placez-le${unassigned > 1 ? 's' : ''} dans <a href="#" onclick="goToTab('curate'); return false" class="underline font-semibold">Organize</a> pour l'écrire ici.
+                </div>` : ''}
+                <input value="${escapeHtml(c.kicker || '')}" oninput="setContent('kicker', this.value)"
+                       placeholder="Kicker (petite ligne au-dessus du titre)…"
+                       class="wfield text-center text-xs font-medium uppercase" style="color:#6c6a64; letter-spacing:1.5px">
+                <input value="${escapeHtml(c.title || '')}" oninput="setContent('title', this.value)"
+                       placeholder="Titre de la newsletter"
+                       class="wfield serif text-center text-5xl mt-2" style="color:#141413; letter-spacing:-1px">
+                <div class="mx-auto mt-5" style="width:56px; height:2px; background:#c8a24a"></div>
+                <textarea oninput="setContent('intro', this.value); autoGrow(this)" rows="2"
+                          placeholder="Édito d'introduction — le mot de la semaine…"
+                          class="wfield text-center text-base mt-5 leading-relaxed" style="color:#3d3d3a">${escapeHtml(c.intro || '')}</textarea>
+
+                ${ids.length === 0 ? '<p class="text-center text-sm mt-10" style="color:#8e8b82">Aucun film sélectionné — choisissez-les dans Select.</p>' : sectionBlocks}
+
+                <div class="mt-12 rounded-xl px-8 py-7" style="background:#b5432c">
+                    <textarea oninput="setContent('conclusion', this.value); autoGrow(this)" rows="1"
+                              placeholder="Mot de la fin…"
+                              class="wfield wgrow serif text-center text-2xl" style="color:#ffffff">${escapeHtml(c.conclusion || '')}</textarea>
+                </div>
+                <div class="mt-4 rounded-xl px-8 py-6 text-center" style="background:#161210">
+                    <p class="serif text-lg" style="color:#faf9f5">${escapeHtml(c.title || '')}</p>
+                    <textarea oninput="setContent('footer', this.value); autoGrow(this)" rows="1"
+                              placeholder="Ligne de pied de page…"
+                              class="wfield wgrow text-center text-sm mt-1" style="color:#9c9086">${escapeHtml(c.footer || '')}</textarea>
+                </div>`;
+
+            doc.querySelectorAll('textarea.wgrow, textarea.wfield').forEach(autoGrow);
         }
 
         // ---- Preview ----

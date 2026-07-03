@@ -145,7 +145,10 @@ def reset_pipeline():
 @app.route('/api/issue', methods=['PUT'])
 def save_issue():
     payload = request.get_json(force=True)
-    issue = issue_store.save_issue(payload.get('movies', {}))
+    issue = issue_store.save_issue(
+        payload.get('movies', {}),
+        content=payload.get('content')
+    )
     return jsonify(issue)
 
 
@@ -157,6 +160,17 @@ def add_section():
     try:
         section = issue_store.add_section(
             payload.get('title', ''), payload.get('description', ''))
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    return jsonify(section)
+
+
+@app.route('/api/sections/<key>', methods=['PATCH'])
+def update_section(key):
+    payload = request.get_json(force=True)
+    try:
+        section = issue_store.update_section(
+            key, payload.get('title'), payload.get('description'))
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     return jsonify(section)

@@ -53,8 +53,19 @@ def export_issue_inputs() -> dict:
     with open(BASE_TEXT_FILE, "r", encoding="utf-8") as f:
         text_data = json.load(f)
 
+    # Per-issue editorial content overrides the static builder config
+    content = current.get("content") or issue_store.default_content()
+    interludes = content.get("interludes") or {}
+    text_data["newsletter_title"] = content.get("title") or text_data.get("newsletter_title", "")
+    text_data["kicker"] = content.get("kicker", "")
+    text_data["global_intro"] = content.get("intro", "")
+    text_data["global_conclusion"] = content.get("conclusion", "")
+    text_data["footer_note"] = content.get("footer", "")
+
     text_sections = {
-        key: {"order": s["order"], "title": s["title"], "description": s.get("description", "")}
+        key: {"order": s["order"], "title": s["title"],
+              "description": s.get("description", ""),
+              "interlude": interludes.get(key, "")}
         for key, s in sections.items()
     }
     max_order = max((s["order"] for s in text_sections.values()), default=0)

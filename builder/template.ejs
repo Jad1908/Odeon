@@ -26,9 +26,11 @@
                 <!-- ===== MASTHEAD (cream) ===== -->
                 <tr>
                     <td align="center" style="padding: 40px 32px 8px 32px;">
+                        <% if (text.kicker) { %>
                         <div style="font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:12px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:#6c6a64;">
-                            &#10035;&nbsp;&nbsp;Cette semaine au cin&eacute;ma
+                            <%= text.kicker %>
                         </div>
+                        <% } %>
                         <h1 style="margin: 12px 0 0 0; font-family:'Cormorant Garamond','Tiempos Headline',Georgia,'Times New Roman',serif; font-size:44px; font-weight:500; line-height:1.05; letter-spacing:-1px; color:#141413;">
                             <%= text.newsletter_title %>
                         </h1>
@@ -235,9 +237,24 @@
                     </tr>
                     <% } %>
                     <% }) %>
+
+                    <!-- Section interlude -->
+                    <% if (config.interlude) { %>
+                    <tr>
+                        <td align="center" style="padding: 28px 56px 4px 56px;">
+                            <table cellpadding="0" cellspacing="0" align="center">
+                                <tr><td width="32" height="2" style="background-color:#c8a24a; font-size:0; line-height:0;">&nbsp;</td></tr>
+                            </table>
+                            <p style="margin: 14px 0 0 0; font-family:'Cormorant Garamond','Tiempos Headline',Georgia,'Times New Roman',serif; font-size:19px; line-height:1.45; letter-spacing:-0.2px; color:#3d3d3a; font-style:italic;">
+                                <%= config.interlude %>
+                            </p>
+                        </td>
+                    </tr>
+                    <% } %>
                 <% }) %>
 
                 <!-- ===== CONCLUSION (brick callout) ===== -->
+                <% if (text.global_conclusion) { %>
                 <tr>
                     <td style="padding: 44px 24px 24px 24px;">
                         <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#b5432c; border-radius:12px;">
@@ -249,16 +266,19 @@
                         </table>
                     </td>
                 </tr>
+                <% } %>
 
                 <!-- ===== FOOTER (espresso) ===== -->
                 <tr>
                     <td align="center" style="background-color:#161210; padding: 32px;">
                         <div style="font-family:'Cormorant Garamond','Tiempos Headline',Georgia,'Times New Roman',serif; font-size:20px; font-weight:500; letter-spacing:-0.3px; color:#faf9f5;">
-                            &#10035;&nbsp;<%= text.newsletter_title %>
+                            <%= text.newsletter_title %>
                         </div>
+                        <% if (text.footer_note) { %>
                         <p style="margin: 8px 0 0 0; font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:13px; line-height:1.55; color:#9c9086;">
-                            Le programme de la semaine dans les salles parisiennes, choisi &agrave; la main.
+                            <%= text.footer_note %>
                         </p>
+                        <% } %>
                     </td>
                 </tr>
             </table>
