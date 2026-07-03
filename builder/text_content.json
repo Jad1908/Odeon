@@ -37,6 +37,8 @@
   "ui_labels": {
     "where_to_see": "Ou le voir ?",
     "mainly_at": "Majoritairement au",
+    "at": "Au",
+    "notably_at": "Notamment au",
     "screenings": "seances",
     "see_all_showtimes": "Voir toutes les horaires",
     "no_showtimes": "Aucune seance trouvee."

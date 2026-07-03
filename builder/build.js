@@ -31,9 +31,12 @@ const SORT_FUNCTIONS = {
 
 // --- HELPER FUNCTIONS ---
 
+// Preferred chains for the highlighted cinema, in priority order
+const CINEMA_PRIORITIES = [/\bUGC\b/i, /\bMK2\b/i];
+
 // 1. Process Showtimes: Find the main cinema and summarize the rest
 function processShowtimes(showtimes) {
-    if (!showtimes || showtimes.length === 0) return { main: null, summary: "Aucune séance prévue." };
+    if (!showtimes || showtimes.length === 0) return { main_cinema: null, main_count: 0, remainder_text: "", single_cinema: false };
 
     // Group by Cinema
     const cinemaCounts = {};
@@ -45,9 +48,15 @@ function processShowtimes(showtimes) {
     // Sort cinemas by number of screenings (descending)
     const sortedCinemas = Object.keys(cinemaCounts).sort((a, b) => cinemaCounts[b] - cinemaCounts[a]);
 
-    const mainCinema = sortedCinemas[0];
+    // Highlight a preferred chain when it plays the film; otherwise the busiest cinema
+    let mainCinema = null;
+    for (const pattern of CINEMA_PRIORITIES) {
+        mainCinema = sortedCinemas.find(name => pattern.test(name));
+        if (mainCinema) break;
+    }
+    if (!mainCinema) mainCinema = sortedCinemas[0];
     const mainCount = cinemaCounts[mainCinema];
-    
+
     // Calculate remainder
     const totalCinemas = sortedCinemas.length;
     const otherCinemasCount = totalCinemas - 1;
@@ -64,7 +73,9 @@ function processShowtimes(showtimes) {
     return {
         main_cinema: mainCinema,
         main_count: mainCount,
-        remainder_text: summaryText
+        remainder_text: summaryText,
+        single_cinema: totalCinemas === 1,
+        is_busiest: mainCinema === sortedCinemas[0]
     };
 }
 

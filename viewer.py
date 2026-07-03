@@ -119,6 +119,48 @@ def index():
     )
 
 
+@app.route('/api/movies/<movie_id>')
+def movie_details(movie_id):
+    """Full metrics for one movie: ratings with links, screening breakdown."""
+    from collections import Counter
+    lookup = prerender_mod.load_movie_lookup()
+    m = lookup.get(str(movie_id))
+    if m is None:
+        return jsonify({"error": "Unknown movie"}), 404
+
+    showtimes = m.get('showtimes') or []
+    cinema_counts = Counter(st.get('cinema_name') for st in showtimes if st.get('cinema_name'))
+    version_counts = Counter(st.get('version') or '?' for st in showtimes)
+
+    return jsonify({
+        "id": str(m['id']),
+        "title": m['title'],
+        "original_title": m.get('original_title') or "",
+        "director": m.get('director') or "",
+        "actors": m.get('actors') or "",
+        "year": m.get('year'),
+        "genre": m.get('genre') or "",
+        "language": m.get('language') or "",
+        "duration_minutes": m.get('duration_minutes'),
+        "release_date": m.get('release_date'),
+        "availability_status": m.get('availability_status'),
+        "is_new_release": bool(m.get('is_new_release')),
+        "is_premiere": bool(m.get('is_premiere')),
+        "is_retrospective": bool(m.get('is_retrospective')),
+        "poster_url": m.get('poster_url'),
+        "calculated_score": m['calculated_score'],
+        "copies_count": m.get('copies_count') or 0,
+        "ratings": m.get('ratings') or [],
+        "stats": {
+            "total_showtimes": len(showtimes),
+            "cinema_count": len(cinema_counts),
+            "cinemas": [{"name": name, "count": count}
+                        for name, count in cinema_counts.most_common()],
+            "versions": dict(version_counts.most_common())
+        }
+    })
+
+
 # ---- Pipeline (fetch with cache) ----
 
 @app.route('/api/pipeline/status')

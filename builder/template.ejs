@@ -137,7 +137,7 @@
                                         <tr><td style="padding: 14px 16px;">
                                             <div style="font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:13px; line-height:1.5; color:#faf9f5;">
                                                 <strong><%= text.ui_labels.where_to_see %></strong><br>
-                                                <%= text.ui_labels.mainly_at %> <strong style="color:#c8a24a;"><%= movie.ui_showtimes.main_cinema %></strong>
+                                                <%= movie.ui_showtimes.single_cinema ? (text.ui_labels.at || 'Au') : (movie.ui_showtimes.is_busiest ? text.ui_labels.mainly_at : (text.ui_labels.notably_at || 'Notamment au')) %> <strong style="color:#c8a24a;"><%= movie.ui_showtimes.main_cinema %></strong>
                                                 (<%= movie.ui_showtimes.main_count %> <%= text.ui_labels.screenings %>)
                                                 <% if (movie.ui_showtimes.remainder_text) { %>
                                                     <br><span style="color:#9c9086; font-style:italic; font-size:12px;"><%= movie.ui_showtimes.remainder_text %></span>
@@ -211,7 +211,7 @@
                                             <tr><td style="padding: 12px 14px;">
                                                 <div style="font-family: Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size:13px; line-height:1.5; color:#252523;">
                                                     <strong><%= text.ui_labels.where_to_see %></strong><br>
-                                                    <%= text.ui_labels.mainly_at %> <strong><%= movie.ui_showtimes.main_cinema %></strong>
+                                                    <%= movie.ui_showtimes.single_cinema ? (text.ui_labels.at || 'Au') : (movie.ui_showtimes.is_busiest ? text.ui_labels.mainly_at : (text.ui_labels.notably_at || 'Notamment au')) %> <strong><%= movie.ui_showtimes.main_cinema %></strong>
                                                     (<%= movie.ui_showtimes.main_count %> <%= text.ui_labels.screenings %>)
                                                     <% if (movie.ui_showtimes.remainder_text) { %>
                                                         <br><span style="color:#6c6a64; font-style:italic; font-size:12px;"><%= movie.ui_showtimes.remainder_text %></span>

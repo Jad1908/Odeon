@@ -15,45 +15,6 @@ from datetime import datetime
 ISSUE_FILE = "data/issue.json"
 SECTIONS_FILE = "data/sections.json"
 
-DEFAULT_SECTIONS = {
-    "letterboxd_picks": {
-        "order": 1,
-        "title": "Letterboxd les adore",
-        "description": "Il n'y a que l'avis de Letterboxd qui compte.",
-        "default": True
-    },
-    "top_new_releases": {
-        "order": 2,
-        "title": "Nouveautes",
-        "description": "Les films sortis cette semaine.",
-        "default": True
-    },
-    "current_landscape": {
-        "order": 3,
-        "title": "Toujours au cine",
-        "description": "Toujours temps de les voir.",
-        "default": True
-    },
-    "premieres_events": {
-        "order": 4,
-        "title": "Avant-premieres",
-        "description": "Prenez de l'avance pour montrer que vous êtes un vrai cinéphile.",
-        "default": True
-    },
-    "old_classics": {
-        "order": 5,
-        "title": "Classiques",
-        "description": "Voyage dans le temps.",
-        "default": True
-    },
-    "niche_gems": {
-        "order": 6,
-        "title": "Pour les vrais cinephiles",
-        "description": "Si t'es vraiment un prouveur....",
-        "default": True
-    }
-}
-
 EMPTY_ISSUE = {
     "status": "draft",
     "updated_at": None,
@@ -101,10 +62,10 @@ def _slugify(title: str) -> str:
 
 
 def load_sections() -> dict:
-    """Load section config, seeding the file with the defaults on first use."""
+    """Load the section library. Sections are always created by the editor —
+    there are no defaults; a fresh setup starts with none."""
     if not os.path.exists(SECTIONS_FILE):
-        save_sections(DEFAULT_SECTIONS)
-        return dict(DEFAULT_SECTIONS)
+        return {}
     with open(SECTIONS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -129,8 +90,7 @@ def add_section(title: str, description: str = "") -> dict:
     sections[key] = {
         "order": max((s["order"] for s in sections.values()), default=0) + 1,
         "title": title,
-        "description": description.strip(),
-        "default": False
+        "description": description.strip()
     }
     save_sections(sections)
     return {"key": key, **sections[key]}
@@ -155,7 +115,7 @@ def reorder_sections(keys: list) -> dict:
 
 
 def update_section(key: str, title: str = None, description: str = None) -> dict:
-    """Rename a section or change its description (defaults included)."""
+    """Rename a section or change its description."""
     sections = load_sections()
     if key not in sections:
         raise ValueError(f"Unknown section: {key}")
@@ -168,12 +128,10 @@ def update_section(key: str, title: str = None, description: str = None) -> dict
 
 
 def delete_section(key: str):
-    """Remove a custom section (defaults cannot be removed)."""
+    """Remove a section from the library."""
     sections = load_sections()
     if key not in sections:
         raise ValueError(f"Unknown section: {key}")
-    if sections[key].get("default"):
-        raise ValueError("Default sections cannot be deleted")
     del sections[key]
     save_sections(sections)
 
