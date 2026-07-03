@@ -2,30 +2,29 @@
   "newsletter_title": "Paris Ciné",
   "global_intro": "En 2026, voici la première édition de cette newsletter ciné !",
   "global_conclusion": "Bon visionnage ! ",
-  
   "sections": {
     "top_new_releases": {
-      "order": 1,
+      "order": 2,
       "title": "Nouveautes",
       "description": "Les films sortis cette semaine (Gourou c'est nul)."
     },
     "current_landscape": {
-      "order": 2,
+      "order": 3,
       "title": "Toujours au cine",
       "description": "Toujours temps de les voir."
     },
     "premieres_events": {
-      "order": 3,
+      "order": 4,
       "title": "Avant-premieres",
       "description": "Prenez de l'avance pour montrer que vous êtes un vrai cinéphile."
     },
     "old_classics": {
-      "order": 4,
+      "order": 5,
       "title": "Classiques",
       "description": "Voyage dans le temps."
     },
     "letterboxd_picks": {
-      "order": 5,
+      "order": 1,
       "title": "Letterboxd les adore",
       "description": "Il n'y a que l'avis de Letterboxd qui compte."
     },
@@ -35,7 +34,6 @@
       "description": "Si t'es vraiment un prouveur...."
     }
   },
-  
   "ui_labels": {
     "where_to_see": "Ou le voir ?",
     "mainly_at": "Majoritairement au",

@@ -16,34 +16,34 @@ ISSUE_FILE = "data/issue.json"
 SECTIONS_FILE = "data/sections.json"
 
 DEFAULT_SECTIONS = {
-    "top_new_releases": {
+    "letterboxd_picks": {
         "order": 1,
+        "title": "Letterboxd les adore",
+        "description": "Il n'y a que l'avis de Letterboxd qui compte.",
+        "default": True
+    },
+    "top_new_releases": {
+        "order": 2,
         "title": "Nouveautes",
         "description": "Les films sortis cette semaine.",
         "default": True
     },
     "current_landscape": {
-        "order": 2,
+        "order": 3,
         "title": "Toujours au cine",
         "description": "Toujours temps de les voir.",
         "default": True
     },
     "premieres_events": {
-        "order": 3,
+        "order": 4,
         "title": "Avant-premieres",
         "description": "Prenez de l'avance pour montrer que vous êtes un vrai cinéphile.",
         "default": True
     },
     "old_classics": {
-        "order": 4,
+        "order": 5,
         "title": "Classiques",
         "description": "Voyage dans le temps.",
-        "default": True
-    },
-    "letterboxd_picks": {
-        "order": 5,
-        "title": "Letterboxd les adore",
-        "description": "Il n'y a que l'avis de Letterboxd qui compte.",
         "default": True
     },
     "niche_gems": {
