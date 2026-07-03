@@ -613,13 +613,15 @@
             const badges = m.cats.map(c =>
                 `<span class="bg-white/20 text-white text-[9px] px-1.5 py-0.5 rounded-full">${CATEGORY_SHORT[c] || c}</span>`).join('');
             return `
-                <div onclick="toggleSelect('${m.id}')" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
+                <div onclick="openMovieInfo('${m.id}', event)" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
                      class="relative rounded-xl overflow-hidden cursor-pointer group shadow-sm transition-transform hover:-translate-y-0.5 ${sel ? 'ring-4 ring-emerald-500' : 'hover:ring-2 hover:ring-red-400'}">
                     ${posterHtml(m, 'w-full aspect-[2/3] object-cover')}
                     <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md text-white ${scoreColor(m.score)} z-10">${m.score.toFixed(1)}</span>
-                    <button onclick="openMovieInfo('${m.id}', event)" title="More info"
-                            class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center text-xs font-serif italic z-10">i</button>
-                    ${sel ? '<span class="absolute top-9 right-1.5 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold shadow z-10">✓</span>' : ''}
+                    ${sel
+                        ? `<button onclick="event.stopPropagation(); toggleSelect('${m.id}')" title="Remove from issue"
+                                class="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 hover:bg-red-500 text-white flex items-center justify-center font-bold shadow z-10">✓</button>`
+                        : `<button onclick="event.stopPropagation(); toggleSelect('${m.id}')" title="Add to issue"
+                                class="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white hidden group-hover:flex items-center justify-center font-bold shadow z-10">+</button>`}
                     <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-2 pt-8 pb-2">
                         <p class="text-white text-xs font-semibold leading-tight">${escapeHtml(m.title)}</p>
                         <p class="text-slate-300 text-[10px] mt-0.5">${meta}</p>
