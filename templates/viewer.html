@@ -466,15 +466,26 @@
 
         function mosaicTile(m) {
             const sel = !!issueMovies[m.id];
+            const meta = [m.year, m.duration ? m.duration + ' min' : null].filter(Boolean).join(' · ');
+            const topRatings = m.ratings.slice(0, 3).map(r =>
+                `${RATING_SHORT[r.s] || r.s} <span class="font-semibold text-white">${r.v}</span>`).join(' · ');
+            const badges = m.cats.map(c =>
+                `<span class="bg-white/20 text-white text-[9px] px-1.5 py-0.5 rounded-full">${CATEGORY_SHORT[c] || c}</span>`).join('');
             return `
                 <div onclick="toggleSelect('${m.id}')" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
                      class="relative rounded-xl overflow-hidden cursor-pointer group shadow-sm transition-transform hover:-translate-y-0.5 ${sel ? 'ring-4 ring-emerald-500' : 'hover:ring-2 hover:ring-red-400'}">
                     ${posterHtml(m, 'w-full aspect-[2/3] object-cover')}
-                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
-                    ${sel ? '<span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold shadow">✓</span>' : ''}
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent px-2 pt-7 pb-1.5">
+                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md text-white ${scoreColor(m.score)} z-10">${m.score.toFixed(1)}</span>
+                    ${sel ? '<span class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold shadow z-10">✓</span>' : ''}
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-2 pt-8 pb-2">
                         <p class="text-white text-xs font-semibold leading-tight">${escapeHtml(m.title)}</p>
-                        <p class="text-slate-300 text-[10px]">${m.year || ''}</p>
+                        <p class="text-slate-300 text-[10px] mt-0.5">${meta}</p>
+                        <div class="hidden group-hover:block mt-1 space-y-0.5">
+                            ${m.director ? `<p class="text-slate-200 text-[10px] leading-snug">${escapeHtml(m.director)}</p>` : ''}
+                            ${topRatings ? `<p class="text-slate-300 text-[10px]">${topRatings}</p>` : ''}
+                            <p class="text-slate-400 text-[10px]">${m.copies} copies · ${m.showtimes} séances</p>
+                            ${badges ? `<div class="flex flex-wrap gap-1 pt-0.5">${badges}</div>` : ''}
+                        </div>
                     </div>
                 </div>`;
         }
