@@ -31,9 +31,12 @@ const SORT_FUNCTIONS = {
 
 // --- HELPER FUNCTIONS ---
 
+// Preferred chains for the highlighted cinema, in priority order
+const CINEMA_PRIORITIES = [/\bUGC\b/i, /\bMK2\b/i];
+
 // 1. Process Showtimes: Find the main cinema and summarize the rest
 function processShowtimes(showtimes) {
-    if (!showtimes || showtimes.length === 0) return { main: null, summary: "Aucune séance prévue." };
+    if (!showtimes || showtimes.length === 0) return { main_cinema: null, main_count: 0, remainder_text: "", single_cinema: false };
 
     // Group by Cinema
     const cinemaCounts = {};
@@ -45,9 +48,15 @@ function processShowtimes(showtimes) {
     // Sort cinemas by number of screenings (descending)
     const sortedCinemas = Object.keys(cinemaCounts).sort((a, b) => cinemaCounts[b] - cinemaCounts[a]);
 
-    const mainCinema = sortedCinemas[0];
+    // Highlight a preferred chain when it plays the film; otherwise the busiest cinema
+    let mainCinema = null;
+    for (const pattern of CINEMA_PRIORITIES) {
+        mainCinema = sortedCinemas.find(name => pattern.test(name));
+        if (mainCinema) break;
+    }
+    if (!mainCinema) mainCinema = sortedCinemas[0];
     const mainCount = cinemaCounts[mainCinema];
-    
+
     // Calculate remainder
     const totalCinemas = sortedCinemas.length;
     const otherCinemasCount = totalCinemas - 1;
@@ -64,7 +73,9 @@ function processShowtimes(showtimes) {
     return {
         main_cinema: mainCinema,
         main_count: mainCount,
-        remainder_text: summaryText
+        remainder_text: summaryText,
+        single_cinema: totalCinemas === 1,
+        is_busiest: mainCinema === sortedCinemas[0]
     };
 }
 
@@ -109,11 +120,14 @@ function reorganizeBySourceTab(moviesData, sectionsConfig) {
         sections[tab].push(movie);
     });
     
-    // Sort each section according to its sort function
+    // Sort each section: an explicit editor-defined order (issue_order, set by
+    // the workflow UI) wins over the automatic per-category sort functions
     Object.keys(sections).forEach(tab => {
-        const sortFn = SORT_FUNCTIONS[tab];
-        if (sortFn) {
-            sections[tab].sort(sortFn);
+        const list = sections[tab];
+        if (list.every(m => typeof m.issue_order === 'number')) {
+            list.sort((a, b) => a.issue_order - b.issue_order);
+        } else if (SORT_FUNCTIONS[tab]) {
+            list.sort(SORT_FUNCTIONS[tab]);
         }
     });
     
@@ -139,9 +153,17 @@ function reorganizeBySourceTab(moviesData, sectionsConfig) {
 
 // --- MAIN EXECUTION ---
 
+// Optional CLI overrides: node build.js --movies <path> --text <path> --out <path>
+function argValue(flag, fallback) {
+    const i = process.argv.indexOf(flag);
+    return i > -1 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
+}
+
 // Read from movies.json if it exists and has source_tab, otherwise fallback to parent newsletter_selection.json
 let moviesRaw;
-const moviesJsonPath = 'movies.json';
+const moviesJsonPath = argValue('--movies', 'movies.json');
+const textJsonPath = argValue('--text', 'text_content.json');
+const outputPath = argValue('--out', 'output/newsletter_output_v2.html');
 const selectionJsonPath = '../data/newsletter_selection.json';
 
 if (fs.existsSync(moviesJsonPath)) {
@@ -160,7 +182,7 @@ if (fs.existsSync(moviesJsonPath)) {
 } else {
     throw new Error('No movies data file found');
 }
-const textData = JSON.parse(fs.readFileSync('text_content.json', 'utf8'));
+const textData = JSON.parse(fs.readFileSync(textJsonPath, 'utf8'));
 
 // Get sections config from text_content.json
 const sectionsConfig = textData.sections || {};
@@ -185,5 +207,5 @@ const html = ejs.render(template, {
     text: textData 
 });
 
-fs.writeFileSync('output/newsletter_output_v2.html', html);
-console.log('Version 2 Generated: output/newsletter_output_v2.html');
+fs.writeFileSync(outputPath, html);
+console.log('Generated: ' + outputPath);

@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paris Ciné — Newsletter Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn { color: rgb(71 85 105); }
+        .tab-btn:hover { background-color: rgb(241 245 249); }
+        .tab-btn.active { background-color: rgb(15 23 42); color: white; }
+        .tab-btn .step-num { background-color: rgb(226 232 240); color: rgb(71 85 105); }
+        .tab-btn.active .step-num { background-color: rgb(220 38 38); color: white; }
+        .cat-pill { background-color: white; color: rgb(51 65 85); border: 1px solid rgb(226 232 240); }
+        .cat-pill:hover { border-color: rgb(148 163 184); }
+        .cat-pill.active { background-color: rgb(15 23 42); color: white; border-color: rgb(15 23 42); }
+        .view-btn.active { background-color: rgb(15 23 42); color: white; }
+        .field { border: 1px solid rgb(226 232 240); border-radius: 0.75rem; padding: 0.45rem 0.75rem;
+                 font-size: 0.875rem; background: white; outline: none; }
+        .field:focus { border-color: rgb(220 38 38); box-shadow: 0 0 0 3px rgb(220 38 38 / 0.1); }
+        .btn-primary { background-color: rgb(220 38 38); color: white; font-weight: 600;
+                       padding: 0.55rem 1.4rem; border-radius: 0.75rem; transition: background-color .15s; }
+        .btn-primary:hover { background-color: rgb(185 28 28); }
+        .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+        .btn-secondary { background-color: white; color: rgb(51 65 85); font-weight: 500; border: 1px solid rgb(226 232 240);
+                         padding: 0.55rem 1.4rem; border-radius: 0.75rem; transition: all .15s; }
+        .btn-secondary:hover { border-color: rgb(148 163 184); background-color: rgb(248 250 252); }
+        .btn-secondary:disabled { opacity: .45; cursor: not-allowed; }
+        .card { background: white; border-radius: 1rem; border: 1px solid rgb(226 232 240);
+                box-shadow: 0 1px 3px rgb(0 0 0 / 0.04); }
+        .movie-row { transition: box-shadow .15s, border-color .15s; }
+        .movie-row:hover { border-color: rgb(203 213 225); box-shadow: 0 4px 12px rgb(0 0 0 / 0.06); }
+        .movie-row.selected { border-color: rgb(16 185 129); background-color: rgb(236 253 245); }
+        /* Write tab: the text itself is the interface */
+        .serif { font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif; }
+        .wfield { display: block; width: 100%; background: transparent; border: 1px dashed transparent;
+                  border-radius: 8px; padding: 4px 8px; outline: none; resize: none;
+                  transition: border-color .15s, background-color .15s; }
+        .wfield:hover { border-color: #e6dfd8; }
+        .wfield:focus { background: #ffffff; border-color: #c8a24a; }
+        .wfield::placeholder { color: #b6b1a4; font-style: italic; }
+        /* Organize board drag & drop */
+        .board-row { cursor: grab; transition: box-shadow .1s; }
+        .board-row:active { cursor: grabbing; }
+        .board-row.row-over-top { box-shadow: 0 -3px 0 0 rgb(220 38 38); }
+        .board-row.row-over-bottom { box-shadow: 0 3px 0 0 rgb(220 38 38); }
+        .drop-zone.drop-target { outline: 2px dashed rgb(220 38 38); outline-offset: -2px; background-color: rgb(254 242 242); }
+        .section-head { cursor: grab; }
+        .section-head:active { cursor: grabbing; }
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgb(203 213 225); border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <!-- Top bar -->
+    <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg">
+        <div class="container mx-auto px-4 max-w-6xl py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <span class="text-2xl">🎬</span>
+                <div class="min-w-0">
+                    <h1 class="font-extrabold text-lg leading-tight truncate">Paris Ciné <span class="text-red-500">Newsletter Studio</span></h1>
+                    <p class="text-slate-400 text-xs hidden sm:block">Fetch → Select → Curate → Preview → Validate</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0">
+                <span class="text-sm text-slate-300"><span id="selectedCount" class="font-bold text-white">0</span> movies picked</span>
+                <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
+            </div>
+        </div>
+        <!-- Workflow stepper -->
+        <nav class="bg-white border-b border-slate-200">
+            <div class="container mx-auto px-4 max-w-6xl flex gap-1 py-2 overflow-x-auto">
+                <button class="tab-btn active flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="fetch">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">1</span> Fetch
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="select">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">2</span> Select
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="curate">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">3</span> Organize
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="write">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">4</span> Write
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="preview">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">5</span> Preview
+                </button>
+                <button class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors" data-tab="validate">
+                    <span class="step-num w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold">6</span> Validate
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto px-4 py-6 max-w-6xl">
+
+        <!-- ============ 1. FETCH ============ -->
+        <div id="tab-fetch" class="tab-content active">
+            <div class="card p-6 mb-6">
+                <h2 class="text-xl font-bold text-slate-900 mb-1">Fetch this week's movies</h2>
+                <p class="text-slate-500 text-sm mb-5">The scrape is cached per cinema week (Wednesday to Tuesday), so repeated fetches are instant.</p>
+
+                <!-- Cache status -->
+                <div class="rounded-xl p-4 mb-5 flex items-center gap-3 {{ 'bg-emerald-50 border border-emerald-200' if cache.fresh else 'bg-amber-50 border border-amber-200' }}">
+                    <span class="text-xl">{{ '✅' if cache.fresh else '⚠️' }}</span>
+                    <div>
+                    {% if cache.exists %}
+                        <p class="font-semibold text-slate-800 text-sm">
+                            {% if cache.fresh %}Cached data is current.{% else %}Cached data is from a past cinema week.{% endif %}
+                        </p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Scraped {{ cache.scraped_at or 'at an unknown time' }}
+                            {% if cache.week_start %}· cinema week of {{ cache.week_start }}{% endif %}
+                            {% if cache.movie_count %}· {{ cache.movie_count }} movies{% endif %}
+                        </p>
+                    {% else %}
+                        <p class="font-semibold text-slate-800 text-sm">No data yet — run a fetch to get started.</p>
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <button onclick="startFetch(false)" id="fetchBtn" class="btn-primary">Fetch movies</button>
+                    <button onclick="startFetch(true)" id="forceFetchBtn" class="btn-secondary">Force re-scrape (~15 min)</button>
+                </div>
+
+                <!-- Progress -->
+                <div id="progressSection" class="rounded-xl border border-slate-200 p-4 mb-5 hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-slate-800 text-sm">Progress</h3>
+                        <span id="statusBadge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-200 text-slate-700">Idle</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-500 mb-1">
+                        <span id="currentTask">Waiting...</span>
+                        <span><span id="progressCount">0</span> / <span id="totalCount">0</span></span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-red-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <div id="errorDisplay" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl mt-3 text-sm">
+                        <span class="font-semibold">Error:</span> <span id="errorMessage"></span>
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div class="rounded-xl border border-slate-200 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-slate-800 text-sm">Logs</h3>
+                        <button onclick="resetPipeline()" class="text-xs text-slate-400 hover:text-slate-600">Clear / Reset</button>
+                    </div>
+                    <div id="logsContainer" class="bg-slate-900 text-slate-100 p-3 rounded-lg font-mono text-xs h-44 overflow-y-auto">
+                        <p class="text-slate-500">No logs yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 2. SELECT ============ -->
+        <div id="tab-select" class="tab-content">
+            <div class="card p-6 mb-6">
+                <div class="flex items-start justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Select movies</h2>
+                        <p class="text-slate-500 text-sm">Each movie appears once — badges show its categories. Pick movies here, place them into sections in Organize.</p>
+                    </div>
+                    <div class="flex rounded-xl border border-slate-200 overflow-hidden flex-shrink-0">
+                        <button onclick="setView('list')" id="viewBtn-list" class="px-3 py-1.5 text-sm font-medium">☰ List</button>
+                        <button onclick="setView('mosaic')" id="viewBtn-mosaic" class="px-3 py-1.5 text-sm font-medium border-l border-slate-200">▦ Mosaic</button>
+                    </div>
+                </div>
+
+                {% if not select_movies %}
+                <div class="text-center py-16 text-slate-400">
+                    <p class="text-3xl mb-2">🎞️</p>
+                    <p>No movie data yet. Run a fetch first.</p>
+                </div>
+                {% else %}
+                <!-- Category pills -->
+                <div id="catPills" class="flex flex-wrap gap-2 mb-4"></div>
+
+                <!-- Filter bar -->
+                <div class="flex flex-wrap gap-2.5 mb-5 items-center bg-slate-50 border border-slate-200 rounded-xl p-3">
+                    <input id="searchBox" type="search" placeholder="🔍 Search title, director, actor…"
+                           oninput="setFilter('search', this.value)" class="field w-64">
+                    <select id="sortSelect" onchange="setFilter('sort', this.value)" class="field">
+                        <option value="score">Sort: score</option>
+                        <option value="copies">Sort: most screened</option>
+                        <option value="release">Sort: release date</option>
+                        <option value="year_desc">Sort: year (newest)</option>
+                        <option value="year_asc">Sort: year (oldest)</option>
+                        <option value="title">Sort: title</option>
+                    </select>
+                    <select id="minScoreSelect" onchange="setFilter('minScore', parseFloat(this.value))" class="field">
+                        <option value="0">Any score</option>
+                        <option value="6">Score ≥ 6</option>
+                        <option value="7">Score ≥ 7</option>
+                        <option value="7.5">Score ≥ 7.5</option>
+                        <option value="8">Score ≥ 8</option>
+                    </select>
+                    <select id="genreSelect" onchange="setFilter('genre', this.value)" class="field">
+                        <option value="">All genres</option>
+                    </select>
+                    <label class="flex items-center gap-1.5 text-sm text-slate-600 font-medium cursor-pointer">
+                        <input type="checkbox" onchange="setFilter('hideSelected', this.checked)" class="accent-red-600"> Hide selected
+                    </label>
+                    <span id="resultCount" class="text-sm text-slate-400 ml-auto font-medium"></span>
+                </div>
+
+                <div id="movieList"></div>
+                <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 mt-5"></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ============ 3. CURATE ============ -->
+        <div id="tab-curate" class="tab-content">
+            <div class="card p-6 mb-6">
+                <div class="flex items-start justify-between mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Organize</h2>
+                        <p class="text-slate-500 text-sm">Drag movies from the bench into sections and reorder them freely — that order is the newsletter's order. Drag section headers to reorder sections.</p>
+                    </div>
+                    <span class="save-indicator text-xs text-slate-400"></span>
+                </div>
+
+                <div id="benchZone" class="mb-5"></div>
+                <div id="boardSections"></div>
+            </div>
+        </div>
+
+        <!-- ============ 4. WRITE ============ -->
+        <div id="tab-write" class="tab-content">
+            <div class="card overflow-hidden mb-6">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Write</h2>
+                        <p class="text-slate-500 text-sm">This is your newsletter — click any text and type. Autosaves as you go.</p>
+                    </div>
+                    <span class="save-indicator text-xs text-slate-400"></span>
+                </div>
+                <div class="py-10 px-4" style="background:#faf9f5">
+                    <div class="mx-auto" style="max-width: 620px">
+                        <div id="writeDoc"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 5. PREVIEW ============ -->
+        <div id="tab-preview" class="tab-content">
+            <div class="card p-6 mb-6">
+                <div class="flex items-center justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Preview</h2>
+                        <p class="text-slate-500 text-sm">Rendered by the real Node/EJS builder — exactly what gets sent.</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <a href="/preview" target="_blank" class="btn-secondary !py-1.5 text-sm">Open in tab ↗</a>
+                        <button onclick="renderPreview()" id="renderBtn" class="btn-primary !py-1.5 text-sm">Render preview</button>
+                    </div>
+                </div>
+                <div id="previewLog" class="hidden mb-4 p-3 rounded-xl text-sm font-mono"></div>
+                <div class="rounded-xl border border-slate-200 bg-slate-200/60 p-4">
+                    <div class="mx-auto bg-white shadow-lg rounded-lg overflow-hidden" style="max-width: 640px">
+                        <iframe id="previewFrame" class="w-full bg-white" style="height: 75vh" title="Newsletter preview"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ 5. VALIDATE ============ -->
+        <div id="tab-validate" class="tab-content">
+            <div class="card p-6 mb-6">
+                <div class="flex items-center justify-between gap-4 mb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 mb-1">Validate</h2>
+                        <p class="text-slate-500 text-sm">Re-renders the newsletter and checks it. All checks must pass before the issue is ready.</p>
+                    </div>
+                    <button onclick="runValidation()" id="validateBtn" class="btn-primary !py-1.5 text-sm flex-shrink-0">Run validation</button>
+                </div>
+                <div id="validationResults" class="space-y-3">
+                    <p class="text-slate-400 text-sm">Not validated yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie info modal -->
+    <div id="infoModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" onclick="closeInfo()">
+        <div class="fixed inset-0 bg-slate-900/60"></div>
+        <div class="relative mx-auto my-10 max-w-2xl bg-white rounded-2xl shadow-2xl" onclick="event.stopPropagation()">
+            <button onclick="closeInfo()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold">&times;</button>
+            <div id="infoModalBody" class="p-6"></div>
+        </div>
+    </div>
+
+    <!-- Floating selection tray -->
+    <div id="selectionTray" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden">
+        <div class="flex items-center gap-1 bg-slate-900 text-white rounded-full shadow-2xl pl-5 pr-1.5 py-1.5 border border-slate-700">
+            <span id="trayCount" class="font-semibold text-sm whitespace-nowrap"></span>
+            <button onclick="showSelected()" class="text-sm text-slate-300 hover:text-white px-3 py-1.5 rounded-full hover:bg-slate-800 whitespace-nowrap">Show</button>
+            <button onclick="clearSelection()" class="text-sm text-slate-300 hover:text-red-400 px-3 py-1.5 rounded-full hover:bg-slate-800 whitespace-nowrap">Clear all</button>
+            <button onclick="goToTab('curate')" class="text-sm bg-red-600 hover:bg-red-500 rounded-full px-4 py-1.5 font-semibold whitespace-nowrap">Curate →</button>
+        </div>
+    </div>
+
+    <script>
+        // ---- Server-provided state ----
+        let SECTIONS = {{ sections | tojson }};
+        let issueMovies = {{ issue.movies | tojson }};
+        let issueStatus = {{ issue.status | tojson }};
+        let issueContent = {{ issue.content | tojson }};
+        const SELECT_MOVIES = {{ select_movies | tojson }};
+        const SELECT_INDEX = Object.fromEntries(SELECT_MOVIES.map(m => [m.id, m]));
+        const CATEGORY_NAMES = {
+            {% for key, cat in categories.items() %}'{{ key }}': '{{ cat.name }}',
+            {% endfor %}
+        };
+        const CATEGORY_SHORT = {
+            'top_new_releases': 'New', 'current_landscape': 'Current',
+            'premieres_events': 'Premieres', 'old_classics': 'Classics',
+            'letterboxd_picks': 'Letterboxd', 'niche_gems': 'Niche'
+        };
+        const RATING_SHORT = {
+            'IMDB': 'IMDb', 'SensCritique': 'SC', 'Allociné (Presse)': 'Allo·P',
+            'Allociné (Spectateurs)': 'Allo·S', 'Letterboxd': 'LB',
+            'Metacritic': 'MC', 'Rotten Tomatoes': 'RT'
+        };
+
+        // ---- Header + selection tray ----
+        function updateHeader() {
+            const badge = document.getElementById('issueStatusBadge');
+            if (issueStatus === 'ready') {
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-emerald-500 text-white';
+                badge.textContent = 'READY';
+            } else {
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-amber-400 text-amber-950';
+                badge.textContent = 'DRAFT';
+            }
+            const count = Object.keys(issueMovies).length;
+            document.getElementById('selectedCount').textContent = count;
+            document.getElementById('selectionTray').classList.toggle('hidden', count === 0);
+            document.getElementById('trayCount').textContent = `✓ ${count} selected`;
+        }
+
+        function clearSelection() {
+            const count = Object.keys(issueMovies).length;
+            if (!count) return;
+            if (!confirm(`Remove all ${count} movies from this issue? Sections and comments will be lost.`)) return;
+            issueMovies = {};
+            scheduleSave();
+            updateHeader();
+            renderSelect();
+            renderCurate();
+        }
+
+        function showSelected() {
+            goToTab('select');
+            setCat('selected');
+        }
+
+        // ---- Tabs ----
+        function goToTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            if (name === 'curate') renderCurate();
+            if (name === 'write') renderWrite();
+            if (name === 'preview') renderPreview();
+        }
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => goToTab(btn.dataset.tab));
+        });
+
+        // ---- Selection browser (filters, pagination, views) ----
+        let selState = {
+            search: '', cat: 'all', sort: 'score', minScore: 0, genre: '',
+            hideSelected: false, page: 1, pageSize: 24,
+            view: localStorage.getItem('selectView') || 'list'
+        };
+
+        function setFilter(key, value) {
+            selState[key] = value;
+            selState.page = 1;
+            renderSelect();
+        }
+
+        function setCat(cat) {
+            setFilter('cat', cat);
+        }
+
+        function setView(view) {
+            selState.view = view;
+            localStorage.setItem('selectView', view);
+            renderSelect();
+        }
+
+        function setPage(page) {
+            selState.page = page;
+            renderSelect();
+            document.getElementById('movieList').scrollIntoView({ behavior: 'instant', block: 'start' });
+        }
+
+        function filteredMovies() {
+            let list = SELECT_MOVIES;
+            if (selState.cat === 'selected') list = list.filter(m => issueMovies[m.id]);
+            else if (selState.cat !== 'all') list = list.filter(m => m.cats.includes(selState.cat));
+            const q = selState.search.trim().toLowerCase();
+            if (q) list = list.filter(m =>
+                (m.title + ' ' + m.original_title + ' ' + m.director + ' ' + m.actors).toLowerCase().includes(q));
+            if (selState.minScore > 0) list = list.filter(m => m.score >= selState.minScore);
+            if (selState.genre) list = list.filter(m =>
+                m.genre.split(',').map(g => g.trim()).includes(selState.genre));
+            if (selState.hideSelected && selState.cat !== 'selected')
+                list = list.filter(m => !issueMovies[m.id]);
+
+            const sorts = {
+                score: (a, b) => b.score - a.score,
+                copies: (a, b) => b.copies - a.copies,
+                release: (a, b) => (b.release_date || '').localeCompare(a.release_date || ''),
+                year_desc: (a, b) => (b.year || 0) - (a.year || 0),
+                year_asc: (a, b) => (a.year || 9999) - (b.year || 9999),
+                title: (a, b) => a.title.localeCompare(b.title)
+            };
+            return [...list].sort(sorts[selState.sort] || sorts.score);
+        }
+
+        function toggleSelect(movieId) {
+            movieId = String(movieId);
+            if (issueMovies[movieId]) {
+                delete issueMovies[movieId];
+            } else {
+                // No auto-assignment: new picks land on the Organize bench
+                issueMovies[movieId] = { section: null, comment: '', order: sectionMovies('').length };
+            }
+            scheduleSave();
+            updateHeader();
+            renderSelect();
+            renderCurate();
+            if (infoData && infoData.id === movieId) renderInfoModal(infoData);
+        }
+
+        function scoreColor(score) {
+            return score >= 7.5 ? 'bg-emerald-500' : (score >= 6 ? 'bg-amber-500' : 'bg-orange-500');
+        }
+
+        // ---- Movie info modal ----
+        let infoData = null;
+
+        function openMovieInfo(movieId, ev) {
+            if (ev) { ev.stopPropagation(); ev.preventDefault(); }
+            infoData = null;
+            document.getElementById('infoModal').classList.remove('hidden');
+            document.getElementById('infoModalBody').innerHTML =
+                '<p class="text-slate-400 text-sm text-center py-16">Loading…</p>';
+            fetch('/api/movies/' + movieId)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('infoModalBody').innerHTML =
+                            `<p class="text-red-600 text-sm text-center py-16">${escapeHtml(data.error)}</p>`;
+                        return;
+                    }
+                    infoData = data;
+                    renderInfoModal(data);
+                });
+        }
+
+        function closeInfo() {
+            document.getElementById('infoModal').classList.add('hidden');
+            infoData = null;
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeInfo(); });
+
+        function renderInfoModal(d) {
+            const sel = !!issueMovies[d.id];
+            const meta = [d.year, d.duration_minutes ? d.duration_minutes + ' min' : null,
+                          d.genre, d.language].filter(Boolean).join(' · ');
+            const flags = [
+                d.is_new_release ? 'Sortie de la semaine' : null,
+                d.is_premiere ? 'Avant-première' : null,
+                d.is_retrospective ? 'Rétrospective' : null
+            ].filter(Boolean).map(f =>
+                `<span class="bg-red-50 text-red-700 border border-red-100 text-[11px] px-2 py-0.5 rounded-full font-medium">${f}</span>`).join(' ');
+
+            const ratingRows = (d.ratings || []).map(r => `
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-100 last:border-0">
+                    <span class="text-sm text-slate-600">${escapeHtml(r.source)}</span>
+                    <span class="text-sm font-bold text-slate-900">${r.score}<span class="text-slate-400 font-normal">/${r.max_score}</span>
+                        ${r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" class="ml-2 text-xs font-normal text-red-600 hover:underline">open ↗</a>` : ''}
+                    </span>
+                </div>`).join('') || '<p class="text-sm text-slate-400">No ratings.</p>';
+
+            const cinemaRows = (d.stats.cinemas || []).map(c => `
+                <div class="flex items-center justify-between py-1 border-b border-slate-100 last:border-0">
+                    <span class="text-sm text-slate-600 truncate">${escapeHtml(c.name)}</span>
+                    <span class="text-xs font-semibold text-slate-500 flex-shrink-0 ml-3">${c.count} séance${c.count > 1 ? 's' : ''}</span>
+                </div>`).join('') || '<p class="text-sm text-slate-400">No showtimes.</p>';
+
+            const versions = Object.entries(d.stats.versions || {})
+                .map(([v, n]) => `<span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">${escapeHtml(v)} × ${n}</span>`).join(' ');
+
+            document.getElementById('infoModalBody').innerHTML = `
+                <div class="flex gap-5">
+                    ${d.poster_url ? `<img src="${d.poster_url}" class="w-28 h-40 object-cover rounded-xl shadow flex-shrink-0" onerror="this.style.display='none'">` : ''}
+                    <div class="min-w-0 pr-8">
+                        <h3 class="text-2xl font-bold text-slate-900 leading-tight">${escapeHtml(d.title)}</h3>
+                        ${d.original_title && d.original_title !== d.title ? `<p class="text-slate-400 italic">${escapeHtml(d.original_title)}</p>` : ''}
+                        <p class="text-sm text-slate-500 mt-1">${meta}</p>
+                        ${d.director ? `<p class="text-sm text-slate-600 mt-2"><span class="font-semibold">Réalisation</span> ${escapeHtml(d.director)}</p>` : ''}
+                        ${d.actors ? `<p class="text-sm text-slate-600"><span class="font-semibold">Avec</span> ${escapeHtml(d.actors)}</p>` : ''}
+                        ${d.release_date ? `<p class="text-sm text-slate-600"><span class="font-semibold">Sortie</span> ${d.release_date}</p>` : ''}
+                        <div class="flex flex-wrap gap-1.5 mt-2">${flags}</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mt-5">
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold ${d.calculated_score >= 7.5 ? 'text-emerald-600' : (d.calculated_score >= 6 ? 'text-amber-600' : 'text-orange-600')}">${d.calculated_score.toFixed(1)}</p>
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Score moyen</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-slate-800">${d.stats.total_showtimes}</p>
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Séances</p>
+                    </div>
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-center">
+                        <p class="text-2xl font-extrabold text-slate-800">${d.stats.cinema_count}</p>
+                        <p class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Cinémas</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <h4 class="text-xs uppercase tracking-wide font-bold text-slate-400 mb-1.5">Notes (${(d.ratings || []).length})</h4>
+                        <div class="rounded-xl border border-slate-200 px-3 py-1.5">${ratingRows}</div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs uppercase tracking-wide font-bold text-slate-400 mb-1.5">Où le voir (${d.stats.cinema_count} cinémas · ${d.copies_count} copies)</h4>
+                        <div class="rounded-xl border border-slate-200 px-3 py-1.5 max-h-52 overflow-y-auto">${cinemaRows}</div>
+                        ${versions ? `<div class="flex flex-wrap gap-1.5 mt-2">${versions}</div>` : ''}
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2 mt-5 pt-4 border-t border-slate-100">
+                    <button onclick="closeInfo()" class="btn-secondary !py-1.5 text-sm">Close</button>
+                    <button onclick="toggleSelect('${d.id}')"
+                            class="${sel ? 'btn-secondary' : 'btn-primary'} !py-1.5 text-sm">
+                        ${sel ? '✓ In this issue — remove' : '+ Add to issue'}
+                    </button>
+                </div>`;
+        }
+
+        function catBadges(m) {
+            return m.cats.map(c =>
+                `<span class="bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] px-2 py-0.5 rounded-full font-medium">${CATEGORY_SHORT[c] || c}</span>`
+            ).join('');
+        }
+
+        function posterHtml(m, classes) {
+            if (m.poster_url) {
+                return `<img src="${m.poster_url}" alt="" class="${classes}" loading="lazy"
+                             onerror="this.outerHTML='<div class=\\'${classes} bg-slate-300 flex items-center justify-center text-slate-500 font-bold\\'>${escapeHtml(m.title[0] || '?')}</div>'">`;
+            }
+            return `<div class="${classes} bg-slate-300 flex items-center justify-center text-slate-500 font-bold">${escapeHtml(m.title[0] || '?')}</div>`;
+        }
+
+        function listCard(m) {
+            const sel = !!issueMovies[m.id];
+            const ratings = m.ratings.map(r =>
+                `<span class="whitespace-nowrap"><span class="font-semibold text-slate-500">${RATING_SHORT[r.s] || r.s}</span> ${r.v}/${r.m}</span>`
+            ).join('<span class="text-slate-300"> · </span>');
+            const flags = (m.new_release ? '<span class="bg-red-50 text-red-700 border border-red-100 text-[11px] px-2 py-0.5 rounded-full font-medium">Sortie</span>' : '')
+                        + (m.premiere ? '<span class="bg-pink-50 text-pink-700 border border-pink-100 text-[11px] px-2 py-0.5 rounded-full font-medium">Avant-première</span>' : '');
+            return `
+                <div class="movie-row ${sel ? 'selected' : ''} bg-white rounded-xl p-3 border border-slate-200 flex items-start gap-3">
+                    <button onclick="toggleSelect('${m.id}')" title="${sel ? 'Remove from issue' : 'Add to issue'}"
+                            class="flex-shrink-0 w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold transition-colors
+                                   ${sel ? 'bg-emerald-500 border-emerald-500 text-white hover:bg-red-500 hover:border-red-500' : 'border-slate-300 text-slate-400 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600'}">
+                        ${sel ? '✓' : '+'}
+                    </button>
+                    ${posterHtml(m, 'w-14 h-20 object-cover rounded-lg shadow-sm flex-shrink-0')}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-bold text-slate-900">${escapeHtml(m.title)}</h3>
+                            ${m.original_title && m.original_title !== m.title ? `<span class="text-sm text-slate-400 italic">${escapeHtml(m.original_title)}</span>` : ''}
+                            ${catBadges(m)}${flags}
+                        </div>
+                        <p class="text-sm text-slate-500 mt-1">
+                            ${escapeHtml(m.director)}${m.year ? ' · ' + m.year : ''}${m.duration ? ' · ' + m.duration + ' min' : ''}${m.genre ? ' · ' + escapeHtml(m.genre) : ''}
+                        </p>
+                        <p class="text-xs text-slate-400 mt-1.5">${ratings || 'No ratings'}</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+                        <span class="text-sm font-bold px-2.5 py-1 rounded-lg text-white ${scoreColor(m.score)}">${m.score.toFixed(1)}</span>
+                        <span class="text-[11px] text-slate-400 text-right">${m.copies} copies<br>${m.showtimes} séances</span>
+                        <button onclick="openMovieInfo('${m.id}', event)"
+                                class="text-xs font-medium text-slate-400 hover:text-slate-800 underline decoration-dotted underline-offset-2">More info</button>
+                    </div>
+                </div>`;
+        }
+
+        function mosaicTile(m) {
+            const sel = !!issueMovies[m.id];
+            const meta = [m.year, m.duration ? m.duration + ' min' : null].filter(Boolean).join(' · ');
+            const topRatings = m.ratings.slice(0, 3).map(r =>
+                `${RATING_SHORT[r.s] || r.s} <span class="font-semibold text-white">${r.v}</span>`).join(' · ');
+            const badges = m.cats.map(c =>
+                `<span class="bg-white/20 text-white text-[9px] px-1.5 py-0.5 rounded-full">${CATEGORY_SHORT[c] || c}</span>`).join('');
+            return `
+                <div onclick="openMovieInfo('${m.id}', event)" title="${escapeHtml(m.title)}${m.year ? ' (' + m.year + ')' : ''}"
+                     class="relative rounded-xl overflow-hidden cursor-pointer group shadow-sm transition-transform hover:-translate-y-0.5 ${sel ? 'ring-4 ring-emerald-500' : 'hover:ring-2 hover:ring-red-400'}">
+                    ${posterHtml(m, 'w-full aspect-[2/3] object-cover')}
+                    <span class="absolute top-1.5 left-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md text-white ${scoreColor(m.score)} z-10">${m.score.toFixed(1)}</span>
+                    ${sel
+                        ? `<button onclick="event.stopPropagation(); toggleSelect('${m.id}')" title="Remove from issue"
+                                class="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 hover:bg-red-500 text-white flex items-center justify-center font-bold shadow z-10">✓</button>`
+                        : `<button onclick="event.stopPropagation(); toggleSelect('${m.id}')" title="Add to issue"
+                                class="absolute top-1.5 right-1.5 w-7 h-7 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white hidden group-hover:flex items-center justify-center font-bold shadow z-10">+</button>`}
+                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-2 pt-8 pb-2">
+                        <p class="text-white text-xs font-semibold leading-tight">${escapeHtml(m.title)}</p>
+                        <p class="text-slate-300 text-[10px] mt-0.5">${meta}</p>
+                        <div class="hidden group-hover:block mt-1 space-y-0.5">
+                            ${m.director ? `<p class="text-slate-200 text-[10px] leading-snug">${escapeHtml(m.director)}</p>` : ''}
+                            ${topRatings ? `<p class="text-slate-300 text-[10px]">${topRatings}</p>` : ''}
+                            <p class="text-slate-400 text-[10px]">${m.copies} copies · ${m.showtimes} séances</p>
+                            ${badges ? `<div class="flex flex-wrap gap-1 pt-0.5">${badges}</div>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderCatPills() {
+            const counts = { all: SELECT_MOVIES.length, selected: Object.keys(issueMovies).length };
+            for (const key of Object.keys(CATEGORY_NAMES)) {
+                counts[key] = SELECT_MOVIES.filter(m => m.cats.includes(key)).length;
+            }
+            const pill = (key, label) => `
+                <button onclick="setCat('${key}')"
+                        class="cat-pill px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selState.cat === key ? 'active' : ''}">
+                    ${label} <span class="opacity-60">${counts[key]}</span>
+                </button>`;
+            document.getElementById('catPills').innerHTML =
+                pill('all', 'All') +
+                Object.entries(CATEGORY_NAMES).map(([key, name]) => pill(key, name)).join('') +
+                pill('selected', '✓ Selected');
+        }
+
+        function renderPagination(total) {
+            const pages = Math.max(1, Math.ceil(total / selState.pageSize));
+            selState.page = Math.min(selState.page, pages);
+            const p = selState.page;
+
+            let nums = [];
+            for (let i = 1; i <= pages; i++) {
+                if (i === 1 || i === pages || Math.abs(i - p) <= 2) nums.push(i);
+                else if (nums[nums.length - 1] !== '…') nums.push('…');
+            }
+            const numBtns = nums.map(n => n === '…'
+                ? '<span class="px-2 text-slate-400">…</span>'
+                : `<button onclick="setPage(${n})" class="px-3 py-1 rounded-lg text-sm font-medium ${n === p ? 'bg-slate-900 text-white' : 'hover:bg-slate-200 text-slate-600'}">${n}</button>`
+            ).join('');
+
+            document.getElementById('pagination').innerHTML = pages <= 1 && total <= selState.pageSize ? `
+                <span class="text-sm text-slate-400">${total} movies</span>
+                <span></span>` : `
+                <div class="flex items-center gap-1">
+                    <button onclick="setPage(${Math.max(1, p - 1)})" ${p === 1 ? 'disabled' : ''}
+                            class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-slate-200 text-slate-600 disabled:opacity-40">&larr; Prev</button>
+                    ${numBtns}
+                    <button onclick="setPage(${Math.min(pages, p + 1)})" ${p === pages ? 'disabled' : ''}
+                            class="px-3 py-1 rounded-lg text-sm font-medium hover:bg-slate-200 text-slate-600 disabled:opacity-40">Next &rarr;</button>
+                </div>
+                <select onchange="setFilter('pageSize', parseInt(this.value))" class="field !py-1">
+                    ${[12, 24, 48, 96].map(n => `<option value="${n}" ${selState.pageSize === n ? 'selected' : ''}>${n} / page</option>`).join('')}
+                </select>`;
+        }
+
+        function renderSelect() {
+            const listEl = document.getElementById('movieList');
+            if (!listEl) return;  // no data fetched yet
+
+            renderCatPills();
+            document.getElementById('viewBtn-list').className =
+                'view-btn px-3 py-1.5 text-sm font-medium ' + (selState.view === 'list' ? 'active' : 'text-slate-600 hover:bg-slate-100');
+            document.getElementById('viewBtn-mosaic').className =
+                'view-btn px-3 py-1.5 text-sm font-medium border-l border-slate-200 ' + (selState.view === 'mosaic' ? 'active' : 'text-slate-600 hover:bg-slate-100');
+
+            const list = filteredMovies();
+            renderPagination(list.length);
+            document.getElementById('resultCount').textContent =
+                `${list.length} movie${list.length === 1 ? '' : 's'}`;
+
+            const start = (selState.page - 1) * selState.pageSize;
+            const pageItems = list.slice(start, start + selState.pageSize);
+
+            if (pageItems.length === 0) {
+                listEl.innerHTML = '<p class="text-slate-400 text-sm text-center py-12">No movies match these filters.</p>';
+                return;
+            }
+            if (selState.view === 'mosaic') {
+                listEl.innerHTML = `<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">${pageItems.map(mosaicTile).join('')}</div>`;
+            } else {
+                listEl.innerHTML = `<div class="grid gap-2">${pageItems.map(listCard).join('')}</div>`;
+            }
+        }
+
+        function initGenreFilter() {
+            const sel = document.getElementById('genreSelect');
+            if (!sel) return;
+            const genres = new Set();
+            SELECT_MOVIES.forEach(m => m.genre.split(',').forEach(g => { g = g.trim(); if (g) genres.add(g); }));
+            [...genres].sort().forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.textContent = g;
+                sel.appendChild(opt);
+            });
+        }
+
+        // ---- Autosave ----
+        let saveTimer = null;
+        function markIndicators(text) {
+            document.querySelectorAll('.save-indicator').forEach(el => { el.textContent = text; });
+        }
+        function scheduleSave() {
+            issueStatus = 'draft';
+            updateHeader();
+            markIndicators('Saving…');
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                fetch('/api/issue', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ movies: issueMovies, content: issueContent })
+                })
+                .then(r => r.json())
+                .then(() => { markIndicators('Saved ✓'); })
+                .catch(() => { markIndicators('Save failed!'); });
+            }, 700);
+        }
+
+        // ---- Sections ----
+        function orderedSections() {
+            return Object.entries(SECTIONS)
+                .sort((a, b) => (a[1].order || 99) - (b[1].order || 99));
+        }
+
+        function deleteSection(key) {
+            const count = sectionMovies(key).length;
+            if (count && !confirm(`Delete this section? Its ${count} movie(s) go back to the bench.`)) return;
+            fetch('/api/sections/' + key, { method: 'DELETE' })
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok) { alert(data.error); return; }
+                    delete SECTIONS[key];
+                    let touched = false;
+                    Object.values(issueMovies).forEach(entry => {
+                        if (entry.section === key) { entry.section = null; touched = true; }
+                    });
+                    renderCurate();
+                    if (touched) scheduleSave();
+                });
+        }
+
+        // ---- Organize board (bench + sections, drag & drop) ----
+        function sectionMovies(key) {
+            return Object.keys(issueMovies)
+                .filter(id => (issueMovies[id].section || '') === (key || ''))
+                .sort((a, b) => {
+                    const oa = issueMovies[a].order, ob = issueMovies[b].order;
+                    return (typeof oa === 'number' ? oa : 1e9) - (typeof ob === 'number' ? ob : 1e9);
+                });
+        }
+
+        let dragMovieId = null;
+        let dragSecKey = null;
+
+        function onMovieDragStart(e, id) {
+            dragMovieId = id; dragSecKey = null;
+            e.dataTransfer.effectAllowed = 'move';
+            e.stopPropagation();
+        }
+        function onSectionDragStart(e, key) {
+            dragSecKey = key; dragMovieId = null;
+            e.dataTransfer.effectAllowed = 'move';
+            e.stopPropagation();
+        }
+        function endDrag() {
+            dragMovieId = null; dragSecKey = null;
+            document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+            document.querySelectorAll('.row-over-top, .row-over-bottom').forEach(el =>
+                el.classList.remove('row-over-top', 'row-over-bottom'));
+        }
+
+        function onZoneOver(e) {
+            if (!dragMovieId && !dragSecKey) return;
+            e.preventDefault();
+            e.currentTarget.classList.add('drop-target');
+        }
+        function onZoneLeave(e) {
+            e.currentTarget.classList.remove('drop-target');
+        }
+        function onRowOver(e) {
+            if (!dragMovieId) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const rect = e.currentTarget.getBoundingClientRect();
+            const below = e.clientY > rect.top + rect.height / 2;
+            e.currentTarget.classList.toggle('row-over-top', !below);
+            e.currentTarget.classList.toggle('row-over-bottom', below);
+        }
+        function onRowLeave(e) {
+            e.currentTarget.classList.remove('row-over-top', 'row-over-bottom');
+        }
+
+        function moveMovie(id, key, index) {
+            const dest = sectionMovies(key).filter(x => x !== id);
+            dest.splice(Math.max(0, Math.min(index, dest.length)), 0, id);
+            issueMovies[id].section = key || null;
+            dest.forEach((x, i) => { issueMovies[x].order = i; });
+            scheduleSave();
+            renderCurate();
+        }
+
+        function dropOnZone(e, key) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (dragMovieId) {
+                moveMovie(dragMovieId, key, sectionMovies(key).length);
+            } else if (dragSecKey && key && dragSecKey !== key) {
+                reorderSectionsTo(dragSecKey, key);
+            }
+            endDrag();
+        }
+
+        function dropOnRow(e, targetId) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!dragMovieId || dragMovieId === targetId) { endDrag(); return; }
+            const key = issueMovies[targetId].section || '';
+            const rect = e.currentTarget.getBoundingClientRect();
+            const below = e.clientY > rect.top + rect.height / 2;
+            const list = sectionMovies(key).filter(x => x !== dragMovieId);
+            const index = list.indexOf(targetId) + (below ? 1 : 0);
+            moveMovie(dragMovieId, key, index);
+            endDrag();
+        }
+
+        function reorderSectionsTo(fromKey, toKey) {
+            const keys = orderedSections().map(([k]) => k).filter(k => k !== fromKey);
+            keys.splice(keys.indexOf(toKey), 0, fromKey);
+            keys.forEach((k, i) => { SECTIONS[k].order = i + 1; });
+            markIndicators('Saving…');
+            fetch('/api/sections/order', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ keys })
+            })
+            .then(() => markIndicators('Saved ✓'))
+            .catch(() => markIndicators('Save failed!'));
+            scheduleSave();  // section order changes the rendered newsletter
+            renderCurate();
+        }
+
+        function addSectionFromBoard() {
+            const input = document.getElementById('boardNewSection');
+            const title = input.value.trim();
+            if (!title) return;
+            fetch('/api/sections', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, description: '' })
+            })
+            .then(r => r.json().then(data => ({ ok: r.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) { alert(data.error); return; }
+                SECTIONS[data.key] = data;
+                renderCurate();
+            });
+        }
+
+        function boardRow(movieId) {
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', score: 0, poster_url: null };
+            const entry = issueMovies[movieId];
+            return `
+                <div class="board-row flex items-center gap-2.5 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200"
+                     draggable="true"
+                     ondragstart="onMovieDragStart(event, '${movieId}')" ondragend="endDrag()"
+                     ondragover="onRowOver(event)" ondragleave="onRowLeave(event)"
+                     ondrop="dropOnRow(event, '${movieId}')">
+                    <span class="text-slate-300 select-none text-sm leading-none">⠿</span>
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-7 h-10 object-cover rounded flex-shrink-0 pointer-events-none" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <p class="flex-1 min-w-0 text-sm font-semibold text-slate-800 truncate pointer-events-none">${escapeHtml(info.title)}
+                        <span class="font-normal text-slate-400">${info.year || ''} · ${(info.score || 0).toFixed(1)}</span>
+                        ${entry.comment ? '' : '<span class="font-normal text-amber-600 text-xs ml-1" title="No note yet — write one in Write">✎</span>'}
+                    </p>
+                    <button onclick="toggleSelect('${movieId}')"
+                            class="text-slate-300 hover:text-red-600 text-sm font-medium flex-shrink-0" title="Remove from issue">&times;</button>
+                </div>`;
+        }
+
+        function benchCard(movieId) {
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, poster_url: null };
+            return `
+                <div class="board-row flex items-center gap-2 bg-white pl-2 pr-1 py-1 rounded-lg border border-slate-200 max-w-48"
+                     draggable="true"
+                     ondragstart="onMovieDragStart(event, '${movieId}')" ondragend="endDrag()">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-6 h-9 object-cover rounded flex-shrink-0 pointer-events-none" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <span class="text-xs font-semibold text-slate-800 truncate pointer-events-none">${escapeHtml(info.title)}</span>
+                    <button onclick="toggleSelect('${movieId}')"
+                            class="text-slate-300 hover:text-red-600 text-sm flex-shrink-0" title="Remove from issue">&times;</button>
+                </div>`;
+        }
+
+        function renderCurate() {
+            const benchEl = document.getElementById('benchZone');
+            const boardEl = document.getElementById('boardSections');
+            if (!benchEl) return;
+            const benchIds = sectionMovies('');
+            const total = Object.keys(issueMovies).length;
+
+            benchEl.innerHTML = `
+                <div class="drop-zone rounded-xl border-2 border-dashed ${benchIds.length ? 'border-amber-300 bg-amber-50/60' : 'border-slate-200 bg-slate-50'} p-3"
+                     ondragover="onZoneOver(event)" ondragleave="onZoneLeave(event)" ondrop="dropOnZone(event, '')">
+                    <p class="text-xs font-semibold uppercase tracking-wide ${benchIds.length ? 'text-amber-700' : 'text-slate-400'} mb-2">
+                        Bench — ${benchIds.length ? benchIds.length + ' movie' + (benchIds.length > 1 ? 's' : '') + ' waiting for a section' : 'empty (drop a movie here to unassign it)'}
+                    </p>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${benchIds.map(benchCard).join('') || ''}
+                    </div>
+                </div>`;
+
+            boardEl.innerHTML = (total === 0
+                ? '<p class="text-slate-400 text-sm text-center py-10">No movies selected yet — pick some in the Select tab.</p>'
+                : orderedSections().map(([key, s]) => {
+                    const groupIds = sectionMovies(key);
+                    return `
+                        <div class="drop-zone rounded-xl border border-slate-200 bg-slate-50 mb-3"
+                             ondragover="onZoneOver(event)" ondragleave="onZoneLeave(event)" ondrop="dropOnZone(event, '${key}')">
+                            <div class="section-head flex items-center gap-2 px-3 pt-2.5 pb-1.5"
+                                 draggable="true" ondragstart="onSectionDragStart(event, '${key}')" ondragend="endDrag()">
+                                <span class="text-slate-300 select-none text-sm leading-none">⠿</span>
+                                <h3 class="font-bold text-slate-800 text-sm">${escapeHtml(s.title)}</h3>
+                                <span class="text-[11px] font-semibold bg-white border border-slate-200 rounded-full px-1.5 py-0.5 text-slate-500">${groupIds.length}</span>
+                                <button onclick="deleteSection('${key}')" title="Delete section"
+                                        class="ml-auto text-slate-300 hover:text-red-600 text-sm font-bold">&times;</button>
+                            </div>
+                            <div class="px-3 pb-3 space-y-1.5">
+                                ${groupIds.map(boardRow).join('') ||
+                                  '<p class="text-xs text-slate-400 italic border border-dashed border-slate-200 rounded-lg px-3 py-2.5">Drop movies here</p>'}
+                            </div>
+                        </div>`;
+                }).join('')) + `
+                <div class="flex gap-2 mt-4">
+                    <input id="boardNewSection" type="text" placeholder="New section… (press Enter)"
+                           onkeydown="if (event.key === 'Enter') addSectionFromBoard()" class="field flex-1 max-w-72">
+                    <button onclick="addSectionFromBoard()" class="btn-secondary !py-1.5 text-sm">+ Add section</button>
+                </div>`;
+        }
+
+        function setComment(movieId, comment) {
+            issueMovies[movieId].comment = comment;
+            scheduleSave();  // no re-render while typing
+        }
+
+        // ---- Write (editorial document) ----
+        function setContent(field, value) {
+            issueContent[field] = value;
+            scheduleSave();
+        }
+
+        function setInterlude(sectionKey, value) {
+            if (!issueContent.interludes) issueContent.interludes = {};
+            issueContent.interludes[sectionKey] = value;
+            scheduleSave();
+        }
+
+        let dirtySections = new Set();
+        let sectionPatchTimer = null;
+        function setSectionText(key, field, value) {
+            SECTIONS[key][field] = value;
+            dirtySections.add(key);
+            markIndicators('Saving…');
+            clearTimeout(sectionPatchTimer);
+            sectionPatchTimer = setTimeout(() => {
+                const patches = [...dirtySections].map(k =>
+                    fetch('/api/sections/' + k, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title: SECTIONS[k].title, description: SECTIONS[k].description })
+                    }));
+                dirtySections.clear();
+                Promise.all(patches)
+                    .then(() => markIndicators('Saved ✓'))
+                    .catch(() => markIndicators('Save failed!'));
+            }, 800);
+            scheduleSave();  // wording changed => rendered newsletter changed => back to draft
+        }
+
+        function autoGrow(el) {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        }
+
+        function writeMovieBlock(movieId) {
+            const info = SELECT_INDEX[movieId] || { title: 'Unknown movie #' + movieId, year: '', poster_url: null };
+            const entry = issueMovies[movieId];
+            return `
+                <div class="flex gap-3 mt-5">
+                    ${info.poster_url ? `<img src="${info.poster_url}" class="w-12 h-[4.2rem] object-cover rounded-md flex-shrink-0 border border-[#e6dfd8]" loading="lazy" onerror="this.style.display='none'">` : ''}
+                    <div class="flex-1 min-w-0">
+                        <p class="serif text-lg font-semibold" style="color:#141413">${escapeHtml(info.title)}
+                            <span class="text-sm font-normal" style="color:#8e8b82">${info.year || ''}</span>
+                        </p>
+                        <div class="flex mt-1.5">
+                            <div class="w-0.5 flex-shrink-0" style="background:#c8a24a"></div>
+                            <textarea oninput="setComment('${movieId}', this.value); autoGrow(this)" rows="1"
+                                      placeholder="Votre note de la rédaction pour ce film…"
+                                      class="wfield wgrow serif italic text-[17px] leading-relaxed ml-0.5"
+                                      style="color:#252523; background:#f5f0e8">${escapeHtml(entry.comment || '')}</textarea>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        function renderWrite() {
+            const doc = document.getElementById('writeDoc');
+            const c = issueContent;
+            const ids = Object.keys(issueMovies);
+            const unassigned = sectionMovies('').length;
+
+            const sectionBlocks = orderedSections().map(([key, s], idx) => {
+                const groupIds = sectionMovies(key);
+                if (groupIds.length === 0) return '';
+                const numeral = String(idx + 1).padStart(2, '0');
+                return `
+                    <div class="mt-10 pt-8" style="border-top:1px solid #e6dfd8">
+                        <p class="text-xs font-medium uppercase" style="color:#c8a24a; letter-spacing:1.5px">N° ${numeral}</p>
+                        <input value="${escapeHtml(s.title)}" oninput="setSectionText('${key}', 'title', this.value)"
+                               placeholder="Titre de la section"
+                               class="wfield serif text-3xl mt-1" style="color:#141413; letter-spacing:-0.5px">
+                        <textarea oninput="setSectionText('${key}', 'description', this.value); autoGrow(this)" rows="1"
+                                  placeholder="Sous-titre de la section (optionnel)…"
+                                  class="wfield wgrow italic text-sm mt-0.5" style="color:#6c6a64">${escapeHtml(s.description || '')}</textarea>
+                        ${groupIds.map(writeMovieBlock).join('')}
+                        <div class="mt-6 text-center">
+                            <textarea oninput="setInterlude('${key}', this.value); autoGrow(this)" rows="1"
+                                      placeholder="✦ Interlude après cette section (optionnel)…"
+                                      class="wfield wgrow serif italic text-[17px] text-center"
+                                      style="color:#3d3d3a">${escapeHtml((c.interludes || {})[key] || '')}</textarea>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            doc.innerHTML = `
+                ${unassigned ? `<div class="mb-6 text-center text-sm rounded-xl border border-amber-300 bg-amber-50 text-amber-800 px-4 py-2">
+                    ${unassigned} film${unassigned > 1 ? 's' : ''} sans section — placez-le${unassigned > 1 ? 's' : ''} dans <a href="#" onclick="goToTab('curate'); return false" class="underline font-semibold">Organize</a> pour l'écrire ici.
+                </div>` : ''}
+                <input value="${escapeHtml(c.kicker || '')}" oninput="setContent('kicker', this.value)"
+                       placeholder="Kicker (petite ligne au-dessus du titre)…"
+                       class="wfield text-center text-xs font-medium uppercase" style="color:#6c6a64; letter-spacing:1.5px">
+                <input value="${escapeHtml(c.title || '')}" oninput="setContent('title', this.value)"
+                       placeholder="Titre de la newsletter"
+                       class="wfield serif text-center text-5xl mt-2" style="color:#141413; letter-spacing:-1px">
+                <div class="mx-auto mt-5" style="width:56px; height:2px; background:#c8a24a"></div>
+                <textarea oninput="setContent('intro', this.value); autoGrow(this)" rows="2"
+                          placeholder="Édito d'introduction — le mot de la semaine…"
+                          class="wfield text-center text-base mt-5 leading-relaxed" style="color:#3d3d3a">${escapeHtml(c.intro || '')}</textarea>
+
+                ${ids.length === 0 ? '<p class="text-center text-sm mt-10" style="color:#8e8b82">Aucun film sélectionné — choisissez-les dans Select.</p>' : sectionBlocks}
+
+                <div class="mt-12 rounded-xl px-8 py-7" style="background:#b5432c">
+                    <textarea oninput="setContent('conclusion', this.value); autoGrow(this)" rows="1"
+                              placeholder="Mot de la fin…"
+                              class="wfield wgrow serif text-center text-2xl" style="color:#ffffff">${escapeHtml(c.conclusion || '')}</textarea>
+                </div>
+                <div class="mt-4 rounded-xl px-8 py-6 text-center" style="background:#161210">
+                    <p class="serif text-lg" style="color:#faf9f5">${escapeHtml(c.title || '')}</p>
+                    <textarea oninput="setContent('footer', this.value); autoGrow(this)" rows="1"
+                              placeholder="Ligne de pied de page…"
+                              class="wfield wgrow text-center text-sm mt-1" style="color:#9c9086">${escapeHtml(c.footer || '')}</textarea>
+                </div>`;
+
+            doc.querySelectorAll('textarea.wgrow, textarea.wfield').forEach(autoGrow);
+        }
+
+        // ---- Preview ----
+        function renderPreview() {
+            const btn = document.getElementById('renderBtn');
+            const log = document.getElementById('previewLog');
+            btn.disabled = true;
+            btn.textContent = 'Rendering…';
+            fetch('/api/prerender', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    log.classList.remove('hidden');
+                    if (data.ok) {
+                        log.className = 'mb-4 p-3 rounded-xl text-sm font-mono bg-emerald-50 text-emerald-800 border border-emerald-200';
+                        const missing = data.export && data.export.missing_ids.length
+                            ? ` ⚠ ${data.export.missing_ids.length} selected movie(s) missing from scraped data`
+                            : '';
+                        log.textContent = `${data.log} — ${data.export.movie_count} movies in ${data.export.sections_used.length} section(s)${missing}`;
+                        document.getElementById('previewFrame').src = '/preview?ts=' + Date.now();
+                    } else {
+                        log.className = 'mb-4 p-3 rounded-xl text-sm font-mono bg-red-50 text-red-800 border border-red-200';
+                        log.textContent = data.log;
+                    }
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Render preview';
+                });
+        }
+
+        // ---- Validation ----
+        function runValidation() {
+            const btn = document.getElementById('validateBtn');
+            const container = document.getElementById('validationResults');
+            btn.disabled = true;
+            btn.textContent = 'Validating…';
+            container.innerHTML = '<p class="text-slate-400 text-sm">Rendering and checking (image checks hit the network)…</p>';
+            fetch('/api/validate', { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    issueStatus = data.status;
+                    updateHeader();
+                    if (data.error) {
+                        container.innerHTML = `<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl font-mono text-sm">${escapeHtml(data.error)}</div>`;
+                        return;
+                    }
+                    const summary = data.passed
+                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">🎉 All checks passed — this issue is READY.</div>'
+                        : '<div class="bg-amber-100 text-amber-900 border border-amber-200 p-4 rounded-xl font-bold">Validation failed — fix the problems below and re-run.</div>';
+                    container.innerHTML = summary + data.checks.map(c => `
+                        <div class="border ${c.passed ? 'border-emerald-200 bg-emerald-50/40' : 'border-red-200 bg-red-50/40'} rounded-xl p-4">
+                            <p class="font-bold ${c.passed ? 'text-emerald-700' : 'text-red-700'}">
+                                ${c.passed ? '✓' : '✗'} ${escapeHtml(c.label)}
+                            </p>
+                            ${c.problems.length ? `<ul class="list-disc ml-6 mt-2 text-sm text-slate-700">${c.problems.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul>` : ''}
+                        </div>`).join('');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Run validation';
+                });
+        }
+
+        // ---- Pipeline (fetch) ----
+        let pipelinePolling = null;
+
+        function startFetch(force) {
+            fetch('/api/pipeline/fetch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ force })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) { alert(data.error); return; }
+                startPolling();
+            });
+        }
+
+        function resetPipeline() {
+            fetch('/api/pipeline/reset', { method: 'POST' }).then(() => {
+                stopPolling();
+                document.getElementById('progressSection').classList.add('hidden');
+                document.getElementById('logsContainer').innerHTML = '<p class="text-slate-500">No logs yet.</p>';
+            });
+        }
+
+        function startPolling() {
+            document.getElementById('progressSection').classList.remove('hidden');
+            if (pipelinePolling) clearInterval(pipelinePolling);
+            pipelinePolling = setInterval(fetchPipelineStatus, 1000);
+            fetchPipelineStatus();
+        }
+
+        function stopPolling() {
+            if (pipelinePolling) { clearInterval(pipelinePolling); pipelinePolling = null; }
+        }
+
+        function fetchPipelineStatus() {
+            fetch('/api/pipeline/status')
+                .then(r => r.json())
+                .then(data => {
+                    updatePipelineUI(data);
+                    if (data.is_running && !pipelinePolling) {
+                        // Page opened while a fetch is in progress: resume polling
+                        startPolling();
+                    } else if (!data.is_running && (data.status === 'complete' || data.status === 'error')) {
+                        // Reload only when a run we were polling just finished;
+                        // a status that is already 'complete' on page load must not reload again
+                        const runJustFinished = pipelinePolling !== null;
+                        stopPolling();
+                        if (runJustFinished && data.status === 'complete') {
+                            setTimeout(() => window.location.reload(), 1500);
+                        }
+                    }
+                });
+        }
+
+        function updatePipelineUI(state) {
+            document.getElementById('fetchBtn').disabled = state.is_running;
+            document.getElementById('forceFetchBtn').disabled = state.is_running;
+
+            const badge = document.getElementById('statusBadge');
+            const statusColors = {
+                'idle': 'bg-slate-200 text-slate-700',
+                'starting': 'bg-blue-100 text-blue-800',
+                'scraping': 'bg-blue-100 text-blue-800',
+                'analyzing': 'bg-emerald-100 text-emerald-800',
+                'complete': 'bg-emerald-500 text-white',
+                'error': 'bg-red-500 text-white'
+            };
+            badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusColors[state.status] || statusColors.idle}`;
+            badge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+
+            document.getElementById('currentTask').textContent = state.current_task || 'Waiting...';
+            document.getElementById('progressCount').textContent = state.progress;
+            document.getElementById('totalCount').textContent = state.total;
+            const percent = state.total > 0 ? (state.progress / state.total * 100) : 0;
+            document.getElementById('progressBar').style.width = percent + '%';
+
+            const errorDisplay = document.getElementById('errorDisplay');
+            if (state.error) {
+                errorDisplay.classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = state.error;
+            } else {
+                errorDisplay.classList.add('hidden');
+            }
+
+            if (state.logs && state.logs.length > 0) {
+                const container = document.getElementById('logsContainer');
+                container.innerHTML = state.logs.map(log => `<div>${escapeHtml(log)}</div>`).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        function escapeHtml(text) {
+            return String(text == null ? '' : text)
+                .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+        }
+
+        // ---- Init ----
+        // Reconcile: movies pointing at a section that no longer exists go back to the bench
+        (() => {
+            let orphaned = false;
+            Object.values(issueMovies).forEach(e => {
+                if (e.section && !SECTIONS[e.section]) { e.section = null; orphaned = true; }
+            });
+            if (orphaned) scheduleSave();
+        })();
+        updateHeader();
+        initGenreFilter();
+        renderSelect();
+        renderCurate();
+        fetchPipelineStatus();
+    </script>
+</body>
+</html>

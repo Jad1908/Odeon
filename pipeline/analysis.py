@@ -109,14 +109,20 @@ def process_movies():
 
         # --- D. OLD CLASSICS / RE-RELEASES ---
         # Logic: Not modern production, but currently playing
-        elif not is_modern_production and m['availability_status'] == 'available':
+        # (premieres were already bucketed above; modern movies never land here)
+        is_old_classic = (not is_modern_production
+                          and m['availability_status'] == 'available'
+                          and not m.get('is_premiere'))
+        if is_old_classic:
             categories["old_classics"].append(m)
-        
+
         # --- E. SPECIAL CURATION (Independent of dates) ---
-        
-        # Letterboxd Picks (Score > 7/10)
+
+        # Letterboxd Picks (Score > 7/10). Old classics are excluded: they
+        # are almost always Letterboxd favourites, which made the two
+        # categories near-duplicates of each other.
         lb_score = get_letterboxd_score(m)
-        if lb_score >= 7.0:
+        if lb_score >= 7.0 and not is_old_classic:
             m['lb_temp_score'] = lb_score
             categories["letterboxd_picks"].append(m)
 
