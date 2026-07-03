@@ -62,7 +62,6 @@
     <header class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg">
         <div class="container mx-auto px-4 max-w-6xl py-3 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
-                <span class="text-2xl">🎬</span>
                 <div class="min-w-0">
                     <h1 class="font-extrabold text-lg leading-tight truncate">Paris Ciné <span class="text-red-500">Newsletter Studio</span></h1>
                     <p class="text-slate-400 text-xs hidden sm:block">Fetch → Select → Curate → Preview → Validate</p>
@@ -71,7 +70,7 @@
             <div class="flex items-center gap-3 flex-shrink-0">
                 <span class="text-sm text-slate-300"><span id="selectedCount" class="font-bold text-white">0</span> movies picked</span>
                 <span id="issueStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
-                <button onclick="sendNewsletter()" id="sendBtn" class="hidden bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-bold px-4 py-1.5 rounded-full whitespace-nowrap transition-colors">Send 🚀</button>
+                <button onclick="sendNewsletter()" id="sendBtn" class="hidden bg-emerald-500 hover:bg-emerald-400 text-white text-sm font-bold px-4 py-1.5 rounded-full whitespace-nowrap transition-colors">Send</button>
             </div>
         </div>
         <!-- Workflow stepper -->
@@ -109,7 +108,7 @@
 
                 <!-- Cache status -->
                 <div class="rounded-xl p-4 mb-5 flex items-center gap-3 {{ 'bg-emerald-50 border border-emerald-200' if cache.fresh else 'bg-amber-50 border border-amber-200' }}">
-                    <span class="text-xl">{{ '✅' if cache.fresh else '⚠️' }}</span>
+                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 {{ 'bg-emerald-500' if cache.fresh else 'bg-amber-500' }}"></span>
                     <div>
                     {% if cache.exists %}
                         <p class="font-semibold text-slate-800 text-sm">
@@ -178,7 +177,6 @@
 
                 {% if not select_movies %}
                 <div class="text-center py-16 text-slate-400">
-                    <p class="text-3xl mb-2">🎞️</p>
                     <p>No movie data yet. Run a fetch first.</p>
                 </div>
                 {% else %}
@@ -187,7 +185,7 @@
 
                 <!-- Filter bar -->
                 <div class="flex flex-wrap gap-2.5 mb-5 items-center bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <input id="searchBox" type="search" placeholder="🔍 Search title, director, actor…"
+                    <input id="searchBox" type="search" placeholder="Search title, director, actor…"
                            oninput="setFilter('search', this.value)" class="field w-64">
                     <select id="sortSelect" onchange="setFilter('sort', this.value)" class="field">
                         <option value="score">Sort: score</option>
@@ -1141,7 +1139,7 @@
                         return;
                     }
                     const summary = data.passed
-                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">🎉 All checks passed — this issue is READY. Use the <span class="underline">Send 🚀</span> button in the top bar to send it to your list.</div>'
+                        ? '<div class="bg-emerald-500 text-white p-4 rounded-xl font-bold">All checks passed — this issue is READY. Use the <span class="underline">Send</span> button in the top bar to send it to your list.</div>'
                         : '<div class="bg-amber-100 text-amber-900 border border-amber-200 p-4 rounded-xl font-bold">Validation failed — fix the problems below and re-run.</div>';
                     container.innerHTML = summary + data.checks.map(c => `
                         <div class="border ${c.passed ? 'border-emerald-200 bg-emerald-50/40' : 'border-red-200 bg-red-50/40'} rounded-xl p-4">
@@ -1185,13 +1183,13 @@
                             }
                             issueStatus = 'sent';
                             updateHeader();
-                            alert(`✅ Newsletter sent!\n\nSubject: ${data.subject}\nResend broadcast: ${data.broadcast_id}`);
+                            alert(`Newsletter sent.\n\nSubject: ${data.subject}\nResend broadcast: ${data.broadcast_id}`);
                         });
                 })
                 .catch(e => alert(`Sending failed: ${e}`))
                 .finally(() => {
                     btn.disabled = false;
-                    btn.textContent = 'Send 🚀';
+                    btn.textContent = 'Send';
                 });
         }
 
