@@ -84,19 +84,46 @@ def _require_token() -> str:
     return token
 
 
-def send_message(token: str, chat_id: str, text: str, reply_markup: dict | None = None) -> dict:
+TELEGRAM_LIMIT = 4096
+
+
+def _post_message(token, chat_id, text, parse_mode="HTML", reply_markup=None):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": text,
-        "parse_mode": "HTML",
-        "disable_web_page_preview": True,
-    }
+    payload = {"chat_id": chat_id, "text": text, "disable_web_page_preview": True}
+    if parse_mode:
+        payload["parse_mode"] = parse_mode
     if reply_markup is not None:
         payload["reply_markup"] = reply_markup
-    resp = requests.post(url, json=payload, timeout=15)
+    return requests.post(url, json=payload, timeout=15)
+
+
+def send_message(token: str, chat_id: str, text: str, reply_markup: dict | None = None) -> dict:
+    """Send one message. If the HTML fails to parse, retry as plain text so the
+    user still gets the content instead of an error."""
+    resp = _post_message(token, chat_id, text, parse_mode="HTML", reply_markup=reply_markup)
+    if resp.status_code == 400:
+        print(f"HTML send rejected ({resp.text.strip()}); retrying as plain text.")
+        resp = _post_message(token, chat_id, text, parse_mode=None, reply_markup=reply_markup)
     resp.raise_for_status()
     return resp.json()
+
+
+def send_long_message(token: str, chat_id: str, text: str):
+    """Send a possibly-long message, splitting on blank-line (section) boundaries
+    so each chunk stays under Telegram's limit AND keeps its HTML tags balanced."""
+    if len(text) <= TELEGRAM_LIMIT:
+        send_message(token, chat_id, text)
+        return
+    chunk = ""
+    for section in text.split("\n\n"):
+        candidate = f"{chunk}\n\n{section}" if chunk else section
+        if len(candidate) > TELEGRAM_LIMIT and chunk:
+            send_message(token, chat_id, chunk)
+            chunk = section
+        else:
+            chunk = candidate
+    if chunk:
+        send_message(token, chat_id, chunk)
 
 
 def _answer_callback(token: str, callback_id: str, text: str = ""):
@@ -133,7 +160,7 @@ def _notify_subscribers(token: str) -> int:
         try:
             movies, errors = check_usernames([username])
             msg = format_telegram_message(movies, errors, [username])
-            send_message(token, chat_id, msg)
+            send_long_message(token, chat_id, msg)
             notified += 1
             print(f"Notified {sub.get('name', '?')} ({username}): {len(movies)} match(es)")
         except Exception as exc:
@@ -196,19 +223,23 @@ def poll():
 
         for update in updates:
             offset = update["update_id"] + 1
-            if "callback_query" in update:
-                _handle_callback(token, update["callback_query"])
-                continue
+            try:
+                if "callback_query" in update:
+                    _handle_callback(token, update["callback_query"])
+                    continue
 
-            message = update.get("message", {})
-            text = message.get("text", "")
-            chat_id = str(message.get("chat", {}).get("id", ""))
-            user_name = message.get("from", {}).get("first_name", "Unknown")
+                message = update.get("message", {})
+                text = message.get("text", "")
+                chat_id = str(message.get("chat", {}).get("id", ""))
+                user_name = message.get("from", {}).get("first_name", "Unknown")
 
-            if not chat_id or not text.startswith("/"):
-                continue
+                if not chat_id or not text.startswith("/"):
+                    continue
 
-            _handle_command(token, chat_id, user_name, text)
+                _handle_command(token, chat_id, user_name, text)
+            except Exception as exc:
+                # One bad update must never take the whole bot down.
+                print(f"Error handling update {update.get('update_id')}: {exc}")
 
 
 def _handle_callback(token: str, callback: dict):
@@ -385,5 +416,5 @@ def _handle_command(token: str, chat_id: str, user_name: str, text: str):
         except Exception as exc:
             msg = f"Error: {exc}"
 
-        send_message(token, chat_id, msg)
+        send_long_message(token, chat_id, msg)
         return

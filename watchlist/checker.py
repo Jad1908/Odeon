@@ -95,10 +95,7 @@ def format_telegram_message(
     for movie in movies:
         sections.append(_format_movie(movie))
 
-    msg = "\n\n".join(sections)
-    if len(msg) > 4000:
-        msg = msg[:3950] + "\n\n<i>... message truncated</i>"
-    return msg
+    return "\n\n".join(sections)
 
 
 def _parse_with_showtimes(raw: dict) -> Movie:
