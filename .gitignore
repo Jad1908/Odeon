@@ -13,8 +13,6 @@ node_modules/
 .env
 
 # Workflow runtime state
-data/issue.json
-data/scrape_meta.json
-data/sections.json
+data/
 builder/.prerender/
 builder/output/preview.html
