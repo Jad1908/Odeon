@@ -1,0 +1,21 @@
+[Unit]
+Description=Cine Watchlist Telegram bot (Letterboxd -> Paris screenings)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Adjust User and WorkingDirectory to your machine.
+User=ubuntu
+WorkingDirectory=/home/ubuntu/odeon
+# Token from @BotFather. Keep it out of the repo.
+Environment=TELEGRAM_BOT_TOKEN=REPLACE_ME
+# Store subscribers on a stable path (survives redeploys / git pulls).
+Environment=SUBSCRIBERS_FILE=/home/ubuntu/watchlist-data/subscribers.json
+# Use the project venv's python (see README). Falls back to system python3 otherwise.
+ExecStart=/home/ubuntu/odeon/.venv/bin/python -m watchlist bot
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

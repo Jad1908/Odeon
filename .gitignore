@@ -12,7 +12,12 @@ node_modules/
 # Secrets
 .env
 
+
 # Workflow runtime state
 data/
 builder/.prerender/
 builder/output/preview.html
+
+# Watchlist bot runtime state (subscriber list + scheduler state)
+watchlist/subscribers.json
+watchlist/bot_state.json
