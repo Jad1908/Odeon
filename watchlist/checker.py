@@ -135,9 +135,9 @@ def _format_movie(movie: Movie) -> str:
 
 # source -> (brand-colored dot, short label, whether to show "/max")
 RATING_STYLE = {
-    "Letterboxd": ("🟢", "LB", True),
-    "IMDB": ("🟡", "IMDB", False),
-    "Allociné (Presse)": ("🔴", "AC", True),
+    "Letterboxd": ("🔵", "LB", True),
+    "IMDB": ("⚫", "IMDB", False),
+    "Allociné (Presse)": ("🟡", "AC", True),
 }
 _RATING_ORDER = ["Letterboxd", "IMDB", "Allociné (Presse)"]
 
@@ -181,6 +181,18 @@ def _times_for_day(showtimes: list) -> tuple[str, ...]:
     return tuple(times)
 
 
+def _cinema_priority(name: str) -> int:
+    """Preferred cinema order: UGC, then MK2, then non-brand, then Pathé last."""
+    n = name.lower()
+    if "ugc" in n:
+        return 0
+    if "mk2" in n:
+        return 1
+    if "pathe" in n or "pathé" in n:
+        return 3
+    return 2  # everything non-brand
+
+
 def _format_showtimes(movie: Movie) -> str:
     by_cinema: dict[str, dict] = defaultdict(lambda: defaultdict(list))
     for st in movie.showtimes:
@@ -191,7 +203,9 @@ def _format_showtimes(movie: Movie) -> str:
         by_cinema[st.cinema_name][day].append(st)
 
     lines = []
-    cinema_items = sorted(by_cinema.items())
+    cinema_items = sorted(
+        by_cinema.items(), key=lambda kv: (_cinema_priority(kv[0]), kv[0])
+    )
     shown = cinema_items[:MAX_CINEMAS_PER_MOVIE]
     remaining = len(cinema_items) - len(shown)
 
