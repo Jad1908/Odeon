@@ -16,6 +16,7 @@ import os
 import threading
 import time
 from datetime import datetime
+from html import escape as _html_escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -85,6 +86,7 @@ def _require_token() -> str:
 
 
 TELEGRAM_LIMIT = 4096
+MAX_POSTERS = 10  # Telegram albums hold at most 10 photos
 
 
 def _post_message(token, chat_id, text, parse_mode="HTML", reply_markup=None):
@@ -126,6 +128,47 @@ def send_long_message(token: str, chat_id: str, text: str):
         send_message(token, chat_id, chunk)
 
 
+def send_posters(token: str, chat_id: str, movies: list):
+    """After the text digest, send the top movies' posters as one album.
+
+    Movies arrive already sorted by number of screenings, so the first ones
+    with a poster are the most-screened. Telegram albums hold 2-10 photos;
+    a lone poster is sent as a single photo instead."""
+    media = []
+    for m in movies:
+        poster = getattr(m, "poster_url", None)
+        if not poster:
+            continue
+        caption = f"<b>{_html_escape(m.title, quote=False)}</b>"
+        if getattr(m, "year", None):
+            caption += f" ({m.year})"
+        media.append({"type": "photo", "media": poster,
+                      "caption": caption, "parse_mode": "HTML"})
+        if len(media) >= MAX_POSTERS:
+            break
+    if not media:
+        return
+    try:
+        if len(media) == 1:
+            p = media[0]
+            resp = requests.post(
+                f"https://api.telegram.org/bot{token}/sendPhoto",
+                json={"chat_id": chat_id, "photo": p["media"],
+                      "caption": p["caption"], "parse_mode": "HTML"},
+                timeout=30,
+            )
+        else:
+            resp = requests.post(
+                f"https://api.telegram.org/bot{token}/sendMediaGroup",
+                json={"chat_id": chat_id, "media": media},
+                timeout=30,
+            )
+        if resp.status_code != 200:
+            print(f"Poster send failed: {resp.text.strip()}")
+    except requests.RequestException as exc:
+        print(f"Poster send error: {exc}")
+
+
 def _answer_callback(token: str, callback_id: str, text: str = ""):
     try:
         requests.post(
@@ -161,6 +204,8 @@ def _notify_subscribers(token: str) -> int:
             movies, errors = check_usernames([username])
             msg = format_telegram_message(movies, errors, [username])
             send_long_message(token, chat_id, msg)
+            if movies:
+                send_posters(token, chat_id, movies)
             notified += 1
             print(f"Notified {sub.get('name', '?')} ({username}): {len(movies)} match(es)")
         except Exception as exc:
@@ -414,7 +459,9 @@ def _handle_command(token: str, chat_id: str, user_name: str, text: str):
             movies, errors = check_usernames(usernames)
             msg = format_telegram_message(movies, errors, usernames)
         except Exception as exc:
-            msg = f"Error: {exc}"
+            movies, msg = [], f"Error: {exc}"
 
         send_long_message(token, chat_id, msg)
+        if movies:
+            send_posters(token, chat_id, movies)
         return
