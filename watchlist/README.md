@@ -15,8 +15,8 @@ weekly digest — no external cron, no commits, no manual subscriber files.
 | `/subscribe` · `/unsubscribe` | Turn the weekly push on/off |
 | `/help` | List commands |
 
-Friends just `/start` → `/watch <username>` → **Yes**. That captures them
-automatically — you never edit a file.
+Friends just `/start`, **type their Letterboxd username**, and tap **Yes**. That
+captures them automatically — you never edit a file.
 
 ## How it runs
 
