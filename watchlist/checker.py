@@ -133,48 +133,99 @@ def _format_movie(movie: Movie) -> str:
     return "\n".join(parts)
 
 
+# source -> (brand-colored dot, short label, whether to show "/max")
+RATING_STYLE = {
+    "Letterboxd": ("🔵", "LB", True),
+    "IMDB": ("⚫", "IMDB", False),
+    "Allociné (Presse)": ("🟡", "AC", True),
+}
+_RATING_ORDER = ["Letterboxd", "IMDB", "Allociné (Presse)"]
+
+
 def _format_ratings(movie: Movie) -> str:
+    by_source = {r.source: r for r in movie.ratings}
     picks = []
-    for r in movie.ratings:
-        if r.source == "Letterboxd":
-            picks.append(f"LB {r.score:.1f}/{r.max_score:.0f}")
-        elif r.source == "IMDB":
-            picks.append(f"IMDB {r.score:.1f}")
-        elif r.source == "Allociné (Presse)":
-            picks.append(f"AC {r.score:.1f}/{r.max_score:.0f}")
+    for source in _RATING_ORDER:
+        r = by_source.get(source)
+        if not r or r.score is None:
+            continue
+        dot, label, show_max = RATING_STYLE[source]
+        text = f"{label} {r.score:.1f}/{r.max_score:.0f}" if show_max else f"{label} {r.score:.1f}"
+        if r.url:
+            text = f'<a href="{_html_escape(r.url, quote=True)}">{text}</a>'
+        picks.append(f"{dot} {text}")
     return " · ".join(picks)
 
 
+def _day_label(d) -> str:
+    return f"{FRENCH_DAYS[d.weekday()]} {d.day} {FRENCH_MONTHS[d.month - 1]}"
+
+
+def _day_range_label(days: list) -> str:
+    """1 day -> 'jeu 23 jul'; 2 -> 'jeu 23 jul et ven 24 jul'; 3+ -> 'du .. au ..'."""
+    if len(days) == 1:
+        return _day_label(days[0])
+    if len(days) == 2:
+        return f"{_day_label(days[0])} et {_day_label(days[1])}"
+    return f"du {_day_label(days[0])} au {_day_label(days[-1])}"
+
+
+def _times_for_day(showtimes: list) -> tuple[str, ...]:
+    """Ordered ('HH:MM VO', ...) for one day — used as both label and grouping key."""
+    times = []
+    for s in sorted(showtimes, key=lambda x: x.datetime):
+        t = datetime.fromisoformat(s.datetime).strftime("%H:%M")
+        if s.version:
+            t += f" {s.version}"
+        times.append(t)
+    return tuple(times)
+
+
+def _cinema_priority(name: str) -> int:
+    """Preferred cinema order: UGC, then MK2, then non-brand, then Pathé last."""
+    n = name.lower()
+    if "ugc" in n:
+        return 0
+    if "mk2" in n:
+        return 1
+    if "pathe" in n or "pathé" in n:
+        return 3
+    return 2  # everything non-brand
+
+
 def _format_showtimes(movie: Movie) -> str:
-    by_cinema: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(list))
+    by_cinema: dict[str, dict] = defaultdict(lambda: defaultdict(list))
     for st in movie.showtimes:
         try:
-            dt = datetime.fromisoformat(st.datetime)
+            day = datetime.fromisoformat(st.datetime).date()
         except ValueError:
             continue
-        day_key = dt.strftime("%Y-%m-%d")
-        by_cinema[st.cinema_name][day_key].append(st)
+        by_cinema[st.cinema_name][day].append(st)
 
     lines = []
-    cinema_items = sorted(by_cinema.items())
+    cinema_items = sorted(
+        by_cinema.items(), key=lambda kv: (_cinema_priority(kv[0]), kv[0])
+    )
     shown = cinema_items[:MAX_CINEMAS_PER_MOVIE]
     remaining = len(cinema_items) - len(shown)
 
     for cinema_name, days in shown:
         lines.append(f"  <b>{_esc(cinema_name)}</b>")
-        for day_str in sorted(days):
-            sts = days[day_str]
-            dt = datetime.fromisoformat(sts[0].datetime)
-            day_label = (
-                f"{FRENCH_DAYS[dt.weekday()]} {dt.day} {FRENCH_MONTHS[dt.month - 1]}"
-            )
-            times = []
-            for s in sorted(sts, key=lambda x: x.datetime):
-                t = datetime.fromisoformat(s.datetime).strftime("%H:%M")
-                if s.version:
-                    t += f" {s.version}"
-                times.append(t)
-            lines.append(f"    {day_label} — {', '.join(times)}")
+        sigs = {day: _times_for_day(sts) for day, sts in days.items()}
+
+        # Merge calendar-consecutive days that share the exact same showtimes.
+        run_days: list = []
+        run_sig: tuple | None = None
+        for day in sorted(sigs):
+            sig = sigs[day]
+            if run_days and sig == run_sig and (day - run_days[-1]).days == 1:
+                run_days.append(day)
+            else:
+                if run_days:
+                    lines.append(f"    {_day_range_label(run_days)} — {', '.join(run_sig)}")
+                run_days, run_sig = [day], sig
+        if run_days:
+            lines.append(f"    {_day_range_label(run_days)} — {', '.join(run_sig)}")
 
     if remaining > 0:
         lines.append(f"  <i>... and {remaining} more cinemas</i>")

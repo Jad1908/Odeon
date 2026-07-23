@@ -16,6 +16,7 @@ import os
 import threading
 import time
 from datetime import datetime
+from html import escape as _html_escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -85,6 +86,7 @@ def _require_token() -> str:
 
 
 TELEGRAM_LIMIT = 4096
+MAX_POSTERS = 10  # Telegram albums hold at most 10 photos
 
 
 def _post_message(token, chat_id, text, parse_mode="HTML", reply_markup=None):
@@ -126,6 +128,47 @@ def send_long_message(token: str, chat_id: str, text: str):
         send_message(token, chat_id, chunk)
 
 
+def send_posters(token: str, chat_id: str, movies: list):
+    """After the text digest, send the top movies' posters as one album.
+
+    Movies arrive already sorted by number of screenings, so the first ones
+    with a poster are the most-screened. Telegram albums hold 2-10 photos;
+    a lone poster is sent as a single photo instead."""
+    media = []
+    for m in movies:
+        poster = getattr(m, "poster_url", None)
+        if not poster:
+            continue
+        caption = f"<b>{_html_escape(m.title, quote=False)}</b>"
+        if getattr(m, "year", None):
+            caption += f" ({m.year})"
+        media.append({"type": "photo", "media": poster,
+                      "caption": caption, "parse_mode": "HTML"})
+        if len(media) >= MAX_POSTERS:
+            break
+    if not media:
+        return
+    try:
+        if len(media) == 1:
+            p = media[0]
+            resp = requests.post(
+                f"https://api.telegram.org/bot{token}/sendPhoto",
+                json={"chat_id": chat_id, "photo": p["media"],
+                      "caption": p["caption"], "parse_mode": "HTML"},
+                timeout=30,
+            )
+        else:
+            resp = requests.post(
+                f"https://api.telegram.org/bot{token}/sendMediaGroup",
+                json={"chat_id": chat_id, "media": media},
+                timeout=30,
+            )
+        if resp.status_code != 200:
+            print(f"Poster send failed: {resp.text.strip()}")
+    except requests.RequestException as exc:
+        print(f"Poster send error: {exc}")
+
+
 def _answer_callback(token: str, callback_id: str, text: str = ""):
     try:
         requests.post(
@@ -146,6 +189,14 @@ def _auto_prompt_markup() -> dict:
     }
 
 
+def _check_now_markup() -> dict:
+    return {
+        "inline_keyboard": [[
+            {"text": "🎬 See what's screening now", "callback_data": "check:self"},
+        ]]
+    }
+
+
 # --- Weekly push -----------------------------------------------------------
 
 def _notify_subscribers(token: str) -> int:
@@ -161,6 +212,8 @@ def _notify_subscribers(token: str) -> int:
             movies, errors = check_usernames([username])
             msg = format_telegram_message(movies, errors, [username])
             send_long_message(token, chat_id, msg)
+            if movies:
+                send_posters(token, chat_id, movies)
             notified += 1
             print(f"Notified {sub.get('name', '?')} ({username}): {len(movies)} match(es)")
         except Exception as exc:
@@ -233,10 +286,12 @@ def poll():
                 chat_id = str(message.get("chat", {}).get("id", ""))
                 user_name = message.get("from", {}).get("first_name", "Unknown")
 
-                if not chat_id or not text.startswith("/"):
+                if not chat_id or not text.strip():
                     continue
-
-                _handle_command(token, chat_id, user_name, text)
+                if text.startswith("/"):
+                    _handle_command(token, chat_id, user_name, text)
+                else:
+                    _handle_text(token, chat_id, user_name, text)
             except Exception as exc:
                 # One bad update must never take the whole bot down.
                 print(f"Error handling update {update.get('update_id')}: {exc}")
@@ -246,110 +301,171 @@ def _handle_callback(token: str, callback: dict):
     data = callback.get("data", "")
     callback_id = callback.get("id", "")
     chat_id = str(callback.get("message", {}).get("chat", {}).get("id", ""))
-    if not chat_id or not data.startswith("auto:"):
+    if not chat_id:
         _answer_callback(token, callback_id)
         return
 
-    want_auto = data == "auto:on"
-    subscribers = _load_subscribers()
-    for sub in subscribers:
-        if sub["chat_id"] == chat_id:
-            sub["auto"] = want_auto
-            _save_subscribers(subscribers)
-            break
+    if data == "check:self":
+        _answer_callback(token, callback_id)
+        sub = _find_subscriber(chat_id)
+        if sub:
+            _run_check(token, chat_id, [sub["username"]])
+        else:
+            send_message(token, chat_id, "Set your username first — just type it and send.")
+        return
 
-    _answer_callback(token, callback_id, "Saved")
-    if want_auto:
+    if data.startswith("auto:"):
+        want_auto = data == "auto:on"
+        subscribers = _load_subscribers()
+        for sub in subscribers:
+            if sub["chat_id"] == chat_id:
+                sub["auto"] = want_auto
+                _save_subscribers(subscribers)
+                break
+        _answer_callback(token, callback_id, "Saved")
+        if want_auto:
+            msg = ("Done — I'll message you every Wednesday. 🔔\n"
+                   "(Turn it off anytime with /unsubscribe.)")
+        else:
+            msg = "No problem, no weekly messages. You can check anytime:"
+        send_message(token, chat_id, msg, reply_markup=_check_now_markup())
+        return
+
+    _answer_callback(token, callback_id)
+
+
+def _upsert_username(chat_id: str, username: str, user_name: str) -> tuple[bool, str | None]:
+    """Create or update this chat's subscriber. Returns (is_new, previous_username)."""
+    subscribers = _load_subscribers()
+    existing = next((s for s in subscribers if s["chat_id"] == chat_id), None)
+    if existing:
+        old = existing["username"]
+        existing["username"] = username
+        existing["name"] = user_name
+        _save_subscribers(subscribers)
+        return False, old
+    subscribers.append({"chat_id": chat_id, "username": username,
+                        "name": user_name, "auto": False})
+    _save_subscribers(subscribers)
+    return True, None
+
+
+def _clean_username(raw: str) -> str:
+    """Pull a Letterboxd username out of whatever was typed (handles a pasted URL/@)."""
+    token = raw.strip().split()[0] if raw.strip() else ""
+    if "letterboxd.com/" in token:
+        token = token.split("letterboxd.com/", 1)[1]
+    return token.strip("/@").split("/")[0].lower()
+
+
+def _run_check(token: str, chat_id: str, usernames: list[str]):
+    from .checker import check_usernames, format_telegram_message
+
+    send_message(token, chat_id, f"Checking {', '.join(usernames)}…")
+    try:
+        movies, errors = check_usernames(usernames)
+        msg = format_telegram_message(movies, errors, usernames)
+    except Exception as exc:
+        movies, msg = [], f"Error: {exc}"
+    send_long_message(token, chat_id, msg)
+    if movies:
+        send_posters(token, chat_id, movies)
+
+
+def _onboard_username(token: str, chat_id: str, user_name: str, raw: str):
+    """A not-yet-registered user typed something — treat it as their username,
+    validate it against Letterboxd, then offer weekly notifications."""
+    from .letterboxd import fetch_watchlist
+
+    username = _clean_username(raw)
+    if not username:
+        return
+    try:
+        entries = fetch_watchlist(username)
+    except Exception:
         send_message(
-            token,
-            chat_id,
-            "Automatic weekly notifications are <b>on</b>. "
-            "I'll message you every Wednesday. Turn them off anytime with /unsubscribe.",
+            token, chat_id,
+            f"Hmm, I couldn't find a Letterboxd account called "
+            f"<b>{_html_escape(username, quote=False)}</b>. It's the name in your profile "
+            "link — <b>letterboxd.com/yourname</b>. Check the spelling and send it again.",
         )
+        return
+
+    _upsert_username(chat_id, username, user_name)
+    note = f"You're all set with <b>{username}</b>. 🎬"
+    if not entries:
+        note += ("\n\n(Heads-up: I can't see any films on that watchlist yet — if it's "
+                 "private, make it public in your Letterboxd settings, or add some films.)")
+    send_message(
+        token, chat_id,
+        f"{note}\n\nWant me to message you every week when your films are screening?",
+        reply_markup=_auto_prompt_markup(),
+    )
+
+
+def _handle_text(token: str, chat_id: str, user_name: str, text: str):
+    """Plain (non-command) message. For a new user it's their username; for an
+    existing one, a gentle nudge toward the buttons/commands."""
+    if _find_subscriber(chat_id) is None:
+        _onboard_username(token, chat_id, user_name, text)
     else:
         send_message(
-            token,
-            chat_id,
-            "No automatic notifications — you can still use /check anytime. "
-            "Change your mind with /watch or /subscribe.",
+            token, chat_id,
+            "Tap /check to see what's screening, or /help for everything I can do.",
         )
 
 
 def _handle_command(token: str, chat_id: str, user_name: str, text: str):
-    from .checker import check_usernames, format_telegram_message
-
     parts = text.strip().split()
     command = parts[0].split("@")[0].lower()
 
     if command == "/start":
         sub = _find_subscriber(chat_id)
         if sub:
-            state = "on" if sub.get("auto") else "off"
+            state = "on 🔔" if sub.get("auto") else "off"
             send_message(
-                token,
-                chat_id,
-                f"Welcome back! You're tracking <b>{sub['username']}</b> "
-                f"(automatic notifications: {state}).\n\n"
-                "/check — what's screening from your watchlist\n"
-                "/check <i>username</i> — check another user\n"
-                "/watch <i>username</i> — change your tracked username\n"
-                "/subscribe — turn on automatic weekly notifications\n"
-                "/unsubscribe — turn them off\n"
-                "/help — all commands",
+                token, chat_id,
+                f"Welcome back, {_html_escape(user_name, quote=False)}! You're tracking "
+                f"<b>{sub['username']}</b> · weekly notifications: {state}.\n\n"
+                "Tap below to see what's screening now — or /help for all options.",
+                reply_markup=_check_now_markup(),
             )
             return
 
         send_message(
-            token,
-            chat_id,
-            "<b>Cine Watchlist Bot</b>\n\n"
-            "I check if movies from your Letterboxd watchlist are screening "
-            "in Paris, and I can notify you automatically every week.\n\n"
-            "To get started, tell me your Letterboxd username:\n"
-            "/watch <i>username</i>",
+            token, chat_id,
+            f"👋 Hi {_html_escape(user_name, quote=False)}! I tell you when films on your "
+            "Letterboxd watchlist are showing in Paris cinemas.\n\n"
+            "Let's set you up — it takes 10 seconds.\n\n"
+            "<b>What's your Letterboxd username?</b> Just type it below and send.\n"
+            "<i>(It's the name in your profile link: letterboxd.com/</i><b>yourname</b><i>)</i>",
         )
         return
 
     if command == "/help":
         send_message(
-            token,
-            chat_id,
-            "/watch <i>username</i> — set your Letterboxd username\n"
-            "/check — what's screening from your watchlist\n"
-            "/check <i>username</i> — check any Letterboxd user\n"
-            "/subscribe — turn on automatic weekly notifications\n"
-            "/unsubscribe — turn them off\n"
-            "/help — this message",
+            token, chat_id,
+            "Here's what I can do:\n\n"
+            "• Send your <b>Letterboxd username</b> (just type it) to set or change it\n"
+            "• /check — what from your watchlist is screening now\n"
+            "• /check <i>username</i> — check anyone else's watchlist\n"
+            "• /subscribe — weekly notifications on\n"
+            "• /unsubscribe — weekly notifications off",
         )
         return
 
     if command == "/watch":
         if len(parts) < 2:
-            send_message(token, chat_id, "Usage: /watch <i>username</i>")
+            send_message(token, chat_id,
+                "To set your username, just type it on its own and send — "
+                "or use /watch <i>yourname</i>.")
             return
-        username = parts[1].lower().strip()
-
-        subscribers = _load_subscribers()
-        existing = next((s for s in subscribers if s["chat_id"] == chat_id), None)
-        if existing:
-            old = existing["username"]
-            existing["username"] = username
-            existing["name"] = user_name
-            _save_subscribers(subscribers)
-            note = f"Updated: now tracking <b>{username}</b> (was {old})."
-        else:
-            subscribers.append({
-                "chat_id": chat_id,
-                "username": username,
-                "name": user_name,
-                "auto": False,
-            })
-            _save_subscribers(subscribers)
-            note = f"Now tracking <b>{username}</b>."
-
+        username = _clean_username(parts[1])
+        is_new, old = _upsert_username(chat_id, username, user_name)
+        note = (f"Now tracking <b>{username}</b>." if is_new
+                else f"Updated — now tracking <b>{username}</b> (was {old}).")
         send_message(
-            token,
-            chat_id,
+            token, chat_id,
             f"{note}\n\nWant automatic weekly notifications every Wednesday?",
             reply_markup=_auto_prompt_markup(),
         )
@@ -390,31 +506,15 @@ def _handle_command(token: str, chat_id: str, user_name: str, text: str):
 
     if command == "/check":
         if len(parts) > 1:
-            usernames = [p.lower().strip() for p in parts[1:]]
+            usernames = [_clean_username(p) for p in parts[1:]]
         else:
             sub = _find_subscriber(chat_id)
             if sub:
                 usernames = [sub["username"]]
             else:
-                send_message(
-                    token,
-                    chat_id,
-                    "No username set. Use /watch <i>username</i> first, "
-                    "or /check <i>username</i>.",
-                )
+                send_message(token, chat_id,
+                    "First tell me your Letterboxd username — just type it and send. "
+                    "Or check someone else with /check <i>username</i>.")
                 return
-
-        send_message(
-            token,
-            chat_id,
-            f"Checking watchlist for {', '.join(usernames)}...",
-        )
-
-        try:
-            movies, errors = check_usernames(usernames)
-            msg = format_telegram_message(movies, errors, usernames)
-        except Exception as exc:
-            msg = f"Error: {exc}"
-
-        send_long_message(token, chat_id, msg)
+        _run_check(token, chat_id, usernames)
         return
